@@ -31,9 +31,21 @@ export default function Home({
   const [isSuccess, setIsSuccess] = useState(false);
   const { isLogin, logout,updateUser, login } = useAuth();
   const size = useWindowSize();
-
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
+
+  
+  useEffect(() => {
+    const clearCookies = () => {
+      Cookies.remove('userToken');
+      Cookies.remove('userName');
+      Cookies.remove('user');
+    };
+      clearCookies(); 
+      updateUser()
+      logout()
+
+  }, []);
 
   useEffect(() => {
     const inputs = document.querySelectorAll('.input100');

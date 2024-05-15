@@ -9,6 +9,8 @@ import ReactCrop, {
 } from 'react-image-crop';
 import { canvasPreview } from './canvasPreview';
 import { useDebounceEffect } from './useDebounceEffect';
+import $t from '@/locale/global';
+import { useRouter } from 'next/router';
 
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -43,7 +45,8 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
   const [scale, setScale] = useState(1);
   const [rotate, setRotate] = useState(0);
   const [aspect, setAspect] = useState<number | undefined>(1 / 1);
-
+  const router = useRouter();
+  const locale = router.locale === 'ua' ? 'uk' : router.locale;
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
       setCrop(undefined); 
@@ -142,9 +145,12 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
               <i className="fas fa-check"></i>
             </div>
         <div className="modal-content" style={{maxHeight: "87vh",overflowY: "scroll"}}>
+        <div className="modal-header">
+                <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+            </div>
           <div className="modal-header">
 
-            <h4 className="modal-title w-100" style={{margin: "0px 0 -15px"}}>Виберите фото</h4>
+            <h4 className="modal-title w-100" style={{margin: "0px 0 -15px"}}>{$t[locale].auth.choosePhoto}</h4>
           </div>
           <div className="modal-body">
             <div className="ImgEditor">

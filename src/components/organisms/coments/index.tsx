@@ -57,7 +57,7 @@ const Comments = ({ data, sendMessage }) => {
         toggleReplyArea(fatherId)
     }
     return (
-        <div id="comment">
+        <div >
             <div className="comments-tree">
                 <header className="comments-header">
                     <h4> {comments.length} {$t[locale].comment.comments}</h4>

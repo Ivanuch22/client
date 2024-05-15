@@ -33,7 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
 
             let validatedLocale = "ru"
-            if (['ru', 'uk', 'en'].includes(locale)) {
+            console.log(locale,"sdlfj")
+            if (['RU', 'UK', 'EN'].includes(locale)) {
                 validatedLocale = locale;
             }
             const messagesss = messageFunc(link,validatedLocale);
@@ -64,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 const messageFunc = (link:string, locale:string)=>{
     const newLocal = locale as Locale; // Explicitly cast `locale` to `Locale`
     const message:Messages = {
-        ru:{
+        RU:{
             title: "Вы получили ответ на Ваш комментарий на сайте t-h-logistics.com",
             body: `
             Приветствуем Вас,
@@ -83,8 +84,8 @@ const messageFunc = (link:string, locale:string)=>{
             
             `
         },
-        uk:{
-            title: `You have received a reply to your comment on t-h-logistics.com`,
+        UK:{
+            title: `Ви отримали відповідь на свій коментар на t-h-logistics.com`,
             body: `
             Вітаємо Вас,
 
@@ -101,8 +102,8 @@ const messageFunc = (link:string, locale:string)=>{
             Транс-Хоуп
             `
         },
-        en:{
-            title: "Account activation on the site t-h-logistics.com",
+        EN:{
+            title: "You have received a reply to your comment on t-h-logistics.com",
             body:`
             Greetings,
 
@@ -129,9 +130,9 @@ interface MessageDetails {
 }
 
 interface Messages {
-    ru: MessageDetails;
-    uk: MessageDetails;
-    en: MessageDetails;
+    RU: MessageDetails;
+    UK: MessageDetails;
+    EN: MessageDetails;
 }
 
 interface MessagesLocale {

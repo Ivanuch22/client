@@ -34,6 +34,7 @@ import Sidebar from '@/components/organisms/Sidebar';
 import MostPopular from '@/components/organisms/MostPopular';
 import Comments from '@/components/organisms/coments';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
+import { toLower, toUpper } from 'lodash';
 
 
 const { publicRuntimeConfig } = getConfig();
@@ -289,7 +290,8 @@ const Page = ({
           blog: { connect: pageIds },
           father: { connect: [{ id: fatherId }] },
           Text: commentText,
-          admin_date: Date.now(),
+          admin_date: Date.now(), 
+          locale: toUpper(locale)
         }
 
       } : payload = {
@@ -298,6 +300,7 @@ const Page = ({
           blog: { connect: pageIds },
           Text: commentText,
           admin_date: Date.now(),
+          locale: toUpper(locale)
         }
       };
 
@@ -322,12 +325,13 @@ const Page = ({
         if (fatherId) {
           const newFunc = async () => {
             const fatherComment = await server.get(`/comments1/${fatherId}?populate=*`);
+            const fatherLocale = fatherComment.data.data.attributes.locale === 'UK' ? 'UA' : fatherComment.data.data.attributes.locale;
             if (fatherComment.data.data.attributes.user.data.attributes.sendMessage) {
               const response = await axios.post(`/api/comment-message`, {
                 email: fatherComment.data.data.attributes.user.data.attributes.email,
                 locale: fatherComment.data.data.attributes.locale,
                 userName: fatherComment.data.data.attributes.user.data.attributes.real_user_name,
-                link: `${NEXT_FRONT_URL}${url}#comment`
+                link: `${NEXT_FRONT_URL}${(fatherLocale ==="RU"? "": `/${toLower(fatherLocale)}`)}${url}#comment`
               });
             }
           }
@@ -434,7 +438,7 @@ const Page = ({
                       >
                         <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
                           <Link href={`/blog`}>
-                            <h2 className="d-inline text-white heading_title">{$t[locale].blog.all} | </h2>
+                            <span className="d-inline text-white heading_title">{$t[locale].blog.all} | </span>
                           </Link>
                           {headings.map((heading, index) => {
                             const headingName = heading?.attributes.Name;
@@ -443,9 +447,9 @@ const Page = ({
                             return (
                               <div key={heading.id} className='d-flex gap-2 align-items-center  '>
                                 <Link href={`/blog?heading=${headingName}`}>
-                                  <h2 className="d-inline heading_title text-white heading_name">
+                                  <span className="d-inline heading_title text-white heading_name">
                                     {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
-                                  </h2>
+                                  </span>
                                 </Link>
                                 {!isLast && <span className="d-inline heading_title text-white"> | </span>}
                               </div>
@@ -484,6 +488,17 @@ const Page = ({
                   </div>
                 </div>
               </div>
+
+
+              <div className="container-xxl">
+                <div className="row smallPaddign">
+                  <div className="col article-col pe-md-2">
+                  
+
+                    <main
+                      className="cont-body"
+                      style={{ maxWidth: '90%', margin: '0 auto' }}
+                    >
               {errorMessage && (
                 <div className="error-message">
                   <h3>
@@ -501,20 +516,6 @@ const Page = ({
                   )}
                 </div>
               )}
-
-              <div className="container-xxl">
-                <div className="row smallPaddign">
-                  <div className="col article-col pe-md-2">
-                    {/* 
-              В этом блоке будут помещены и отрендерены все данные из body. Body - это поле в страпи в коллекции Page.
-              там вы можете вписывать как обычный текст так и html код
-             */}
-
-                    <main
-                      className="cont-body"
-                      style={{ maxWidth: '90%', margin: '0 auto' }}
-                    >
-
                       {notFoundMessage && (
                         <div className="error-message">
                           <h3>
@@ -543,7 +544,9 @@ const Page = ({
 
                           </div>
                           <div dangerouslySetInnerHTML={{ __html: body }}></div>
-                          <Comments data={usersComments} sendMessage={sendMessage} /></>
+                          <div  id="comment"></div>
+                          <Comments data={usersComments} sendMessage={sendMessage} />
+                          </>
                       )}
                     </main>
                   </div>

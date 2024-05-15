@@ -216,6 +216,8 @@ export default {
     password: "Password",
     name: "Name",
     confirm_text: "Change data?",
+    saveChanges: "Save changes",
+    choosePhoto: "Choose photo",
     activationBtnText: "Activate",
     getConfirmetionLink: "Get activation link",
     successConfirmationMessage: "New activation link sent to your e-mail.",

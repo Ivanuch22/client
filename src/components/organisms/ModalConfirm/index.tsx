@@ -15,7 +15,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div id="ConfirmModal" className="modal fade show" style={{background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none'}}>
             <div className="modal-dialog modal-confirm">
                 <div className="modal-content">
+                <div className="modal-header">
+                <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+            </div>
                     <div className="modal-header">
+
+
                         <div className="icon-box">
                         <i className="fas fa-check"></i>
                         </div>

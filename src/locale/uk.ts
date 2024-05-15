@@ -217,6 +217,8 @@ export default {
     password: "Пароль",
     confirm_text: "Змінити данні?",
     name: "Ім'я",
+    choosePhoto: "Виберіть фото",
+    saveChanges: "Зберегти зміни",
     getConfirmetionLink: "Отримати посилання активації",
     activationBtnText: "Активувати",
     successConfirmationMessage: "Нове посилання активації відправлено на ваш e-mail",

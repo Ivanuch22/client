@@ -219,6 +219,8 @@ export default {
     getConfirmetionLink: " Получить ссылку активации ",
     successConfirmationMessage: "Новая ссылка активации отправлена на ваш e-mail",
     name: "Имя",
+    saveChanges: "Сохранить изменения",
+    choosePhoto: "Виберите фото",
     error:{
       empty: "Заполните данные правильно",
       empty_email: "Введите электронную почту",

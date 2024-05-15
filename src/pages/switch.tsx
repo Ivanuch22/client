@@ -76,6 +76,7 @@ const Switch = () => {
     if (
       router.pathname != '/[slug]' &&
       router.pathname != '/info/[slug]' &&
+      router.pathname != '/blog/[slug]' &&
       router.pathname != '/service/[slug]'
     ) {
       return true;
@@ -95,6 +96,7 @@ const Switch = () => {
     if (
       router.pathname != '/[slug]' &&
       router.pathname != '/info/[slug]' &&
+      router.pathname != '/blog/[slug]' &&
       router.pathname != '/service/[slug]'
     ) {
       return true;

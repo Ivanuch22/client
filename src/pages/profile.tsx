@@ -58,7 +58,7 @@ export default function Profile({
     const getUserCookies = Cookies.get('user');
     if (!getUserCookies) return
     const userCookies = JSON.parse(getUserCookies)
-    let userFromBd = userCookies; 
+    let userFromBd = userCookies;
     async function getUser() {
       const strapiRes = await server.get(`/users/${userCookies.id}`)
       Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
@@ -67,8 +67,7 @@ export default function Profile({
 
     getUser()
     setUser(userFromBd);
-  
-    console.log(userFromBd)
+
     if (userFromBd.imgLink) {
       setAvatarUrl(userFromBd.imgLink);
     } else {
@@ -79,6 +78,12 @@ export default function Profile({
       setDefaultBirthday(userFromBd.birthday)
     }
   }, []);
+
+  useEffect(()=>{
+    if (user.birthday) {
+      setDefaultBirthday(user.birthday)
+    }
+  },[user])
 
 
 
@@ -95,7 +100,7 @@ export default function Profile({
     try {
       const strapiRes = await server.put(`/users/${userObj.id}`, newObj, {
         headers: {
-          Authorization: `Bearer ${Cookies.get('userToken')}`, 
+          Authorization: `Bearer ${Cookies.get('userToken')}`,
         },
       });
       Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
@@ -168,7 +173,7 @@ export default function Profile({
       const response = await server.post(`/upload`, file, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${Cookies.get('userToken')}`, 
+          Authorization: `Bearer ${Cookies.get('userToken')}`,
         },
       });
 
@@ -379,7 +384,12 @@ export default function Profile({
                         <div className="position-absolute p-2 top-0 start-0">
                           <label
                             type="button"
-                            onClick={() => setAvatarModalVisible(true)}
+                            onClick={() => {
+                              if (!user.confirmed) {
+                                return setShowtMessageModal(true)
+                              }
+                              setAvatarModalVisible(true)
+                            }}
                             title="Додати фото"
                             className="btn btn-success btn-sm px-1 py-0"
                           >
@@ -410,7 +420,7 @@ export default function Profile({
                         {!user.confirmed &&
                           <div className='d-flex flex-column  justify-content-center gap-0'>
                             <span className='text reply-button d-flex justify-content-center'>{$t[locale].auth.profile.notConfirmed}</span>
-                            <button onClick={sendActivationMessage} className='btn btn-primary m-2 d-inline-block'>{$t[locale].auth.activationBtnText}</button>
+                            <button onClick={() => setShowtMessageModal(true)} className='btn btn-primary m-2 d-inline-block'>{$t[locale].auth.activationBtnText}</button>
                           </div>
                         }
 
@@ -565,7 +575,7 @@ export default function Profile({
                           className="btn btn-success"
                           style={{ marginRight: 15 }}
                         >
-                          Зберегти зміни
+                          {$t[locale].auth.saveChanges}
                         </button>
                         <button
                           type='button'
@@ -594,6 +604,14 @@ export default function Profile({
                               name="oldPass"
                               className="form-control"
                               required
+                              onChange={
+                                (e) => {
+                                  if (!user.confirmed) {
+                                    e.target.value= "";
+                                    return setShowtMessageModal(true)
+                                  }
+                                }
+                              }
                             />
                           </div>
                         </div>
@@ -610,6 +628,14 @@ export default function Profile({
                               name="newPass"
                               className="form-control"
                               required
+                              onChange={
+                                (e) => {
+                                  if (!user.confirmed) {
+                                    e.target.value= "";
+                                    return setShowtMessageModal(true)
+                                  }
+                                }
+                              }
                             />
                           </div>
                         </div>
