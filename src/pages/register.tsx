@@ -19,7 +19,7 @@ import { uuidv7 } from 'uuidv7';
 import Cookies from 'js-cookie';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWindowSize } from '@uidotdev/usehooks';
-import MailModal from '@/components/organisms/ModalMail';
+import ModalRegConfirm from '@/components/organisms/ModalRegConfirm';
 import getConfig from 'next/config';
 
 
@@ -136,12 +136,13 @@ export default function Home({
       form.reset();
     }
     const getPreviousPage = Cookies.get('previousPage') || '/';
-    router.push(getPreviousPage);
 
     setTimeout(() => {
       setIsSuccess(false);
       setModalVisible(false);
     }, 3000);
+    router.push(getPreviousPage);
+
   }
   function handleError(message: string) {
     setMessage(message);
@@ -185,11 +186,6 @@ export default function Home({
         Cookies.set('userName', response.data.user.real_user_name, { expires: 7 });
         console.log("sdfha")
         updateUser()
-
-        await axios.post(`/forgot/`, {
-          email: email,
-          locale: locale, 
-        });
       } else {
         return handleError(error.response.data.error.message);
       }
@@ -230,8 +226,9 @@ export default function Home({
                   ''
                 )}
               </div>
-              <MailModal
+              <ModalRegConfirm
                 message={$t[locale].auth.success.reg_message}
+                dangerMessage={$t[locale].auth.success.reg_messageDanger}
                 isVisible={modalIsVisible}
                 onClose={() => {
                   setModalVisible(false);
