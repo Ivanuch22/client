@@ -232,7 +232,8 @@ export default {
       already_have: "Email or username already taken"
     },
     success: {
-      reg_message: "You have successfully registered",
+      reg_message:  `You have successfully registered! 
+      To activate your profile, please follow the link sent to your email.`,
       log_message: "You have successfully logged in",
       forgot_message: "Message sent",
       change_message: "Data successfully updated",

@@ -62,7 +62,9 @@ const Switch = () => {
 
   function triggerErrorMessage(locale: string) {
     if (setErrorMessage && setErrorCode) {
-      if (!isPageExists(router.asPath, locale)) {
+      console.log(router.asPath)
+      const pathWithoutFragment = router.asPath.split('#')[0];
+      if (!isPageExists(pathWithoutFragment, locale)) {
         setErrorMessage(message404[locale]);
         setErrorCode(404);
       } else {

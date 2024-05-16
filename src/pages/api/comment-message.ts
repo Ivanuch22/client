@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const messagesss = messageFunc(link,validatedLocale);
             const mailoptions = {
-                from: EMAIL,
+                from: "Noreply Trans-Hope",
                 to: email,
                 subject: messagesss.title,
                 text: messagesss.body,

@@ -134,6 +134,7 @@ const Page = ({
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
+  console.log(router)
   useEffect(() => {
     setUserComments(comments)
   }, [comments])
