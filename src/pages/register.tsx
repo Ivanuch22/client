@@ -140,8 +140,9 @@ export default function Home({
     setTimeout(() => {
       setIsSuccess(false);
       setModalVisible(false);
-    }, 3000);
     router.push(getPreviousPage);
+
+    }, 60000);
 
   }
   function handleError(message: string) {
@@ -231,6 +232,8 @@ export default function Home({
                 dangerMessage={$t[locale].auth.success.reg_messageDanger}
                 isVisible={modalIsVisible}
                 onClose={() => {
+    router.push("/profile");
+
                   setModalVisible(false);
                 }}
               />
