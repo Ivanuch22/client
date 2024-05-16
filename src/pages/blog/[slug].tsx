@@ -284,6 +284,7 @@ const Page = ({
 
 
     try {
+      console.log(toUpper(locale))
       let payload;
       fatherId ? payload = {
         data: {
@@ -327,6 +328,7 @@ const Page = ({
           const newFunc = async () => {
             const fatherComment = await server.get(`/comments1/${fatherId}?populate=*`);
             const fatherLocale = fatherComment.data.data.attributes.locale === 'UK' ? 'UA' : fatherComment.data.data.attributes.locale;
+            console.log(fatherLocale)
             if (fatherComment.data.data.attributes.user.data.attributes.sendMessage) {
               const response = await axios.post(`/api/comment-message`, {
                 email: fatherComment.data.data.attributes.user.data.attributes.email,

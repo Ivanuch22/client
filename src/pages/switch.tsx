@@ -30,12 +30,18 @@ const Switch = () => {
 
   const { allPages, setErrorMessage, setErrorCode } = useDefaultLayoutContext();
 
+  const [pathWithoutFragment, setPathWithoutFragment]= useState(router.asPath.split('#')[0])
+  
+  useEffect(()=>{
+    setPathWithoutFragment(router.asPath.split('#')[0]);
+  },[])
+
   function handlePosition(locale: string | undefined) {
     if (locale === 'ua') {
       setPosition('left');
     } else if (locale === 'ru') {
       setPosition('center');
-      if (isPageWithLocaleExists(router.asPath, 'ru')) {
+      if (isPageWithLocaleExists(pathWithoutFragment, 'ru')) {
         if (setErrorMessage && setErrorCode) {
           setErrorMessage('');
           setErrorCode(null);
@@ -50,7 +56,7 @@ const Switch = () => {
 
   useEffect(() => {
     handlePosition(router.locale);
-    if (isPageWithLocaleExists(router.asPath, router.locale)) {
+    if (isPageWithLocaleExists(pathWithoutFragment, router.locale)) {
       if (setErrorMessage && setErrorCode) {
         setErrorMessage('');
         setErrorCode(null);
@@ -58,12 +64,9 @@ const Switch = () => {
     } else {
       triggerErrorMessage(router.locale);
     }
-  }, [router.locale, router.asPath]);
-
+  }, [router.locale, pathWithoutFragment]);
   function triggerErrorMessage(locale: string) {
     if (setErrorMessage && setErrorCode) {
-      console.log(router.asPath)
-      const pathWithoutFragment = router.asPath.split('#')[0];
       if (!isPageExists(pathWithoutFragment, locale)) {
         setErrorMessage(message404[locale]);
         setErrorCode(404);
@@ -115,9 +118,9 @@ const Switch = () => {
       <div className="switch navpart">
         {/* put link if the page exists and just plain button if it is not (for seo purposes) */}
         <div className={`switch-options navpart ${position}`}>
-          {isPageWithLocaleExists(router.asPath, 'uk') ? (
+          {isPageWithLocaleExists(pathWithoutFragment, 'uk') ? (
             <Link
-              href={router.asPath}
+              href={pathWithoutFragment}
               locale="ua"
               className="text-monospace switch-option left navpart"
               onClick={() => handlePosition('ua')}
@@ -135,9 +138,9 @@ const Switch = () => {
               UA
             </button>
           )}
-          {isPageWithLocaleExists(router.asPath, 'ru') ? (
+          {isPageWithLocaleExists(pathWithoutFragment, 'ru') ? (
             <Link
-              href={router.asPath}
+              href={pathWithoutFragment}
               locale="ru"
               className="text-monospace switch-option center navpart"
               onClick={() => handlePosition('ru')}
@@ -155,9 +158,9 @@ const Switch = () => {
               RU
             </button>
           )}
-          {isPageWithLocaleExists(router.asPath, 'en') ? (
+          {isPageWithLocaleExists(pathWithoutFragment, 'en') ? (
             <Link
-              href={router.asPath}
+              href={pathWithoutFragment}
               locale="en"
               className="text-monospace switch-option right navpart"
               onClick={() => handlePosition('en')}
