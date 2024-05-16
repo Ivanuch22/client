@@ -31,11 +31,11 @@ export default function Home({
   socialData,
 }) {
   const router = useRouter();
-  const {login,updateUser } = useAuth();
+  const { login, updateUser } = useAuth();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const size = useWindowSize();
   const { publicRuntimeConfig } = getConfig();
-  const { NEXT_MAILER ,NEXT_STRAPI_BASED_URL} = publicRuntimeConfig;
+  const { NEXT_MAILER, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
   const [cIndex, setCIndex] = useState(getRandomElementFromArray(captchas));
   const [isError, setIsError] = useState(false);
@@ -118,7 +118,7 @@ export default function Home({
     getUserIp();
   }, []);
 
-  async function getUserIp  () {
+  async function getUserIp() {
     try {
       const userIp = await axios.get('/api/userIp');
       setIp(userIp.data.ip as string);
@@ -140,7 +140,7 @@ export default function Home({
     setTimeout(() => {
       setIsSuccess(false);
       setModalVisible(false);
-    router.push(getPreviousPage);
+      router.push(getPreviousPage);
 
     }, 60000);
 
@@ -231,8 +231,12 @@ export default function Home({
                 message={$t[locale].auth.success.reg_message}
                 dangerMessage={$t[locale].auth.success.reg_messageDanger}
                 isVisible={modalIsVisible}
+                onSubmit={()=>{
+                  router.push("/profile");
+                  setModalVisible(false);
+                }}
                 onClose={() => {
-    router.push("/profile");
+                  router.push("/profile");
 
                   setModalVisible(false);
                 }}
