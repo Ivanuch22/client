@@ -6,19 +6,19 @@ const nextConfig = {
     NEXT_STRAPI_BASED_URL: process.env.NEXT_STRAPI_BASED_URL,
 	NEXT_FRONT_URL: process.env.NEXT_FRONT_URL,
   },
-  compress: false,
+  compress: true,
   reactStrictMode: true,
-  swcMinify: false,
+  swcMinify: true,
   i18n: {
     locales: ['ru', 'en', 'ua'],
     localeDetection: false,
     defaultLocale: 'ru',
   },
   optimization: {
-    minimize: false,
+    minimize: true,
   },
   webpack: (config) => {
-    config.optimization.minimize = false; // Disable minification
+    config.optimization.minimize = true; // Disable minification
     return config;
   },
   images: {
