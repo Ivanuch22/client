@@ -16,9 +16,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 link,
                 userName
             } = req.body;
-            
+
             // Додайте логіку перевірки даних та обробки запиту як ви це робили у попередньому файлі
-            
+
             const EMAIL = process.env.MAILER_EMAIL || '';
             const PASSWORD = process.env.MAILER_PASSWORD || '';
 
@@ -33,13 +33,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
 
             let validatedLocale = "ru"
-            console.log(locale,"sdlfj")
+            console.log(locale, "sdlfj")
             if (['RU', 'UK', 'EN'].includes(locale)) {
                 validatedLocale = locale;
             }
-            const messagesss = messageFunc(link,validatedLocale);
+            const messagesss = messageFunc(link, validatedLocale);
             const mailoptions = {
-                from: "Noreply Trans-Hope",
+                from: `"Noreply Trans-Hope" <websiterequestx@gmail.com>`,
+                replyTo: "websiterequestx@gmail.com",
                 to: email,
                 subject: messagesss.title,
                 text: messagesss.body,
@@ -62,10 +63,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 
-const messageFunc = (link:string, locale:string)=>{
+const messageFunc = (link: string, locale: string) => {
     const newLocal = locale as Locale; // Explicitly cast `locale` to `Locale`
-    const message:Messages = {
-        RU:{
+    const message: Messages = {
+        RU: {
             title: "Вы получили ответ на Ваш комментарий на сайте t-h-logistics.com",
             body: `
             Приветствуем Вас,
@@ -84,7 +85,7 @@ const messageFunc = (link:string, locale:string)=>{
             
             `
         },
-        UK:{
+        UK: {
             title: `Ви отримали відповідь на свій коментар на t-h-logistics.com`,
             body: `
             Вітаємо Вас,
@@ -102,9 +103,9 @@ const messageFunc = (link:string, locale:string)=>{
             Транс-Хоуп
             `
         },
-        EN:{
+        EN: {
             title: "You have received a reply to your comment on t-h-logistics.com",
-            body:`
+            body: `
             Greetings,
 
 
