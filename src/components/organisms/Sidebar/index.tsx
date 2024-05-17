@@ -25,7 +25,7 @@ export default function Sidebar({ randomBanner, children }: SidebarProps) {
             width={300}
             height={250}
             alt={randomBanner?.alt}
-            style={{width: "100%"}}
+            style={{width: "100%",height: "auto"}}
           />
         </a>
       </div>
