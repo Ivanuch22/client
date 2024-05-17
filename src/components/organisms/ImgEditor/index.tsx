@@ -138,7 +138,7 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
       style={{
         padding: "0 10px",
         background: 'rgba(0, 0, 0, .3)',
-        display: isShow ? 'block' : 'none',
+        display: true ? 'block' : 'none',
       }}
     >
       <div className="modal-dialog modal-confirm" style={{top:5,marginTop: 50}}>
@@ -180,7 +180,7 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
                   <button
                     onClick={onDownloadCropClick}
                     className="btn btn-success"
-                    style={{marginTop: 20}}
+                    style={{marginTop: 10}}
                   >
                     save
                   </button>
