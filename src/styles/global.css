@@ -623,7 +623,7 @@ img {
     max-width: unset;
   }
   .cont-body{
-    max-width: 100% !important;
+    max-width: 99% !important;
     margin: 0 auto !important; 
   }
   .article-col{
@@ -651,7 +651,7 @@ img {
     margin-bottom: 0;
     min-width: 300px;
     max-width: 100%;
-    padding-left: 0;
+    padding-left: 0;  
     padding-right: 0;
   }
 

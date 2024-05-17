@@ -102,6 +102,7 @@
 }
 
 .mx-360 {
+    width: 100%;
     max-width: 340px;
 }
 
@@ -544,7 +545,6 @@
     .sidebar-section {
         margin-bottom: 1.5em;
         min-width: 270px;
-        padding-right: 0px !important;
         max-width: 300px;
     }
     .article-col {
@@ -561,6 +561,13 @@
         margin-left: 10px;
     }
 }
+@media (max-width: 682px) {
+
+.sidebar-section {
+
+padding-right: 0px !important;
+}}
+
 @media (max-width: 672px) {
     .mx-360{
         margin: 0 auto;
