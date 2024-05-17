@@ -32,7 +32,7 @@ const MailModal: React.FC<MailModalProps> = ({
     const text = message? "" :body.text?.[locale];
 
     return (
-        <div id="mailModal" className="modal fade show" style={{background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none'}}>
+        <div id="mailModal" className="modal fade show" style={{padding: "0 10px", background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none'}}>
             <div className="modal-dialog modal-confirm">
                 <div className="modal-content">
                     <div className="modal-header">

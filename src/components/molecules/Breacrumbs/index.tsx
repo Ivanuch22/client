@@ -21,7 +21,7 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
 
   return (
     <nav aria-label="breadcrumb">
-      <ol className="breadcrumb justify-content-center justify-content-lg-start animated slideInLeft">
+      <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
         <li className="breadcrumb-item" style={{ color: 'white' }}>
           {$t[locale].menu.main}
         </li>

@@ -12,7 +12,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 }) => {
 
     return (
-        <div id="ConfirmModal" className="modal fade show" style={{background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none'}}>
+        <div id="ConfirmModal" className="modal fade show" style={{padding: "0 10px",background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none'}}>
             <div className="modal-dialog modal-confirm">
                 <div className="modal-content">
                 <div className="modal-header">
@@ -21,7 +21,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     <div className="modal-header">
 
 
-                        <div className="icon-box">
+                        <div className="icon-box"  style={{top: -120}}>
                         <i className="fas fa-check"></i>
                         </div>
                         <h4 className="modal-title w-100">{message}</h4>

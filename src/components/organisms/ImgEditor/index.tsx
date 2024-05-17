@@ -136,6 +136,7 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
       id="ConfirmModal"
       className="modal fade show"
       style={{
+        padding: "0 10px",
         background: 'rgba(0, 0, 0, .3)',
         display: isShow ? 'block' : 'none',
       }}
@@ -179,6 +180,7 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
                   <button
                     onClick={onDownloadCropClick}
                     className="btn btn-success"
+                    style={{marginTop: 20}}
                   >
                     save
                   </button>

@@ -18,7 +18,7 @@ const Hero = ({ title, crumbs }: HeroProps) => {
       <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
         <div className="row g-5 pt-1">
           <div
-            className="col-12 text-center text-lg-start"
+            className="col-12 text-center text-md-start"
             style={{ marginTop: '40px', marginBottom: '50px' }}
           >
             <h1 className="display-5 text-white animated slideInLeft">

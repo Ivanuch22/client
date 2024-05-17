@@ -90,14 +90,14 @@ export default function Home({
                   <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
                     <div className="row g-5 pt-1">
                       <div
-                        className="col-12 text-center text-lg-start"
+                        className="col-12 text-center text-md-start"
                         style={{ marginTop: '40px', marginBottom: '50px' }}
                       >
                         <h1 className="display-4 text-white animated slideInLeft">
                           {$t[locale].menu.services}
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-lg-start animated slideInLeft">
+                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
                             <li className="breadcrumb-item">
                               <a className="text-white" href="#">
                                 {$t[locale].menu.main}

@@ -82,7 +82,7 @@ export default function Home({
                   <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
                     <div className="row g-5 pt-1">
                       <div
-                        className="col-12 text-center text-lg-start"
+                        className="col-12 text-center text-md-start"
                         style={{ marginTop: '40px', marginBottom: '50px' }}
                       >
                         <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
@@ -106,7 +106,7 @@ export default function Home({
                           })}
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-lg-start animated slideInLeft">
+                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
                             <li className="breadcrumb-item">
                               <a className="text-white" href="#">
                                 {$t[locale].menu.main}
@@ -125,9 +125,9 @@ export default function Home({
                 </div>
               </main>
 
-              <div className=" p-3">
+              <div className="p-3" style={{paddingRight: 12,paddingLeft: 12}}>
                 <div className="row">
-                  <div className='ps-lg-5 col article-col gap-5 pe-md-2 d-flex flex-column'>
+                  <div className='ps-lg-3 ps-xl-5 col article-col gap-5 pe-md-2 d-flex flex-column'>
                     {pages.map((page, index) => {
                       const { page_title, admin_date, url, heading, comments, views } = page.attributes;
                       const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";

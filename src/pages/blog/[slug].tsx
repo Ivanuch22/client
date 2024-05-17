@@ -436,10 +436,10 @@ const Page = ({
                   <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
                     <div className="row g-5 pt-1">
                       <div
-                        className="col-12 text-center text-lg-start"
-                        style={{ marginTop: '40px', marginBottom: '50px' }}
+                        className="col-12 text-center text-md-start"
+
                       >
-                        <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
+                        <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft justify-content-center justify-content-xl-start ">
                           <Link href={`/blog`}>
                             <span className="d-inline text-white heading_title">{$t[locale].blog.all} | </span>
                           </Link>
@@ -468,7 +468,7 @@ const Page = ({
 
 
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-lg-start animated slideInLeft">
+                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
                             <li className="breadcrumb-item">
                               <Link className="text-white" href="/">
                                 {$t[locale].menu.main}
@@ -493,7 +493,7 @@ const Page = ({
               </div>
 
 
-              <div className="container-xxl">
+              <div className="container-xxl" style={{padding: "0 0px"}}>
                 <div className="row smallPaddign">
                   <div className="col article-col pe-md-2">
                   
@@ -553,7 +553,7 @@ const Page = ({
                       )}
                     </main>
                   </div>
-                  <aside className=' col-md-auto pe-md-3 col-sm-12 d-flex flex-wrap flex-column flex-sm-row align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
+                  <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
                     <Sidebar randomBanner={randomBanner}></Sidebar>
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
                   </aside>

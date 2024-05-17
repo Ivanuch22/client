@@ -13,9 +13,10 @@ interface SidebarProps {
 
 export default function Sidebar({ randomBanner, children }: SidebarProps) {
   return (
-    <article className="sidebar col-md-auto pe-md-3 col-sm-12 d-flex flex-wrap flex-column flex-sm-row align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column">
+    <div className=' col-md-auto  mx-360'>
+    <article className=" col-md-auto  pe-xl-3 col-sm-12 d-flex flex-wrap flex-column flex-sm-row align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto">
       {/* displaying randomBanner */}
-      <div className="sidebar-section sidebar-section--banner">
+      <div className="sidebar-section sidebar-section--banner pe-xl-3">
         <a href={randomBanner?.url} target="_blank">
           <img
             className="sidebar-banner"
@@ -29,5 +30,7 @@ export default function Sidebar({ randomBanner, children }: SidebarProps) {
       {/* You can put it whatever you want */}
       {children}
     </article>
+    </div>
+
   );
 }

@@ -7,14 +7,14 @@ export type ConfirmModalProps = {
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
-    isVisible = false,
+    isVisible = true,
     onClose,
     dangerMessage,
     message, onSubmit
 }) => {
 
     return (
-        <div id="ConfirmModal" className="modal fade show" style={{ background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none' }}>
+        <div id="ConfirmModal" className="modal fade show" style={{padding: "0 10px", background: 'rgba(0, 0, 0, .3)', display: true ? 'block' : 'none' }}>
             <div className="modal-dialog modal-confirm">
                 <div className="modal-content">
 
@@ -24,10 +24,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     <div className="modal-header">
 
 
-                        <div className="icon-box">
+                        <div className="icon-box" style={{top : "-120px"}}>
                             <i className="fas fa-check"></i>
                         </div>
-                        <h4 className="modal-title w-100">{message}</h4>
+                        <h4 className="modal-title w-100" style={{marginTop: 0, fontSize: 22}}>{message}</h4>
                     </div>
                     <div className="modal-body">
                         <p className="text-center" style={{ color: "red" }}>{dangerMessage}</p>
