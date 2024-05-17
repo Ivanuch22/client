@@ -13,7 +13,7 @@ interface SidebarProps {
 
 export default function Sidebar({ randomBanner, children }: SidebarProps) {
   return (
-    <div className=' col-md-auto  mx-360' >
+    <div className=' col-md-auto' >
     <article className=" col-md-auto  pe-xl-3 col-sm-12 d-flex flex-wrap flex-column flex-sm-row align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto">
       <div className="sidebar-section sidebar-section--banner pe-xl-3">
         <a href={randomBanner?.url} 

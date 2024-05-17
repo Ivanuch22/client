@@ -120,6 +120,7 @@
         max-width: 100%;
         margin-left: 0px;
         margin: 0 auto;
+        padding-right: 10px;
     }
 
     .mostpopular__img-block {
@@ -531,6 +532,11 @@
     .mx-360{
         margin-left: 0;
         max-width: 300px;
+    }
+    .smallPaddign{
+        width: 100%;
+        margin: 0 auto;
+        padding-right: 3px;
     }
     .blog_img_block{
         width: 39% !important;
