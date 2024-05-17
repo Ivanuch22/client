@@ -280,6 +280,8 @@ const Page = ({
                       <div dangerouslySetInnerHTML={{ __html: body }}></div>
                     </div>
                   </div>
+                  <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
+                  
                   <Sidebar randomBanner={randomBanner}>
                     <div className="sidebar-section">
                       <ul className="menu">
@@ -290,7 +292,9 @@ const Page = ({
                         ></AccordionMenu>
                       </ul>
                     </div>
+                    
                   </Sidebar>
+                  </aside>
                 </div>
               </div>
             </DefaultLayout>
