@@ -138,7 +138,7 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
       style={{
         padding: "0 10px",
         background: 'rgba(0, 0, 0, .3)',
-        display: true ? 'block' : 'none',
+        display: isShow ? 'block' : 'none',
       }}
     >
       <div className="modal-dialog modal-confirm" style={{top:5,marginTop: 50}}>
