@@ -182,7 +182,7 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
                     className="btn btn-success"
                     style={{marginTop: 10}}
                   >
-                    save
+                    {$t[locale].auth.saveChanges}
                   </button>
                 </>
               )}
