@@ -19,7 +19,6 @@ import MailModal from '@/components/organisms/ModalMail';
 import ImgEditor from '@/components/organisms/ImgEditor';
 import getConfig from 'next/config';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
-import PasswordModal from '@/components/organisms/PasswordModal';
 
 export default function Profile({
   menu,
@@ -49,7 +48,6 @@ export default function Profile({
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
   const [avatarModalVisible, setAvatarModalVisible] = useState(false)
   const [isShowMessageModal, setShowtMessageModal] = useState(false)
-  const [isShowPasswordModal, setShowPasswordModal] = useState(false);
 
 
   useEffect(() => {
@@ -87,31 +85,6 @@ export default function Profile({
   }, [user])
 
 
-  async function updateJWT(password) {
-    const getUserCookies = Cookies.get('user');
-    const userCookies = JSON.parse(getUserCookies)
-    const email = userCookies.email;
-
-    if (!email || !password) {
-      return handleError('Заповніть правильно данні');
-    }
-
-    try {
-      const response = await server.post('/auth/local', {
-        identifier: email,
-        password: password,
-      });
-      Cookies.set('userToken', response.data.jwt, { expires: 7 });
-      Cookies.set('userName', response.data.user.real_user_name, { expires: 7 });
-      Cookies.set('user', JSON.stringify(response.data.user), { expires: 7 });
-      updateUser();
-      setShowPasswordModal(false)
-
-    } catch (error) {
-      console.log('An error occurred:', error.response);
-      return handleError(error);
-    }
-  }
 
   async function updateStrapiData(userObj: object) {
     const newObj = {
@@ -141,7 +114,6 @@ export default function Profile({
     if (!user.confirmed) {
       return setShowtMessageModal(true)
     }
-
     try {
       const resData = await updateStrapiData(user);
       if (resData.status === 200) {
@@ -156,7 +128,7 @@ export default function Profile({
     } catch (e) {
 
       if (e.response.status === 401) {
-        return setShowPasswordModal(true)
+        return logout();
       }
       setModalVisible(false)
       handleError($t[locale].auth.error.empty);
@@ -190,7 +162,7 @@ export default function Profile({
       event.target.reset();
     } catch (e) {
       if (e.response.status === 401) {
-        setShowPasswordModal(true)
+        return logout();
       }
       handleError(e.message);
     }
@@ -223,7 +195,7 @@ export default function Profile({
 
     } catch (error) {
       if (error.response.status === 401) {
-        return setShowPasswordModal(true)
+        return logout();
       }
       setAvatarModalVisible(false)
 
@@ -351,16 +323,6 @@ export default function Profile({
                 onClose={() => {
                   setActivationModalVisible(false)
                 }}
-              />
-              <PasswordModal
-                message={"Confirm your password"}
-                isVisible={isShowPasswordModal}
-                description='For your security, please confirm your password.'
-                onClose={() => {
-                  logout()
-                  setShowPasswordModal(false)
-                }}
-                onSubmit={(e) => updateJWT(e)}
               />
               <ConfirmModal
                 message={$t[locale].auth.confirm_text}
