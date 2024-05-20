@@ -6,24 +6,20 @@ export type ConfirmModalProps = {
     onSubmit: () => {}
 }
 
-const ConfirmModal: React.FC<ConfirmModalProps> = ({
+const ModalRegConfirm: React.FC<ConfirmModalProps> = ({
     isVisible = true,
     onClose,
     dangerMessage,
     message, onSubmit
 }) => {
-
     return (
         <div id="ConfirmModal" className="modal fade show" style={{padding: "0 10px", background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none' }}>
             <div className="modal-dialog modal-confirm">
                 <div className="modal-content">
-
                     <div className="modal-header">
                         <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
                     </div>
                     <div className="modal-header">
-
-
                         <div className="icon-box" style={{top : "-120px"}}>
                             <i className="fas fa-check"></i>
                         </div>
@@ -34,7 +30,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     </div>
                     <div className='d-flex justify-content-between'>
                         <button className="btn btn-success" data-dismiss="modal" onClick={onSubmit} style={{ width: '100%' }}>OK</button>
-
                     </div>
                 </div>
             </div>
@@ -42,4 +37,4 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     )
 }
 
-export default ConfirmModal;
+export default ModalRegConfirm;

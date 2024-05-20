@@ -19,8 +19,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
             </div>
                     <div className="modal-header">
-
-
                         <div className="icon-box"  style={{top: -120}}>
                         <i className="fas fa-check"></i>
                         </div>

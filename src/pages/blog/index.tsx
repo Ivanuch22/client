@@ -96,10 +96,10 @@ export default function Home({
                             return (
                               <div key={heading.id} className='d-flex gap-2 align-items-center  '>
                                 <Link href={`/blog?heading=${headingName}`}>
-  <h2 className="d-inline heading_title text-white heading_name">
-    {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
-  </h2>
-</Link>
+                                  <h2 className="d-inline heading_title text-white heading_name">
+                                    {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
+                                  </h2>
+                                </Link>
                                 {!isLast && <span className="d-inline heading_title text-white"> | </span>}
                               </div>
                             );
@@ -125,7 +125,7 @@ export default function Home({
                 </div>
               </main>
 
-              <div className="p-3" style={{paddingRight: 12,paddingLeft: 12}}>
+              <div className="p-3" style={{ paddingRight: 12, paddingLeft: 12 }}>
                 <div className="row">
                   <div className='ps-lg-3 ps-xl-5 col article-col gap-5 pe-md-2 d-flex flex-column'>
                     {pages.map((page, index) => {
@@ -168,7 +168,7 @@ export default function Home({
                                     <div className='w-auto align-items-center d-flex'><img className='me-1' src="https://itc.ua/wp-content/themes/ITC_6.0/images/eye2.png" height="11" width="17" alt="views icon"></img>{views}</div>
 
                                   </div>
-                                  
+
                                 </div>
                               </div>
                             </div>

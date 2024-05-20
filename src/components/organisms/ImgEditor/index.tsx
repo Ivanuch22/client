@@ -117,7 +117,6 @@ export default function ImgEditor({ handleUpload, isShow, onClose }) {
         imgRef.current &&
         previewCanvasRef.current
       ) {
-        // We use canvasPreview as it's much faster than imgPreview.
         canvasPreview(
           imgRef.current,
           previewCanvasRef.current,

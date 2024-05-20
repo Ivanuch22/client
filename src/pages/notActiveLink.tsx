@@ -266,17 +266,17 @@ const Page = ({
                                                 <h3>
                                                     {notActiveMessage[locale].title}
                                                 </h3>
-                                                    <p className="error-descr">
+                                                <p className="error-descr">
                                                     {notActiveMessage[locale].description}
 
-                                                    </p>
+                                                </p>
 
                                             </div>
                                         </div>
                                     </div>
-                  <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
-                                    <Sidebar randomBanner={randomBanner}></Sidebar>
-                  </aside>
+                                    <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
+                                        <Sidebar randomBanner={randomBanner}></Sidebar>
+                                    </aside>
 
                                 </div>
                             </div>

@@ -19,24 +19,6 @@ const NotConfirmedModal: React.FC<MailModalProps> = ({
     const router = useRouter();
     const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
-    const body = {
-        title: {
-            ru: 'Спасибо, ваш запрос отправлен.',
-            uk: 'Дякуємо, ваш запит надіслано.',
-            en: 'Thank you, your request has been sent.',
-        },
-        text: {
-            ru: 'Мы свяжемся с вами в ближайшее время.',
-            uk: `Ми зв'яжемося з вами найближчим часом.`,
-            en: 'We will contact you soon.',
-        }
-    }
-
-    // @ts-ignore
-    const title =  message? message :body.title?.[locale];
-    // @ts-ignore
-    const text = message? "" :body.text?.[locale];
-
     return (
 <div id="mailModal" className="modal fade show" style={{padding: "0 10px", background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none' }}>
     <div className="modal-dialog modal-confirm">
@@ -48,7 +30,7 @@ const NotConfirmedModal: React.FC<MailModalProps> = ({
                 <div className="icon-box" style={{top:"-120px"}}>
                     <i className="fas fa-check"></i>
                 </div>
-                <p className="text-center">{title}</p>
+                <p className="text-center">{message}</p>
             </div>
             <div className="modal-footer">
                 <button className="btn btn-success btn-block" onClick={() => {

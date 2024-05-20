@@ -35,7 +35,7 @@ const MostPopular = ({ data, title }: MostPopular) => {
                                         <span className="comments part d-inline-flex align-items-center" >
                                     <Link href={`${url}#comment`} className="d-inline-flex align-items-center">
                                       <img src="https://itc.ua/wp-content/themes/ITC_6.0/images/comment_outline_24.svg" height="24" width="24" alt="comment" />
-                                      <span className="disqus-comment-count" data-disqus-url="https://itc.ua/ua/novini/sylovu-bronyu-v-seriali-fallout-zrobyly-bez-vtruchannya-bethesda-a-ot-na-robochomu-pip-boy-v-kompaniyi-napolyagaly/" data-disqus-identifier="2259249 https://itc.ua/?p=2259249">{comments.data.length}</span>
+                                      <span className="disqus-comment-count" data-disqus-url="https://itc.ua/ua/novini/sylovu-bronyu-v-seriali-fallout-zrobyly-bez-vtruchannya-bethesda-a-ot-na-robochomu-pip-boy-v-kompaniyi-napolyagaly/">{comments.data.length}</span>
                                       </Link>
                                     </span>
                                 </div>

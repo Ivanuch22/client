@@ -19,6 +19,7 @@ import MailModal from '@/components/organisms/ModalMail';
 import ImgEditor from '@/components/organisms/ImgEditor';
 import getConfig from 'next/config';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
+import PasswordModal from '@/components/organisms/PasswordModal';
 
 export default function Profile({
   menu,
@@ -47,8 +48,8 @@ export default function Profile({
   const [modalIsVisible, setModalVisible] = useState(false);
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
   const [avatarModalVisible, setAvatarModalVisible] = useState(false)
-
   const [isShowMessageModal, setShowtMessageModal] = useState(false)
+  const [isShowPasswordModal, setShowPasswordModal] = useState(false);
 
 
   useEffect(() => {
@@ -79,13 +80,38 @@ export default function Profile({
     }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (user.birthday) {
       setDefaultBirthday(user.birthday)
     }
-  },[user])
+  }, [user])
 
 
+  async function updateJWT(password) {
+    const getUserCookies = Cookies.get('user');
+    const userCookies = JSON.parse(getUserCookies)
+    const email = userCookies.email;
+
+    if (!email || !password) {
+      return handleError('Заповніть правильно данні');
+    }
+
+    try {
+      const response = await server.post('/auth/local', {
+        identifier: email,
+        password: password,
+      });
+      Cookies.set('userToken', response.data.jwt, { expires: 7 });
+      Cookies.set('userName', response.data.user.real_user_name, { expires: 7 });
+      Cookies.set('user', JSON.stringify(response.data.user), { expires: 7 });
+      updateUser();
+      setShowPasswordModal(false)
+
+    } catch (error) {
+      console.log('An error occurred:', error.response);
+      return handleError(error);
+    }
+  }
 
   async function updateStrapiData(userObj: object) {
     const newObj = {
@@ -97,20 +123,18 @@ export default function Profile({
       sendMessage: userObj.sendMessage
     }
 
-    try {
-      const strapiRes = await server.put(`/users/${userObj.id}`, newObj, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get('userToken')}`,
-        },
-      });
-      Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
-      Cookies.set('userName', JSON.stringify(strapiRes.data.real_user_name), {
-        expires: 7,
-      });
-      return strapiRes;
-    } catch (e) {
-      return e;
-    }
+
+    const strapiRes = await server.put(`/users/${userObj.id}`, newObj, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('userToken')}`,
+      },
+    });
+    Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
+    Cookies.set('userName', JSON.stringify(strapiRes.data.real_user_name), {
+      expires: 7,
+    });
+    return strapiRes
+
   }
   async function changeData(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -130,9 +154,12 @@ export default function Profile({
       }
       setModalVisible(false)
     } catch (e) {
+
+      if (e.response.status === 401) {
+        return setShowPasswordModal(true)
+      }
       setModalVisible(false)
       handleError($t[locale].auth.error.empty);
-      console.log(e);
     }
   };
   async function changePass(event: FormEvent<HTMLFormElement>) {
@@ -162,7 +189,9 @@ export default function Profile({
       handleSuccess();
       event.target.reset();
     } catch (e) {
-      event.target.reset();
+      if (e.response.status === 401) {
+        setShowPasswordModal(true)
+      }
       handleError(e.message);
     }
   }
@@ -193,6 +222,9 @@ export default function Profile({
       setAvatarModalVisible(false)
 
     } catch (error) {
+      if (error.response.status === 401) {
+        return setShowPasswordModal(true)
+      }
       setAvatarModalVisible(false)
 
       console.error('Error uploading image: ', error);
@@ -319,6 +351,16 @@ export default function Profile({
                 onClose={() => {
                   setActivationModalVisible(false)
                 }}
+              />
+              <PasswordModal
+                message={"Confirm your password"}
+                isVisible={isShowPasswordModal}
+                description='For your security, please confirm your password.'
+                onClose={() => {
+                  logout()
+                  setShowPasswordModal(false)
+                }}
+                onSubmit={(e) => updateJWT(e)}
               />
               <ConfirmModal
                 message={$t[locale].auth.confirm_text}
@@ -607,7 +649,7 @@ export default function Profile({
                               onChange={
                                 (e) => {
                                   if (!user.confirmed) {
-                                    e.target.value= "";
+                                    e.target.value = "";
                                     return setShowtMessageModal(true)
                                   }
                                 }
@@ -631,7 +673,7 @@ export default function Profile({
                               onChange={
                                 (e) => {
                                   if (!user.confirmed) {
-                                    e.target.value= "";
+                                    e.target.value = "";
                                     return setShowtMessageModal(true)
                                   }
                                 }
