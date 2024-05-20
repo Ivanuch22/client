@@ -216,6 +216,7 @@ export default {
     activationBtnText: "Активировать",
     password: "Пароль",
     confirm_text: "Изменить данные?",
+    confirm_text_delete: 'Удалить комментарий?',
     getConfirmetionLink: " Получить ссылку активации ",
     successConfirmationMessage: "Новая ссылка активации отправлена на ваш e-mail",
     name: "Имя",

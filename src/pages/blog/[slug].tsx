@@ -34,6 +34,7 @@ import Sidebar from '@/components/organisms/Sidebar';
 import MostPopular from '@/components/organisms/MostPopular';
 import Comments from '@/components/organisms/coments';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
+import ModalConfirm from '@/components/organisms/ModalConfirm';
 import { toLower, toUpper } from 'lodash';
 
 
@@ -132,36 +133,41 @@ const Page = ({
   const { NEXT_FRONT_URL, NEXT_MAILER } = publicRuntimeConfig;
   const router = useRouter();
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
+  const [isShowConfirmModal, setShowConfirmModal] = useState(false)
+  const [editedCommentId, setEditedCommetId] = useState(0)
+  const [commentUserId, setCommentUserId] = useState(0)
+
+
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
   console.log(router)
   useEffect(() => {
     setUserComments(comments)
   }, [comments])
-    useEffect(() => {
-      setIsShowNotFoutMessage(notFoundMessage)
-      const incrementPageViews = async (pageId) => {
-        const viewedPages = (Cookies.get('viewedPages') || '').split(',');
-        if (viewedPages.includes("" + pageId)) {
-          console.log('Already viewed this page');
-          return;
-        }
-        try {
-          await axios.post('/api/increment-views', { id: pageId });
-          viewedPages.push(pageId);
-          Cookies.set('viewedPages', viewedPages.join(','), {
-            expires: 1,
-            sameSite: 'strict',
-            secure: true,
-          });
-        } catch (error) {
-          console.error('Error incrementing page views:', error);
-        }
-      };
-      console.log(pageRes)
-      incrementPageViews(pageRes[0]?.id)
-    }, [pageRes[0]?.id]);
-  
+  useEffect(() => {
+    setIsShowNotFoutMessage(notFoundMessage)
+    const incrementPageViews = async (pageId) => {
+      const viewedPages = (Cookies.get('viewedPages') || '').split(',');
+      if (viewedPages.includes("" + pageId)) {
+        console.log('Already viewed this page');
+        return;
+      }
+      try {
+        await axios.post('/api/increment-views', { id: pageId });
+        viewedPages.push(pageId);
+        Cookies.set('viewedPages', viewedPages.join(','), {
+          expires: 1,
+          sameSite: 'strict',
+          secure: true,
+        });
+      } catch (error) {
+        console.error('Error incrementing page views:', error);
+      }
+    };
+    console.log(pageRes)
+    incrementPageViews(pageRes[0]?.id)
+  }, [pageRes[0]?.id]);
+
 
 
 
@@ -251,29 +257,28 @@ const Page = ({
   }, [page_title]);
 
   const sendMessage = async (e, fatherId) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
 
-    const userToken = Cookies.get('userToken'); // Retrieve user token from cookies
+    const userToken = Cookies.get('userToken'); 
     if (!userToken) {
       router.push('/login');
       return;
     }
 
 
-    // Find the comment text area for this form
-    const formElement = e.target; // The form that triggered the event
-    const textAreaElement = formElement.querySelector("textarea"); // Find its textarea
-    const commentText = textAreaElement.value; // Retrieve its content
+
+    const formElement = e.target; 
+    const textAreaElement = formElement.querySelector("textarea"); 
+    const commentText = textAreaElement.value;
 
     if (!commentText) {
       alert('Comment cannot be empty');
       return;
     }
 
-    // Clear the text area content after retrieval
+
     textAreaElement.value = '';
 
-    // Retrieve user information from cookies
     let getUserCookies = Cookies.get('user');
     const user = JSON.parse(getUserCookies);
     const blogUrl = pageRes[0].attributes.url
@@ -284,7 +289,6 @@ const Page = ({
 
 
     try {
-      console.log(toUpper(locale))
       let payload;
       fatherId ? payload = {
         data: {
@@ -292,7 +296,7 @@ const Page = ({
           blog: { connect: pageIds },
           father: { connect: [{ id: fatherId }] },
           Text: commentText,
-          admin_date: Date.now(), 
+          admin_date: Date.now(),
           locale: toUpper(locale)
         }
 
@@ -334,7 +338,7 @@ const Page = ({
                 email: fatherComment.data.data.attributes.user.data.attributes.email,
                 locale: fatherComment.data.data.attributes.locale,
                 userName: fatherComment.data.data.attributes.user.data.attributes.real_user_name,
-                link: `${NEXT_FRONT_URL}${(fatherLocale ==="RU"? "": `/${toLower(fatherLocale)}`)}${url}#comment`
+                link: `${NEXT_FRONT_URL}${(fatherLocale === "RU" ? "" : `/${toLower(fatherLocale)}`)}${url}#comment`
               });
             }
           }
@@ -357,6 +361,80 @@ const Page = ({
       }
     }
   };
+
+  const updateComment = async (e, commentId) => {
+    e.preventDefault();
+
+    const userToken = Cookies.get('userToken');
+    if (!userToken) {
+      router.push('/login');
+      return;
+    }
+
+    const formElement = e.target;
+    const textAreaElement = formElement.querySelector("textarea");
+    const commentText = textAreaElement.value;
+
+    if (!commentText) {
+      alert('Comment cannot be empty');
+      return;
+    }
+
+    textAreaElement.value = '';
+
+    let getUserCookies = Cookies.get('user');
+    const user = JSON.parse(getUserCookies);
+    const blogUrl = pageRes[0].attributes.url;
+
+    if (!user.confirmed) {
+      return setShowtMessageModal(true);
+    }
+
+    try {
+      // Update the comment
+      const updatedCommentResponse = await server.put(`/comments1/${commentId}`,
+        {
+          data: {
+            Text: commentText
+          }
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+          }
+        });
+      const getBlogComments = await server.get(`/comments1?filters[blog][url]=${blogUrl}&populate=*&sort[0]=admin_date`);
+      const comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
+      setUserComments(comments);
+    } catch (error) {
+      console.error('Error updating comment:', error);
+    }
+  };
+
+
+  const deleteComment = async (commentId, userId) => {
+    const userToken = Cookies.get('userToken'); // Retrieve user token from cookies
+    let getUserCookies = Cookies.get('user');
+    const user = JSON.parse(getUserCookies);
+    console.log(user.id)
+
+    if (user.id !== userId) {
+      console.log(userId)
+      return console.log("it's not your comment")
+    }
+
+    const resposnse = await server.delete(`/comments1/${commentId}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date`);
+
+    comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
+    setUserComments(comments);
+    console.log(resposnse)
+
+  }
 
 
   return (
@@ -421,6 +499,17 @@ const Page = ({
                 setActivationModalVisible(false)
               }}
             />
+             <ModalConfirm
+                message={$t[locale].auth.confirm_text_delete}
+                isVisible={isShowConfirmModal}
+                onClose={() => {
+                  setShowConfirmModal(false)
+                }}
+                onSubmit={()=>{
+                  deleteComment(editedCommentId, commentUserId)
+                  setShowConfirmModal(false)
+                }}
+              />
             <NotConfirmedModal
               message={$t[locale].auth.notConfirmedMessage}
               isVisible={isShowMessageModal}
@@ -493,32 +582,32 @@ const Page = ({
               </div>
 
 
-              <div className="container-xxl" style={{padding: "0 0px"}}>
+              <div className="container-xxl" style={{ padding: "0 0px" }}>
                 <div className="row smallPaddign">
                   <div className="col article-col pe-md-2">
-                  
+
 
                     <main
                       className="cont-body"
                       style={{ maxWidth: '90%', margin: '0 auto' }}
                     >
-              {errorMessage && (
-                <div className="error-message">
-                  <h3>
-                    {errorCode != null
-                      ? `${errorText[
-                      Object.keys(message404).find(
-                        key => message404[key] === errorMessage
-                      )
-                      ]
-                      } ${errorCode}`
-                      : errorMessage}
-                  </h3>
-                  {errorCode != null && (
-                    <p className="error-descr">{errorMessage}</p>
-                  )}
-                </div>
-              )}
+                      {errorMessage && (
+                        <div className="error-message">
+                          <h3>
+                            {errorCode != null
+                              ? `${errorText[
+                              Object.keys(message404).find(
+                                key => message404[key] === errorMessage
+                              )
+                              ]
+                              } ${errorCode}`
+                              : errorMessage}
+                          </h3>
+                          {errorCode != null && (
+                            <p className="error-descr">{errorMessage}</p>
+                          )}
+                        </div>
+                      )}
                       {notFoundMessage && (
                         <div className="error-message">
                           <h3>
@@ -547,9 +636,16 @@ const Page = ({
 
                           </div>
                           <div dangerouslySetInnerHTML={{ __html: body }}></div>
-                          <div  id="comment"></div>
-                          <Comments data={usersComments} sendMessage={sendMessage} />
-                          </>
+                          <div id="comment"></div>
+                          <Comments updateComment={updateComment} onDelete={(commentId, userId)=>{
+                            console.log(userId, commentId)
+                            setEditedCommetId( commentId);
+                            setCommentUserId(userId)
+                            console.log(commentUserId)
+
+                            setShowConfirmModal(true)
+                          }} data={usersComments} sendMessage={sendMessage} />
+                        </>
                       )}
                     </main>
                   </div>
@@ -691,7 +787,7 @@ export async function getServerSideProps({
       body: '',
       comments: [],
       mostPopular,
-      pageRes:[],
+      pageRes: [],
       crumbs: '',
       slug: '',
       keywords: '',

@@ -34,3 +34,5 @@ const TextArea:React.FC<TextArea> = ({sendMessage,fatherId})=>{
 }
 
 export default TextArea;
+
+

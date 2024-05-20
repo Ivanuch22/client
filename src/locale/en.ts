@@ -216,6 +216,7 @@ export default {
     password: "Password",
     name: "Name",
     confirm_text: "Change data?",
+    confirm_text_delete: 'Delete comment?',
     saveChanges: "Save changes",
     choosePhoto: "Choose photo",
     activationBtnText: "Activate",

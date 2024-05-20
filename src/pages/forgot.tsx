@@ -11,17 +11,17 @@ import { server } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
-import React, {useEffect, useState,useRef} from 'react';
-import {useWindowSize} from "@uidotdev/usehooks";
+import React, { useEffect, useState, useRef } from 'react';
+import { useWindowSize } from "@uidotdev/usehooks";
 import axios from "axios";
 
 export default function Forgot({
-                                 menu,
-                                 allPages,
-                                 footerMenus,
-                                 footerGeneral,
-                                 socialData,
-                             }) {
+    menu,
+    allPages,
+    footerMenus,
+    footerGeneral,
+    socialData,
+}) {
     const router = useRouter();
     const locale = router.locale === 'ua' ? 'uk' : router.locale;
     const size = useWindowSize()
@@ -80,33 +80,33 @@ export default function Forgot({
     }, []);
 
     function validate(value) {
-            const re = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/;
-            return re.test(value);
+        const re = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/;
+        return re.test(value);
     }
-   async function onSubmit(e){
+    async function onSubmit(e) {
         e.preventDefault();
-       const email = emailRef.current?.value;
-       if(validate(email)){
-           setModalVisible(true);
-           const form = document.querySelector('.login100-form');
-           await server.post("/auth/forgot-password",{
-               email:email
-           })
-           console.log("повідомлення відправлено")
-           if (form) {
-               form.reset();
-           }
-       }
+        const email = emailRef.current?.value;
+        if (validate(email)) {
+            setModalVisible(true);
+            const form = document.querySelector('.login100-form');
+            await server.post("/auth/forgot-password", {
+                email: email
+            })
+            console.log("повідомлення відправлено")
+            if (form) {
+                form.reset();
+            }
+        }
     }
 
     return (
         <>
             <Head>
                 <title>Forgot</title>
-                <meta name="description" content="Forgot"/>
-                <meta name="keywords" content="Forgot noindex, follow"/>
-                <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                <link rel="icon" href="/favicon.ico"/>
+                <meta name="description" content="Forgot" />
+                <meta name="keywords" content="Forgot noindex, follow" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
             <Script
                 src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
@@ -125,9 +125,7 @@ export default function Forgot({
                     >
                         <DefaultLayout>
                             <div className="container-xxl  position-relative p-0">
-
                                 {size.width >= 1200 ? <div className="container-xxl py-5   bg-primary mb-0">
-
                                 </div> : ""}
                             </div>
                             <MailModal
@@ -141,12 +139,12 @@ export default function Forgot({
                                 <div className="container-login100">
                                     <div className="wrap-login100 p-t-85 p-b-20">
                                         <form className="login100-form validate-form" onSubmit={onSubmit}>
-            <span className="login100-form-title" style={{paddingBottom: 50, fontWeight: 600,}}>
-                    Trans-Hope
-                    </span>
+                                            <span className="login100-form-title" style={{ paddingBottom: 50, fontWeight: 600, }}>
+                                                Trans-Hope
+                                            </span>
                                             <div className="wrap-input100 validate-input"
-                                                 style={{marginTop: 5, marginBottom: 35}} data-validate={$t[locale].auth.error.empty_email}>
-                                                <input ref={emailRef} className="input100" type="email" name="email"/>
+                                                style={{ marginTop: 5, marginBottom: 35 }} data-validate={$t[locale].auth.error.empty_email}>
+                                                <input ref={emailRef} className="input100" type="email" name="email" />
                                                 <span className="focus-input100" data-placeholder="Email"></span>
                                             </div>
                                             <div className="container-login100-form-btn">
@@ -154,20 +152,19 @@ export default function Forgot({
                                                     {$t[locale].auth.send_message}
                                                 </button>
                                             </div>
-                                            <ul className="login-more p-t-190" style={{paddingTop: 50}}>
-                                                <li style={{marginBottom: 4}}>
-<span className="txt1" style={{marginRight: 5}}>
-                                    {$t[locale].auth.already_have}
-</span>
+                                            <ul className="login-more p-t-190" style={{ paddingTop: 50 }}>
+                                                <li style={{ marginBottom: 4 }}>
+                                                    <span className="txt1" style={{ marginRight: 5 }}>
+                                                        {$t[locale].auth.already_have}
+                                                    </span>
                                                     <Link href="/login" className="txt2">
                                                         {$t[locale].auth.header_button_name}
-
                                                     </Link>
                                                 </li>
                                                 <li>
-<span className="txt1" style={{marginRight: 5}}>
-                                        {$t[locale].auth.dont_have}
-</span>
+                                                    <span className="txt1" style={{ marginRight: 5 }}>
+                                                        {$t[locale].auth.dont_have}
+                                                    </span>
                                                     <Link href="/register" className="txt2">
                                                         {$t[locale].auth.register}
                                                     </Link>
@@ -187,7 +184,7 @@ export default function Forgot({
 }
 
 
-export async function getServerSideProps({query, locale}) {
+export async function getServerSideProps({ query, locale }) {
     try {
         const strapiLocale = locale === 'ua' ? 'uk' : locale;
         const res = await server.get(`/code?locale=${$(strapiLocale)}`);
@@ -199,7 +196,7 @@ export async function getServerSideProps({query, locale}) {
             index_keywords,
         } = res.data.data.attributes;
 
-        const {menu, allPages, footerMenus, footerGeneral} =
+        const { menu, allPages, footerMenus, footerGeneral } =
             await getHeaderFooterMenus(strapiLocale);
 
         const socialRes = await server.get('/social');
@@ -228,8 +225,8 @@ export async function getServerSideProps({query, locale}) {
                 menu: [],
                 allPages: [],
                 footerMenus: {
-                    about: {title: '', items: []},
-                    services: {title: '', items: []},
+                    about: { title: '', items: [] },
+                    services: { title: '', items: [] },
                     contacts: {},
                 },
                 footerGeneral: {},

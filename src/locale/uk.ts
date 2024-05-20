@@ -216,6 +216,7 @@ export default {
     already_have: "Є аккаунт",
     password: "Пароль",
     confirm_text: "Змінити данні?",
+    confirm_text_delete: 'Видалити коментар?',
     name: "Ім'я",
     choosePhoto: "Виберіть фото",
     saveChanges: "Зберегти зміни",

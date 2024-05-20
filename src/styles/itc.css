@@ -369,6 +369,7 @@
 }
 
 .post-content .post-message {
+    position: relative;
     line-height: 21px;
     overflow-wrap: break-word;
 }
@@ -623,5 +624,32 @@ padding-right: 0px !important;
         padding: 0 !important;
 
     }
+
+}
+
+
+.post-button-edit{
+    background-image:     url(../img/pencil.png);
+    background-size: contain;
+    width: 25px;
+    height: 25px;
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+
+}
+.post-button-delete{
+    background-image:     url(../img/trash.png);
+    background-size: contain;
+    width: 25px;
+    height: 25px;
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+
 
 }
