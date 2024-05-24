@@ -139,11 +139,11 @@ const Page = ({
 
 
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
-
-  console.log(router)
   useEffect(() => {
     setUserComments(comments)
   }, [comments])
+
+
   useEffect(() => {
     setIsShowNotFoutMessage(notFoundMessage)
     const incrementPageViews = async (pageId) => {
@@ -164,7 +164,6 @@ const Page = ({
         console.error('Error incrementing page views:', error);
       }
     };
-    console.log(pageRes)
     incrementPageViews(pageRes[0]?.id)
   }, [pageRes[0]?.id]);
 
@@ -214,7 +213,6 @@ const Page = ({
     if (item.position === 'head') {
       acc += item.script;
     }
-
     return acc;
   }, ``);
 
@@ -259,7 +257,7 @@ const Page = ({
   const sendMessage = async (e, fatherId) => {
     e.preventDefault();
 
-    const userToken = Cookies.get('userToken'); 
+    const userToken = Cookies.get('userToken');
     if (!userToken) {
       router.push('/login');
       return;
@@ -267,8 +265,8 @@ const Page = ({
 
 
 
-    const formElement = e.target; 
-    const textAreaElement = formElement.querySelector("textarea"); 
+    const formElement = e.target;
+    const textAreaElement = formElement.querySelector("textarea");
     const commentText = textAreaElement.value;
 
     if (!commentText) {
@@ -286,7 +284,7 @@ const Page = ({
     if (!user.confirmed) {
       return setShowtMessageModal(true)
     }
-
+    console.log(user.avatarId)
 
     try {
       let payload;
@@ -297,7 +295,9 @@ const Page = ({
           father: { connect: [{ id: fatherId }] },
           Text: commentText,
           admin_date: Date.now(),
-          locale: toUpper(locale)
+          locale: toUpper(locale),
+          user_name: user.real_user_name,
+          user_img: user.avatarId
         }
 
       } : payload = {
@@ -306,10 +306,12 @@ const Page = ({
           blog: { connect: pageIds },
           Text: commentText,
           admin_date: Date.now(),
-          locale: toUpper(locale)
+          locale: toUpper(locale),
+          user_name: user.real_user_name,
+          user_img: user.avatarId
         }
       };
-
+      console.log(commentText)
       const response = await server.post('/comments1', payload, {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -423,10 +425,15 @@ const Page = ({
       return console.log("it's not your comment")
     }
 
-    const resposnse = await server.delete(`/comments1/${commentId}`, {
+    const resposnse = await server.put(`/comments1/${commentId}`, {
+      data: {
+        publishedAt: null
+      }
+    }, {
       headers: {
         Authorization: `Bearer ${userToken}`,
       },
+
     });
     const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date`);
 
@@ -499,17 +506,17 @@ const Page = ({
                 setActivationModalVisible(false)
               }}
             />
-             <ModalConfirm
-                message={$t[locale].auth.confirm_text_delete}
-                isVisible={isShowConfirmModal}
-                onClose={() => {
-                  setShowConfirmModal(false)
-                }}
-                onSubmit={()=>{
-                  deleteComment(editedCommentId, commentUserId)
-                  setShowConfirmModal(false)
-                }}
-              />
+            <ModalConfirm
+              message={$t[locale].auth.confirm_text_delete}
+              isVisible={isShowConfirmModal}
+              onClose={() => {
+                setShowConfirmModal(false)
+              }}
+              onSubmit={() => {
+                deleteComment(editedCommentId, commentUserId)
+                setShowConfirmModal(false)
+              }}
+            />
             <NotConfirmedModal
               message={$t[locale].auth.notConfirmedMessage}
               isVisible={isShowMessageModal}
@@ -637,9 +644,9 @@ const Page = ({
                           </div>
                           <div dangerouslySetInnerHTML={{ __html: body }}></div>
                           <div id="comment"></div>
-                          <Comments updateComment={updateComment} onDelete={(commentId, userId)=>{
+                          <Comments updateComment={updateComment} onDelete={(commentId, userId) => {
                             console.log(userId, commentId)
-                            setEditedCommetId( commentId);
+                            setEditedCommetId(commentId);
                             setCommentUserId(userId)
                             console.log(commentUserId)
 
@@ -670,6 +677,10 @@ export async function getServerSideProps({
   res,
   resolvedUrl,
 }: Query) {
+  let headings;
+  let comments = [];
+  let pageIds;
+
   const slug = `/blog/${query?.slug}` || '';
   const Locale = locale === 'ua' ? 'uk' : locale;
   let notFoundMessage = false
@@ -680,9 +691,7 @@ export async function getServerSideProps({
   if (mostPopular.length === 0) {
     mostPopular = await getRandomPopularNews("ru");
   }
-  let headings;
-  let comments = [];
-  let pageIds
+
 
   try {
     const getHeadings = await server.get(`/headings?locale=${Locale}`);

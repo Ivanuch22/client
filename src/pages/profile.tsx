@@ -93,9 +93,10 @@ export default function Profile({
       birthday: userObj.birthday,
       email: userObj.email,
       real_user_name: userObj.real_user_name,
-      sendMessage: userObj.sendMessage
-    }
+      sendMessage: userObj.sendMessage,
+      user_image: userObj.user_image
 
+    }
 
     const strapiRes = await server.put(`/users/${userObj.id}`, newObj, {
       headers: {
@@ -106,6 +107,31 @@ export default function Profile({
     Cookies.set('userName', JSON.stringify(strapiRes.data.real_user_name), {
       expires: 7,
     });
+    console.log(user.real_user_name)
+
+              // Fetch all comments by the current user
+              const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
+              const comments = getBlogComments.data.data;
+              console.log(comments)
+          
+              // Update each comment with the new user_img
+              const updateCommentPromises = comments.map(comment => {
+                return server.put(`/comments1/${comment.id}`, {
+                  data: {
+                    user_name: newObj.real_user_name
+                  }
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${Cookies.get('userToken')}`,
+                  }
+                });
+              });
+          
+              // Wait for all updates to complete
+              await Promise.all(updateCommentPromises);
+
+
+
     return strapiRes
 
   }
@@ -179,20 +205,47 @@ export default function Profile({
       });
 
       const uploadedFile = response.data[0];
-      console.log(response.data);
+      
+      console.log(uploadedFile);
       setAvatarUrl(`${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`);
       updateStrapiData({
         ...user,
         imgLink: `${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`,
         avatarId: uploadedFile.id,
+        user_image: uploadedFile.id
       });
       setUser({
         ...user,
         imgLink: `${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`,
         avatarId: uploadedFile.id,
+        user_image: uploadedFile.id
       });
       setAvatarModalVisible(false)
 
+
+          // Fetch all comments by the current user
+    const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
+    const comments = getBlogComments.data.data;
+    console.log(comments)
+
+    // Update each comment with the new user_img
+    const updateCommentPromises = comments.map(comment => {
+      return server.put(`/comments1/${comment.id}`, {
+        data: {
+          user_img: uploadedFile.id
+        }
+      }, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get('userToken')}`,
+        }
+      });
+    });
+
+    // Wait for all updates to complete
+    await Promise.all(updateCommentPromises);
+
+
+      
     } catch (error) {
       if (error.response.status === 401) {
         return logout();

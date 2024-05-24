@@ -35,7 +35,7 @@ export default function Home({
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const size = useWindowSize();
   const { publicRuntimeConfig } = getConfig();
-  const { NEXT_MAILER, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
+  const { NEXT_MAILER, NEXT_STRAPI_BASED_URL,NEXT_STRAPI_IMG_DEFAULT } = publicRuntimeConfig;
 
   const [cIndex, setCIndex] = useState(getRandomElementFromArray(captchas));
   const [isError, setIsError] = useState(false);
@@ -176,6 +176,7 @@ export default function Home({
         UUIDv7: uuid,
         user_ip: ip,
         confirmed: false,
+        user_image: NEXT_STRAPI_IMG_DEFAULT,
         imgLink: `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`
       });
       if (response.status === 200) {

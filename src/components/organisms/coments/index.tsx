@@ -4,13 +4,14 @@ import formatDateTime from "@/utils/formateDateTime";
 import TextArea from "./textArea";
 import UpdateCommentTextArea from "./updateComment";
 import ModalConfirm from '@/components/organisms/ModalConfirm';
+import getConfig from 'next/config';
 
 import $t from '@/locale/global';
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 
 
-const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
+const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -19,15 +20,20 @@ const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
     const [isShowConfirmModal, setShowConfirmModal] = useState(false);
     const [form, setForm] = useState(null)
 
+    const { publicRuntimeConfig } = getConfig();
+    const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
     useEffect(() => {
         let getUserCookies = Cookies.get('user');
-        setUser(JSON.parse(getUserCookies));
+        if(getUserCookies){
+            setUser(JSON.parse(getUserCookies));
+
+        }
     }, [comments])
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(Date.now());
-        }, 60000); 
+        }, 60000);
         return () => clearInterval(interval);
     }, []);
 
@@ -37,6 +43,7 @@ const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
     }, [User])
 
     const router = useRouter();
+    console.log(router)
     const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
     useEffect(() => {
@@ -79,8 +86,8 @@ const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
     const toggleChangeArea = (commentId) => {
         setEditingCommentId(prevId => prevId === commentId ? null : commentId);
     };
-    const onUpdate =(e, commentId)=>{
-        updateComment(e,commentId);
+    const onUpdate = (e, commentId) => {
+        updateComment(e, commentId);
         setEditingCommentId(null);
     }
 
@@ -94,13 +101,13 @@ const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
                 message={$t[locale].auth.confirm_text}
                 isVisible={isShowConfirmModal}
                 onClose={() => {
-                  setShowConfirmModal(false)
+                    setShowConfirmModal(false)
                 }}
-                onSubmit={()=>{
+                onSubmit={() => {
                     onUpdate(form, editingCommentId)
-                  setShowConfirmModal(false)
+                    setShowConfirmModal(false)
                 }}
-              />
+            />
             <div className="comments-tree">
                 <header className="comments-header">
                     <h4> {comments.length} {$t[locale].comment.comments}</h4>
@@ -111,9 +118,10 @@ const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
             <ul className="p-0">
                 {comments.map(comment => {
                     const commentId = comment.id;
-                    const { Text, admin_date, father, children, user, createdAt } = comment.attributes;
-                    const { imgLink, real_user_name } = user?.data?.attributes;
-                    console.log(children)
+
+                    const { Text, admin_date, father, children, user, createdAt, user_img, user_name: real_user_name } = comment.attributes;
+                    const { url } = user_img?.data?.attributes;
+
                     const timeDifference = (currentTime - new Date(createdAt).getTime()) / (1000 * 60); // Різниця у хвилинах
 
                     const findFatherName = () => {
@@ -128,7 +136,7 @@ const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
                             <div className="post-content">
                                 <div className="avatar hovercard">
                                     <a data-action="profile" className="user">
-                                        <img src={imgLink} alt="Аватар" className="image-refresh" />
+                                        <img src={`${NEXT_STRAPI_BASED_URL}${url}`} alt="Аватар" className="image-refresh" />
                                     </a>
                                 </div>
                                 <div className="post-body">
@@ -161,20 +169,25 @@ const Comments = ({ data, sendMessage, onDelete,updateComment}) => {
                                                         }} />
                                                     ) : (
                                                         <p>
-                                                            {Text.split(" ").map((word, index) => {
-                                                                const newWord = word.replace(/^[ \t\n\r]+/, "");
-                                                                if (newWord.startsWith("http://") || newWord.startsWith("http://") || newWord.startsWith("https://") || newWord.startsWith("https://")) {
-                                                                    return (
-                                                                        <a className="postLink" key={index} href={word} rel="nofollow noopener noreferrer nofollow" target="_blank">
-                                                                            {word}
-                                                                        </a>
-                                                                    );
-                                                                }
-                                                                return ` ${word} `;
-                                                            })}
+                                                            {Text.split('\n').map((line, lineIndex) => (
+                                                                <React.Fragment key={lineIndex}>
+                                                                    {line.split(" ").map((word, wordIndex) => {
+                                                                        const newWord = word.replace(/^[ \t\r]+/, "");
+                                                                        if (newWord.startsWith("http://") || newWord.startsWith("https://")) {
+                                                                            return (
+                                                                                <a className="postLink" key={wordIndex} href={newWord} rel="nofollow noopener noreferrer" target="_blank">
+                                                                                    {newWord}
+                                                                                </a>
+                                                                            );
+                                                                        }
+                                                                        return ` ${newWord} `;
+                                                                    })}
+                                                                    <br />
+                                                                </React.Fragment>
+                                                            ))}
                                                         </p>
                                                     )}
-                                                    {(children.data.length ===0 && User.id == user.data.id && timeDifference <= 5) && (
+                                                    {(children.data.length === 0 && User.id == user.data.id && timeDifference <= 5) && (
                                                         <>
                                                             <button onClick={() => toggleChangeArea(commentId)} className="post-button-edit"></button>
                                                             <button onClick={() => onDelete(commentId, user.data.id)} className="post-button-delete"></button>

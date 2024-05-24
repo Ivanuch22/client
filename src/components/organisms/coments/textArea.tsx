@@ -24,7 +24,7 @@ const TextArea:React.FC<TextArea> = ({sendMessage,fatherId})=>{
     return (
         <div id="reply" className="reply">
         <form id="form_comment" onSubmit={(e) =>newFunc(e) } encType="multipart/form-data">
-            <textarea name="comment_text" id="form_comment_text" className="new-editor" placeholder={$t[locale].comment.placeholder}></textarea>
+            <textarea name="comment_text" id="form_comment_text" className="new-editor" onChange={(e)=>console.log(e.target.value)} placeholder={$t[locale].comment.placeholder}></textarea>
             <div className="row" style={{ width: "100%" }}>
                 <button type="submit" className="btn btn-success btn-submit-login pull-right" id="button-login-submit" >{$t[locale].comment.send_message}</button>
             </div>
