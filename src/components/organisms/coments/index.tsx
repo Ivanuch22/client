@@ -120,8 +120,9 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
                     const commentId = comment.id;
 
                     const { Text, admin_date, father, children, user, createdAt, user_img, user_name: real_user_name } = comment.attributes;
-                    const { url } = user_img?.data?.attributes;
 
+                    const { url } = user_img?.data?.attributes || `/uploads/nophoto_c7c9abf542.png`;
+                    
                     const timeDifference = (currentTime - new Date(createdAt).getTime()) / (1000 * 60); // Різниця у хвилинах
 
                     const findFatherName = () => {
