@@ -22,7 +22,7 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
     useEffect(() => {
         draftIntervalRef.current = setInterval(() => {
             setDrafts(prevDrafts => [...prevDrafts, commentText]);
-        }, 1500);
+        }, 500);
 
 
         return () => {
@@ -46,7 +46,7 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
     };
 
     const handleDraftSave = () => {
-        const lastThreeDrafts = drafts.slice(-15);
+        const lastThreeDrafts = drafts;
         const longestDraft = lastThreeDrafts.reduce((a, b) => (a.length > b.length ? a : b), "");
         setLongestDraftText(longestDraft);
     };

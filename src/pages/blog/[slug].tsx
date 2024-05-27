@@ -275,7 +275,7 @@ const Page = ({
 
     const userIp = await getUserIp()
     const currentTime = getCurrentFormattedTime()
-    const commentType = "post"
+    const commentType = "edit"
     const commentHistoryJson = [
       {
         time: currentTime,
