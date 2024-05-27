@@ -59,7 +59,7 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
     };
 
     const handleDraftSave = () => {
-        const lastThreeDrafts = drafts.slice(-5);
+        const lastThreeDrafts = drafts.slice(-15);
         const longestDraft = lastThreeDrafts.reduce((a, b) => (a.length > b.length ? a : b), "");
         setLongestDraftText(longestDraft);
     };
