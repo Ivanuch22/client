@@ -74,7 +74,7 @@ export default function Home({
     router.push(`/blog?page=${n}&perPage=${perPage ? perPage : '15'}`);
   }
   function hyphenateText(text) {
-    if(windowWidth>1024){
+    if(windowWidth>1124){
       return text.replace(/(\w{1})/g, '$1\u00AD');
 
     }
