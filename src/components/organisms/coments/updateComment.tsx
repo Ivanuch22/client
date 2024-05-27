@@ -97,7 +97,9 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
 
     return (
         <div id="reply" className="reply">
-            <form id="form_comment" encType="multipart/form-data">
+            <form id="form_comment" encType="multipart/form-data"
+                        onSubmit={handleFormSubmit}
+                        >
                 <textarea
                     name="comment_text"
                     id="form_comment_text"
@@ -115,7 +117,6 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
                         </button>
                     }
                     <button
-                        onClick={handleFormSubmit}
                         type="submit" className="btn btn-success btn-submit-login pull-right" id="button-login-submit" >
                         {$t[locale].comment.send_message}
                     </button>
