@@ -48,6 +48,9 @@ export default function Home({
   const goToPage = n => {
     router.push(`/blog?page=${n}&perPage=${perPage ? perPage : '15'}`);
   }
+  function hyphenateText(text) {
+    return text.replace(/(\w{1})/g, '$1\u00AD');
+}
 
   return (
     <>
@@ -151,7 +154,7 @@ export default function Home({
                           </div>
                           <div className="col-sm-9 col-txt d-flex flex-column justify-content-between blog_text_block  " style={{paddingRight: 0}}>
                             <h2 className="entry-title text-uppercase">
-                              <Link className="entry-title text-uppercase h4" href={url}>{page_title}</Link>
+                              <Link className="entry-title text-uppercase h4" href={url}>{hyphenateText(page_title)}</Link>
                             </h2>
                             <div className="hidden-sm hidden-xs pb-2">
                               <div className="entry-header" style={{ clear: "both" }}>

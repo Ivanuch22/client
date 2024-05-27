@@ -19,6 +19,9 @@
     color: #000;
     margin: 0 0 10px;
     text-transform: none !important;
+    word-break: break-all; /* Переносити слова, якщо вони не вміщаються */
+    hyphens: auto; /* Вручну вставляти дефіси */
+    overflow-wrap: break-word; 
 }
 
 
