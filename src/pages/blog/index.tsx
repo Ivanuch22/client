@@ -127,8 +127,13 @@ export default function Home({
 
               <div className="container-xxl">
                 <div className="row">
-                  
-                  <div className=' ps-lg-3 ps-xl-5 col article-col gap-5 pe-md-2 d-flex flex-column'>
+                <div className="col article-col pe-md-2">
+
+                <main
+                      className="cont-body"
+                      style={{ maxWidth: '90%', margin: '0 auto' }}
+                    >
+                  <div className=' col article-col gap-5  d-flex flex-column col '>
                     {pages.map((page, index) => {
                       const { page_title, admin_date, url, heading, comments, views } = page.attributes;
                       const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
@@ -144,7 +149,7 @@ export default function Home({
                               />
                             </div>
                           </div>
-                          <div className="col-sm-8 col-txt d-flex flex-column justify-content-between blog_text_block  ">
+                          <div className="col-sm-9 col-txt d-flex flex-column justify-content-between blog_text_block  ">
                             <h2 className="entry-title text-uppercase">
                               <Link className="entry-title text-uppercase h4" href={url}>{page_title}</Link>
                             </h2>
@@ -178,6 +183,8 @@ export default function Home({
                       );
                     })}
 
+                  </div>
+                  </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
