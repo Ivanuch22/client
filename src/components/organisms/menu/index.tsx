@@ -135,22 +135,13 @@ function Menu({ data, show, onTog, allPages }) {
               {$t[locale].menu.main}
             </Link>
 
-            {/* <div className="nav-item dropdown" style={{ cursor: 'pointer' }} onClick={() => { setOpenSubmenu({ ...{}, [SERVICES_ID]: !openSubmenu[SERVICES_ID] }); }}>
-              <span className="nav-link dropdown-toggle navpart">
-                {$t[locale].menu.usefull}
-              </span>
-              {
-                !!openSubmenu[SERVICES_ID] && <div className='dropdown-menu show' >
-                  <Link href="/services" className="nav-link navpart">{$t[locale].menu.services}</Link>
-                </div>
-              }
-            </div> */}
-
             {data.map(item => renderMenuItem(item, null))}
 
-            <Link href="/blog" className={`nav-item nav-link navpart`}>
-              {$t[locale].blog.title}
+            <Link href="/blog" className={`nav-item nav-link navpart sadf`}>
+              {$t[locale].blog.titleName}
             </Link>
+
+
             <Link href="/contacts" className={`nav-item nav-link navpart`}>
               {$t[locale].menu.contacts}
             </Link>

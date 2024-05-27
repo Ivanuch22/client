@@ -87,9 +87,9 @@ export default function Home({
         <title>{$t[locale].blog.title}</title>
         <meta
           name="description"
-          content={$t[locale].blog.title}
+          content={$t[locale].blog.description}
         />
-        <meta name="keywords" content={$t[locale].blog.title} />
+        <meta name="keywords" content={$t[locale].blog.keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

@@ -253,7 +253,10 @@ export default {
     }
   },
   blog:{
-    title: "Blog",
+    titleName: "Blog",
+    title: "Blog, delivery and customs clearance of goods.",
+    description: "Blog about procurement, logistics and customs clearance of cargo. Expert opinion for your business.",
+    keywords: "logistics, blog, import, export, china, goods, customs, foreign exchange",
     mostpopular:"Blog, most popular",
     all: 'All heading',
     pageNotFoud: "There is no English version of this page on the site"

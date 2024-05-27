@@ -51,12 +51,17 @@ export interface NavigationData {
   meta: {};
 }
 
+
 const Footer = () => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
   const { footerMenus, footerGeneral } = useDefaultLayoutContext();
-
+  function replaceGAVWithAt(str) {
+    // Регулярний вираз для пошуку підрядків виду [ГАВ] або [гав]
+    const regex = /\[ГАВ\]|\[гав\]/g;
+    return str.replace(regex, '@');
+  }
   return (
     <footer
       className="container-fluid bg-primary text-white footer mt-5 pt-5 wow fadeIn"
@@ -124,7 +129,7 @@ const Footer = () => {
             <p className="mb-2">
               <i className="fa fa-envelope me-3" />
               <a
-                href={`mailto:${footerMenus.contacts?.email}`}
+                href={`mailto:${replaceGAVWithAt(footerMenus.contacts?.email)}`}
                 style={{ color: '#fff' }}
               >
                 {footerMenus.contacts?.email}

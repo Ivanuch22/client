@@ -112,7 +112,7 @@
 .mostpopular__text-time {
     font-size: 14px;
 }
-@media (min-width: 1024px) {
+@media (min-width: 1150px) {
     .entry-title{
         word-break: break-all; /* Переносити слова, якщо вони не вміщаються */
         hyphens: auto; /* Вручну вставляти дефіси */
@@ -120,6 +120,7 @@
     }
 }
 @media (max-width: 1024px) {
+
     .row-line {
         font-family: Arial, sans-serif;
         position: relative;
