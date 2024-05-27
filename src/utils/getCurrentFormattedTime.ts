@@ -9,5 +9,5 @@ export default function getCurrentFormattedTime() {
     const month = padZero(now.getMonth() + 1); // Місяці починаються з 0
     const year = now.getFullYear();
 
-    return `${hours}:${minutes} ${day}.${month}.${year}`;
+    return `${day}.${month}.${year} ${hours}:${minutes} `;
 }

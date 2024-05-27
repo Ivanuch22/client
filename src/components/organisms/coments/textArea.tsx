@@ -21,9 +21,8 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
 
     useEffect(() => {
         draftIntervalRef.current = setInterval(() => {
-
             setDrafts(prevDrafts => [...prevDrafts, commentText]);
-        }, 1000);
+        }, 1500);
 
 
         return () => {
@@ -43,7 +42,7 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
             sendMessage(e);
         }
         isSubmittingRef.current = true; // Set the ref to true on form submission
-
+        setCommentText("")
     };
 
     const handleDraftSave = () => {
@@ -51,13 +50,26 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
         const longestDraft = lastThreeDrafts.reduce((a, b) => (a.length > b.length ? a : b), "");
         setLongestDraftText(longestDraft);
     };
+    const onCancel = (e: any)=>{
+        e.preventDefault();
+        
+        if (!isSubmittingRef.current) { // Only execute onBlur if the form is not being submitted
+            if (draftIntervalRef.current) {
+                clearInterval(draftIntervalRef.current);
+            }
+            console.log('blur');
+            saveDraft(longestDraftText);
+                setDrafts([]);
+            setCommentText("")
+        }
+    }
 
     useEffect(() => {
         handleDraftSave();
         if (drafts.length >= 1) {
-            isSubmittingRef.current = false; // Set the ref to true on form submission
+            isSubmittingRef.current = false;
         } else {
-            isSubmittingRef.current = true; // Set the ref to true on form submission
+            isSubmittingRef.current = true; 
         }
     }, [drafts]);
 
@@ -71,24 +83,25 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
                     onBlur={() => {
                         setTimeout(() => {
                             console.log(isSubmittingRef.current, drafts)
-                            if (!isSubmittingRef.current) { // Only execute onBlur if the form is not being submitted
-                                if (draftIntervalRef.current) {
-                                    clearInterval(draftIntervalRef.current);
-                                }
-                                console.log('blur');
-                                saveDraft(longestDraftText);
-                                setDrafts([]);
-                            }
+                            
                         }, 1000);
 
                     }}
                     onChange={(e) => {
                         setCommentText(e.target.value);
                     }}
+                    value={commentText}
                     placeholder={$t[locale].comment.placeholder}
                 ></textarea>
                 <div className="row" style={{ width: "100%" }}>
+               {commentText.length>0&&
+                 <button 
+                 type="cancel" onClick={onCancel} style={{ background: "red", marginRight: 10, border: "none"}} className="btn d-block btn-danger btn-submit-login pull-right" id="button-login-submit" >
+                 {$t[locale].comment.cancel}
+             </button>
+               }
                     <button
+                    disabled = {(commentText.length===0? true: false)}
                         type="submit"
                         className="btn btn-success btn-submit-login pull-right"
                         id="button-login-submit"

@@ -7,13 +7,15 @@ import { useRouter } from "next/router";
 interface TextAreaProps {
     sendMessage: (e: React.FormEvent<HTMLFormElement>, fatherId?: number) => void;
     fatherId?: number;
-    defaultValue?: string; 
-    toggleChangeArea:()=>{};
+    defaultValue?: string;
+    toggleChangeArea: () => {};
     saveDraft: (draft: string) => void;
+    commentId: string;
+    editingCommentId: any;
 
 }
 
-const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, defaultValue,toggleChangeArea,saveDraft }) => {
+const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, defaultValue, toggleChangeArea, saveDraft, commentId, editingCommentId }) => {
     const [commentText, setCommentText] = useState(defaultValue || '');
     const [drafts, setDrafts] = useState<string[]>([]);
     const [longestDraftText, setLongestDraftText] = useState('');
@@ -36,7 +38,7 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
 
 
     useEffect(() => {
-        setCommentText(defaultValue || ''); 
+        setCommentText(defaultValue || '');
     }, [defaultValue]);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,7 +55,7 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setCommentText(e.target.value); 
+        setCommentText(e.target.value);
     };
 
     const handleDraftSave = () => {
@@ -61,47 +63,61 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
         const longestDraft = lastThreeDrafts.reduce((a, b) => (a.length > b.length ? a : b), "");
         setLongestDraftText(longestDraft);
     };
+    const onCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        console.log("click",longestDraftText === defaultValue)
+        if (longestDraftText === defaultValue) {
+            toggleChangeArea()
+            setCommentText(defaultValue)
+
+        } else {
+            if (!isSubmittingRef.current) { // Only execute onBlur if the form is not being submitted
+
+                clearInterval(draftIntervalRef.current);
+
+            console.log('blur');
+            saveDraft(longestDraftText, commentId);
+            setDrafts([]);
+            toggleChangeArea()
+            setCommentText(defaultValue)
+        }
+           
+        }
+
+    }
 
     useEffect(() => {
         handleDraftSave();
-        if(drafts.length>=1){
-        isSubmittingRef.current = false; // Set the ref to true on form submission
-        }else{
-        isSubmittingRef.current = true; // Set the ref to true on form submission
+        if (drafts.length >= 1) {
+            isSubmittingRef.current = false; // Set the ref to true on form submission
+        } else {
+            isSubmittingRef.current = true; // Set the ref to true on form submission
         }
     }, [drafts]);
 
     return (
         <div id="reply" className="reply">
-            <form id="form_comment" onSubmit={handleFormSubmit} encType="multipart/form-data">
+            <form id="form_comment" encType="multipart/form-data">
                 <textarea
                     name="comment_text"
                     id="form_comment_text"
                     className="new-editor"
                     placeholder={$t[locale].comment.placeholder}
-                    value={commentText} 
-                    onChange={handleInputChange} 
-                    onBlur={() => {
-                        setTimeout(() => {
-                        console.log(isSubmittingRef.current,drafts)
-                        if (!isSubmittingRef.current) { // Only execute onBlur if the form is not being submitted
-                                if (draftIntervalRef.current) {
-                                    clearInterval(draftIntervalRef.current);
-                                }
-                                console.log('blur');
-                                saveDraft(longestDraftText);
-                                setDrafts([]);
-                        }
-                    }, 1000);
-
-                    }}
+                    value={commentText}
+                    onChange={handleInputChange}
+                    style={{ paddingRight: 25 }}
                 ></textarea>
                 <div className="row" style={{ width: "100%" }}>
-                    <button type="submit" className="btn btn-success btn-submit-login pull-right" id="button-login-submit" >
+                    {commentText.length > 0 &&
+                        <button
+                            type="cancel" onClick={onCancel} style={{ background: "red", marginRight: 10, border: "none" }} className="btn d-block btn-danger btn-submit-login pull-right" id="button-login-submit" >
+                            {$t[locale].comment.cancel}
+                        </button>
+                    }
+                    <button
+                        onClick={handleFormSubmit}
+                        type="submit" className="btn btn-success btn-submit-login pull-right" id="button-login-submit" >
                         {$t[locale].comment.send_message}
-                    </button>
-                    <button type="cancel" onClick={toggleChangeArea} style={{background: "red", marginLeft: 10, border: "none"}} className="btn d-block btn-danger btn-submit-login pull-right" id="button-login-submit" >
-                        {$t[locale].comment.cancel}
                     </button>
                 </div>
             </form>

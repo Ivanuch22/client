@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 
 
-const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment }) => {
+const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -211,8 +211,9 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                                                 <div className="post-message">
                                                     {editingCommentId === commentId ? (
                                                         <UpdateCommentTextArea
-                                                            saveDraft={saveDraftComment}
-
+                                                        editingCommentId = {editingCommentId}
+                                                            saveDraft={saveChanginDraftComment}
+                                                            commentId = {commentId}
                                                             defaultValue={Text}
                                                             sendMessage={(e) => {
                                                                 setForm(e);
@@ -259,6 +260,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                                                                     className="post-button-edit"
                                                                 ></button>}
                                                                 <button
+                                                                    style={editingCommentId? {bottom : "50%"}: {bottom : "0%"}}
                                                                     onClick={() => onDelete(commentId, user.data.id)}
                                                                     className="post-button-delete"
                                                                 ></button>

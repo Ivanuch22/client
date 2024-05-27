@@ -460,7 +460,7 @@ const Page = ({
 
     const userIp = await getUserIp()
     const currentTime = getCurrentFormattedTime()
-    const commentType = "edit"
+    const commentType = "post"
     const newHistoryEntry =
     {
       time: currentTime,
@@ -504,6 +504,58 @@ const Page = ({
     }
 
   };
+
+  const saveChanginDraftComment = async(draftText,commentId)=>{
+    const userToken = Cookies.get('userToken');
+
+    if (!userToken) {
+      return 
+    }
+    let getUserCookies = Cookies.get('user');
+    const user = JSON.parse(getUserCookies);
+    if (!draftText) {
+      return console.log('Comment cannot be empty');
+    }
+
+    const userIp = await getUserIp()
+    const currentTime = getCurrentFormattedTime()
+    const commentType = "edit"
+    const newHistoryEntry = [
+      {
+        time: currentTime,
+        user_ip: userIp,
+        text: draftText,
+        type: commentType
+      }
+    ]
+
+    try {
+      const currentCommentResponse = await server.get(`/comments1/${commentId}`, {
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+        }
+      });
+      const currentComment = currentCommentResponse.data.data;
+
+      const currentHistory = currentComment.attributes.history || [];
+
+      const updatedHistory = [newHistoryEntry, ...currentHistory];
+
+      await server.put(`/comments1/${commentId}`,
+        {
+          data: {
+            history: updatedHistory
+          }
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+          }
+        });
+    } catch (error) {
+      console.error('Error updating comment:', error);
+    }
+  }
 
 
   const deleteComment = async (commentId, userId) => {
@@ -736,6 +788,7 @@ const Page = ({
                           <Comments
                           saveDraftComment = {saveDraftComment}
                            updateComment={updateComment}
+                           saveChanginDraftComment = {saveChanginDraftComment}
                           onDelete={(commentId, userId) => {
                             console.log(userId, commentId)
                             setEditedCommetId(commentId);
