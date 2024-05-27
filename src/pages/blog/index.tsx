@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { server } from '@/http';
 import Script from 'next/script';
 import $t from '@/locale/global';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 import formatDateTime from '@/utils/formateDateTime';
@@ -40,6 +40,31 @@ export default function Home({
   const { perPage } = query;
   const [paginationPage, setPaginationPage] = useState(pagination.page);
 
+  function useWindowWidth() {
+    const [windowWidth, setWindowWidth] = useState(0);
+  
+    useEffect(() => {
+      // Function to update the window width
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
+  
+      // Add event listener to window resize
+      window.addEventListener('resize', handleResize);
+  
+      // Call the handleResize function to set the initial width
+      handleResize();
+  
+      // Remove event listener on cleanup
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
+  
+    return windowWidth;
+  }
+
+  const windowWidth = useWindowWidth();
 
   function sanitizeImageUrl(url) {
     return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
@@ -49,7 +74,11 @@ export default function Home({
     router.push(`/blog?page=${n}&perPage=${perPage ? perPage : '15'}`);
   }
   function hyphenateText(text) {
-    return text.replace(/(\w{1})/g, '$1\u00AD');
+    if(windowWidth>1024){
+      return text.replace(/(\w{1})/g, '$1\u00AD');
+
+    }
+    return text
 }
 
   return (
