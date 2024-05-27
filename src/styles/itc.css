@@ -44,7 +44,7 @@
 .row-line {
     font-family: Arial, sans-serif;
     position: relative;
-    max-width: 110%;
+    max-width: 108%;
 }
 
 .row-line::before {
@@ -117,6 +117,11 @@
 
 @media (max-width: 1024px) {
 
+    .row-line {
+        font-family: Arial, sans-serif;
+        position: relative;
+        max-width: 100%;
+    }
     .mx-360 {
         max-width: 100%;
         margin-left: 0px;
