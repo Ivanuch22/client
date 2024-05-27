@@ -44,7 +44,7 @@
 .row-line {
     font-family: Arial, sans-serif;
     position: relative;
-    max-width: 100%;
+    max-width: 110%;
 }
 
 .row-line::before {
