@@ -133,7 +133,7 @@ export default function Home({
                       className="cont-body"
                       style={{ maxWidth: '90%', margin: '0 auto' }}
                     >
-                  <div className=' col article-col gap-5  d-flex flex-column col '>
+                  <div className=' col article-col gap-5  d-flex flex-column col  '>
                     {pages.map((page, index) => {
                       const { page_title, admin_date, url, heading, comments, views } = page.attributes;
                       const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
@@ -149,7 +149,7 @@ export default function Home({
                               />
                             </div>
                           </div>
-                          <div className="col-sm-9 col-txt d-flex flex-column justify-content-between blog_text_block  ">
+                          <div className="col-sm-9 col-txt d-flex flex-column justify-content-between blog_text_block  " style={{paddingRight: 0}}>
                             <h2 className="entry-title text-uppercase">
                               <Link className="entry-title text-uppercase h4" href={url}>{page_title}</Link>
                             </h2>
