@@ -263,6 +263,7 @@ export default {
     comments: "comments",
     send_message: "Send",
     placeholder: "Write comment",
-    reply: "Reply"
+    reply: "Reply",
+    cancel: "Cancel"
   }
 };

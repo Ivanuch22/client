@@ -1,5 +1,6 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
 import $t from '@/locale/global';
 import { useRouter } from "next/router";
 
@@ -7,13 +8,32 @@ interface TextAreaProps {
     sendMessage: (e: React.FormEvent<HTMLFormElement>, fatherId?: number) => void;
     fatherId?: number;
     defaultValue?: string; 
+    toggleChangeArea:()=>{};
+    saveDraft: (draft: string) => void;
+
 }
 
-const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, defaultValue }) => {
+const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, defaultValue,toggleChangeArea,saveDraft }) => {
+    const [commentText, setCommentText] = useState(defaultValue || '');
+    const [drafts, setDrafts] = useState<string[]>([]);
+    const [longestDraftText, setLongestDraftText] = useState('');
+    const isSubmittingRef = useRef(false);
+    const draftIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
     const router = useRouter();
     const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
-    const [commentText, setCommentText] = useState(defaultValue || '');
+    useEffect(() => {
+        draftIntervalRef.current = setInterval(() => {
+            setDrafts(prevDrafts => [...prevDrafts, commentText]);
+        }, 1000);
+        return () => {
+            if (draftIntervalRef.current) {
+                clearInterval(draftIntervalRef.current);
+            }
+        };
+    }, [commentText]);
+
 
     useEffect(() => {
         setCommentText(defaultValue || ''); 
@@ -21,16 +41,35 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        clearInterval(draftIntervalRef.current);
+        setDrafts([]);
+
         if (fatherId) {
             sendMessage(e, fatherId);
         } else {
             sendMessage(e);
         }
+        isSubmittingRef.current = true; // Set the ref to true on form submission
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCommentText(e.target.value); 
     };
+
+    const handleDraftSave = () => {
+        const lastThreeDrafts = drafts.slice(-5);
+        const longestDraft = lastThreeDrafts.reduce((a, b) => (a.length > b.length ? a : b), "");
+        setLongestDraftText(longestDraft);
+    };
+
+    useEffect(() => {
+        handleDraftSave();
+        if(drafts.length>=1){
+        isSubmittingRef.current = false; // Set the ref to true on form submission
+        }else{
+        isSubmittingRef.current = true; // Set the ref to true on form submission
+        }
+    }, [drafts]);
 
     return (
         <div id="reply" className="reply">
@@ -42,10 +81,27 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
                     placeholder={$t[locale].comment.placeholder}
                     value={commentText} 
                     onChange={handleInputChange} 
+                    onBlur={() => {
+                        setTimeout(() => {
+                        console.log(isSubmittingRef.current,drafts)
+                        if (!isSubmittingRef.current) { // Only execute onBlur if the form is not being submitted
+                                if (draftIntervalRef.current) {
+                                    clearInterval(draftIntervalRef.current);
+                                }
+                                console.log('blur');
+                                saveDraft(longestDraftText);
+                                setDrafts([]);
+                        }
+                    }, 1000);
+
+                    }}
                 ></textarea>
                 <div className="row" style={{ width: "100%" }}>
                     <button type="submit" className="btn btn-success btn-submit-login pull-right" id="button-login-submit" >
                         {$t[locale].comment.send_message}
+                    </button>
+                    <button type="cancel" onClick={toggleChangeArea} style={{background: "red", marginLeft: 10, border: "none"}} className="btn d-block btn-danger btn-submit-login pull-right" id="button-login-submit" >
+                        {$t[locale].comment.cancel}
                     </button>
                 </div>
             </form>

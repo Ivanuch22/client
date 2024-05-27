@@ -36,6 +36,9 @@ import Comments from '@/components/organisms/coments';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
 import ModalConfirm from '@/components/organisms/ModalConfirm';
 import { toLower, toUpper } from 'lodash';
+import getCurrentFormattedTime from "@/utils/getCurrentFormattedTime"
+import getUserIp from "@/utils/getUserIp"
+
 
 
 const { publicRuntimeConfig } = getConfig();
@@ -170,6 +173,7 @@ const Page = ({
 
 
 
+
   // Эта функция рекурсивно пробегаем по объекту навигации который мы возвращаем из функции getServerSideProps
   // и генерирует одномерный мессив объектов который будет в последующем преобразован в компонент breadcrumbs
   const findAncestors = (obj: any[], url: string) => {
@@ -248,11 +252,61 @@ const Page = ({
     }, 3000);
   }
 
+
   const shortenedTitle = useMemo<string>(() => {
     return page_title.length > 65
       ? `${page_title.slice(0, 65)}...`
       : page_title;
   }, [page_title]);
+
+  const saveDraftComment = async(draftText)=>{
+    const userToken = Cookies.get('userToken');
+
+    
+    if (!userToken) {
+      return 
+    }
+    let getUserCookies = Cookies.get('user');
+    const user = JSON.parse(getUserCookies);
+    if (!draftText) {
+      
+      return console.log('Comment cannot be empty');
+    }
+
+    const userIp = await getUserIp()
+    const currentTime = getCurrentFormattedTime()
+    const commentType = "post"
+    const commentHistoryJson = [
+      {
+        time: currentTime,
+        user_ip: userIp,
+        text: draftText,
+        type: commentType
+      }
+    ]
+    console.log(user)
+    let payload = {
+      data: {
+        user: { connect: [{ id: user.id }] },
+        blog: { connect: pageIds },
+        Text: draftText,
+        admin_date: Date.now(),
+        locale: toUpper(locale),
+        user_name: user.real_user_name,
+        user_img: user.avatarId,
+        publishedAt: null,
+        history: commentHistoryJson
+      }
+
+    }
+
+    const response = await server.post('/comments1', payload, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    console.log(response.data)
+  }
 
   const sendMessage = async (e, fatherId) => {
     e.preventDefault();
@@ -263,8 +317,6 @@ const Page = ({
       return;
     }
 
-
-
     const formElement = e.target;
     const textAreaElement = formElement.querySelector("textarea");
     const commentText = textAreaElement.value;
@@ -273,7 +325,6 @@ const Page = ({
       alert('Comment cannot be empty');
       return;
     }
-
 
     textAreaElement.value = '';
 
@@ -284,7 +335,19 @@ const Page = ({
     if (!user.confirmed) {
       return setShowtMessageModal(true)
     }
-    console.log(user.avatarId)
+
+    const userIp = await getUserIp()
+    const currentTime = getCurrentFormattedTime()
+    const commentType = "post"
+    const commentHistoryJson = [
+      {
+        time: currentTime,
+        user_ip: userIp,
+        text: commentText,
+        type: commentType
+      }
+    ]
+
 
     try {
       let payload;
@@ -297,7 +360,8 @@ const Page = ({
           admin_date: Date.now(),
           locale: toUpper(locale),
           user_name: user.real_user_name,
-          user_img: user.avatarId
+          user_img: user.avatarId,
+          history: commentHistoryJson
         }
 
       } : payload = {
@@ -308,7 +372,8 @@ const Page = ({
           admin_date: Date.now(),
           locale: toUpper(locale),
           user_name: user.real_user_name,
-          user_img: user.avatarId
+          user_img: user.avatarId,
+          history: commentHistoryJson
         }
       };
       console.log(commentText)
@@ -347,7 +412,8 @@ const Page = ({
           newFunc()
         }
 
-        const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date`);
+    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
+
 
         comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
         setUserComments(comments);
@@ -392,12 +458,36 @@ const Page = ({
       return setShowtMessageModal(true);
     }
 
+    const userIp = await getUserIp()
+    const currentTime = getCurrentFormattedTime()
+    const commentType = "edit"
+    const newHistoryEntry =
+    {
+      time: currentTime,
+      user_ip: userIp,
+      text: commentText,
+      type: commentType
+    }
+
+
+
     try {
-      // Update the comment
-      const updatedCommentResponse = await server.put(`/comments1/${commentId}`,
+      const currentCommentResponse = await server.get(`/comments1/${commentId}`, {
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+        }
+      });
+      const currentComment = currentCommentResponse.data.data;
+
+      const currentHistory = currentComment.attributes.history || [];
+
+      const updatedHistory = [newHistoryEntry, ...currentHistory];
+
+      await server.put(`/comments1/${commentId}`,
         {
           data: {
-            Text: commentText
+            Text: commentText,
+            history: updatedHistory
           }
         },
         {
@@ -405,12 +495,14 @@ const Page = ({
             'Authorization': `Bearer ${userToken}`,
           }
         });
-      const getBlogComments = await server.get(`/comments1?filters[blog][url]=${blogUrl}&populate=*&sort[0]=admin_date`);
+
+        const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
       const comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
       setUserComments(comments);
     } catch (error) {
       console.error('Error updating comment:', error);
     }
+
   };
 
 
@@ -435,11 +527,10 @@ const Page = ({
       },
 
     });
-    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date`);
+    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
 
     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
     setUserComments(comments);
-    console.log(resposnse)
 
   }
 
@@ -589,11 +680,9 @@ const Page = ({
               </div>
 
 
-              <div className="container-xxl" style={{ padding: "0 0px" }}>
-                <div className="row smallPaddign">
+              <div className="container-xxl">
+                <div className="row ">
                   <div className="col article-col pe-md-2">
-
-
                     <main
                       className="cont-body"
                       style={{ maxWidth: '90%', margin: '0 auto' }}
@@ -644,7 +733,10 @@ const Page = ({
                           </div>
                           <div dangerouslySetInnerHTML={{ __html: body }}></div>
                           <div id="comment"></div>
-                          <Comments updateComment={updateComment} onDelete={(commentId, userId) => {
+                          <Comments
+                          saveDraftComment = {saveDraftComment}
+                           updateComment={updateComment}
+                          onDelete={(commentId, userId) => {
                             console.log(userId, commentId)
                             setEditedCommetId(commentId);
                             setCommentUserId(userId)
@@ -656,10 +748,10 @@ const Page = ({
                       )}
                     </main>
                   </div>
-                  <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
-                    <Sidebar randomBanner={randomBanner}></Sidebar>
+                  <Sidebar randomBanner={randomBanner}>
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
-                  </aside>
+
+                  </Sidebar>
                 </div>
               </div>
             </DefaultLayout>
@@ -740,7 +832,7 @@ export async function getServerSideProps({
     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
     await getPagesIdWithSameUrl(url).then(data => pageIds = data)
 
-    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date`);
+    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
 
     // replace port in images

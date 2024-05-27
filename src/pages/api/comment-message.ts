@@ -17,7 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 userName
             } = req.body;
 
-            // Додайте логіку перевірки даних та обробки запиту як ви це робили у попередньому файлі
 
             const EMAIL = process.env.MAILER_EMAIL || '';
             const PASSWORD = process.env.MAILER_PASSWORD || '';

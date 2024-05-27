@@ -263,6 +263,7 @@ export default {
     comments: "коментарів",
     send_message: "Відправити",
     placeholder: "Написати коментар",
-    reply: "Відповісти"
+    reply: "Відповісти",
+    cancel: "Скасувати"
   }
 };

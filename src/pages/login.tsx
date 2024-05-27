@@ -10,11 +10,13 @@ import { server } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
+import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
 import React, { FormEvent, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWindowSize } from '@uidotdev/usehooks';
-
+import getUserFingerPrint from "@/utils/getUserFingerPrint"
+import MailModal from '@/components/organisms/ModalMail';
 export default function Home({
   html,
   title,
@@ -29,21 +31,24 @@ export default function Home({
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { isLogin, logout,updateUser, login } = useAuth();
+  const { isLogin, logout, updateUser, login } = useAuth();
+  const [isShowConfirmModal, setShowConfirmModal] = useState(false)
   const size = useWindowSize();
   const router = useRouter();
+  const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
+
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
-  
+
   useEffect(() => {
     const clearCookies = () => {
       Cookies.remove('userToken');
       Cookies.remove('userName');
       Cookies.remove('user');
     };
-      clearCookies(); 
-      updateUser()
-      logout()
+    clearCookies();
+    updateUser()
+    logout()
 
   }, []);
 
@@ -117,6 +122,25 @@ export default function Home({
       setIsError(false);
     }, 3000);
   };
+
+
+  async function sendActivationMessage() {
+    let getEmailCookies = Cookies.get('email');
+    const email = getEmailCookies;
+
+
+    const sendMessage = server.post("/auth/send-email-confirmation", {
+      email: email
+    })
+
+    setActivationModalVisible(true);
+    setTimeout(() => {
+      setActivationModalVisible(false);
+    }, 3000);
+  }
+
+
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -127,11 +151,26 @@ export default function Home({
       return handleError('Заповніть правильно данні');
     }
     try {
+      const userData = await getUserFingerPrint();
       const response = await server.post('/auth/local', {
         identifier: email,
         password: password,
       });
-      Cookies.set('userToken', response.data.jwt, { expires: 7 }); 
+      const user = response.data.user;
+      user.history = [userData, ...user.history];
+      Cookies.set('email', response.data.user.email, { expires: 7 });
+
+      const updateUserHistory = await server.put(`/users/${user.id}`, {
+        history: user.history
+      }, {
+        headers: {
+          Authorization: `Bearer ${response.data.jwt}`,
+        },
+      });
+      console.log(user.history)
+
+
+      Cookies.set('userToken', response.data.jwt, { expires: 7 });
       Cookies.set('userName', response.data.user.real_user_name, { expires: 7 });
       Cookies.set('user', JSON.stringify(response.data.user), { expires: 7 });
 
@@ -140,8 +179,10 @@ export default function Home({
       handleSuccess();
       router.push('/');
     } catch (error) {
-      console.log('An error occurred:', error.response);
-      return handleError(error.response.data.error.message);
+      if(error.response?.status ===401){
+       return setShowConfirmModal(true)
+      };
+      return handleError(error.response?.data.error.message);
     }
   }
 
@@ -169,6 +210,7 @@ export default function Home({
               socialData,
             }}
           >
+
             <DefaultLayout>
               <div className="container-xxl  position-relative p-0">
                 {size.width >= 1200 ? (
@@ -177,6 +219,21 @@ export default function Home({
                   ''
                 )}
               </div>
+              <MailModal
+                message={$t[locale].auth.successConfirmationMessage}
+                isVisible={modalActivationIsVisible}
+                onClose={() => {
+                  setActivationModalVisible(false)
+                }}
+              />
+              <NotConfirmedModal
+                message={$t[locale].auth.notConfirmedMessage}
+                isVisible={isShowConfirmModal}
+                sendMessage={sendActivationMessage}
+                onClose={() => {
+                  setShowConfirmModal(false)
+                }}
+              />
               <div className="limiter">
                 <div
                   className="alert alert-success"

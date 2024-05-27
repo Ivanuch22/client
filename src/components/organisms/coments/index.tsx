@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 
 
-const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
+const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -24,7 +24,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
     const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
     useEffect(() => {
         let getUserCookies = Cookies.get('user');
-        if(getUserCookies){
+        if (getUserCookies) {
             setUser(JSON.parse(getUserCookies));
 
         }
@@ -43,7 +43,6 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
     }, [User])
 
     const router = useRouter();
-    console.log(router)
     const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
     useEffect(() => {
@@ -95,6 +94,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
         sendMessage(e, fatherId)
         toggleReplyArea(fatherId)
     }
+
     return (
         <div>
             <ModalConfirm
@@ -112,32 +112,68 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
                 <header className="comments-header">
                     <h4> {comments.length} {$t[locale].comment.comments}</h4>
                 </header>
-                <TextArea sendMessage={sendMessage} />
+                <TextArea
+                    saveDraft={saveDraftComment}
+                    sendMessage={sendMessage} />
             </div>
 
             <ul className="p-0">
-                {comments.map(comment => {
+                {comments.map((comment) => {
                     const commentId = comment.id;
+                    const {
+                        Text,
+                        admin_date,
+                        father,
+                        children,
+                        user,
+                        createdAt,
+                        user_img,
+                        user_name: real_user_name,
+                    } = comment.attributes;
 
-                    const { Text, admin_date, father, children, user, createdAt, user_img, user_name: real_user_name } = comment.attributes;
+                    const { url } = user_img?.data?.attributes || {
+                        url: `/uploads/nophoto_c7c9abf542.png`,
+                    };
 
-                    const { url } = user_img?.data?.attributes || `/uploads/nophoto_c7c9abf542.png`;
-                    
-                    const timeDifference = (currentTime - new Date(createdAt).getTime()) / (1000 * 60); // Різниця у хвилинах
+                    const timeDifference =
+                        (currentTime - new Date(createdAt).getTime()) / (1000 * 60); // Різниця у хвилинах
 
                     const findFatherName = () => {
-                        const name = comments.find(element => {
-                            return element.attributes.Text === father.data?.attributes.Text
+                        const name = comments.find((element) => {
+                            return element.attributes.Text === father.data?.attributes.Text;
+                        });
+                        return name?.attributes.user.data.attributes.real_user_name;
+                    };
+
+                    const getCommentClass = (fatherData) => {
+                        if (!fatherData) {
+                            return "";
                         }
-                        )
-                        return name.attributes.user.data.attributes.real_user_name;
-                    }
+                        const grandFatherData = comments.find(
+                            (element) => element.id === fatherData.id
+                        )?.attributes.father.data;
+
+                        if (!grandFatherData) {
+                            return "post-children";
+                        } else {
+                            return "post-children-2";
+                        }
+                    };
+
                     return (
-                        <li className={father.data === null ? "" : "post-children"} id={`comment-id-${commentId}`} key={commentId}>
+                        <li
+                            className={getCommentClass(father.data)}
+                            id={`comment-id-${commentId}`}
+                            key={commentId}
+                        >
                             <div className="post-content">
                                 <div className="avatar hovercard">
                                     <a data-action="profile" className="user">
-                                        <img src={`${NEXT_STRAPI_BASED_URL}${url}`} alt="Аватар" className="image-refresh" />
+                                        <img
+                                            src={`${NEXT_STRAPI_BASED_URL}${url}`}
+                                            alt="Аватар"
+                                            className="image-refresh"
+                                        />
                                     </a>
                                 </div>
                                 <div className="post-body">
@@ -145,10 +181,22 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
                                         <span className="post-byline">
                                             <span className="author publisher-anchor-color">
                                                 {real_user_name}
-                                                {father.data !== null ? <span style={{ color: "#494e58", fontSize: 12 }} className="parent-link-container">
-                                                    <img style={{ margin: "0 12px 0 10px" }} width={15} src="https://cdn-icons-png.flaticon.com/512/591/591866.png" alt="" />
-                                                    {findFatherName()}
-                                                </span> : ""}
+                                                {father.data !== null ? (
+                                                    <span
+                                                        style={{ color: "#494e58", fontSize: 12 }}
+                                                        className="parent-link-container"
+                                                    >
+                                                        <img
+                                                            style={{ margin: "0 12px 0 10px" }}
+                                                            width={15}
+                                                            src="https://cdn-icons-png.flaticon.com/512/591/591866.png"
+                                                            alt=""
+                                                        />
+                                                        {findFatherName()}
+                                                    </span>
+                                                ) : (
+                                                    ""
+                                                )}
                                             </span>
                                         </span>
                                         <span className="post-meta">
@@ -156,27 +204,41 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
                                                 {formatDateTime(admin_date, true)}
                                             </span>
                                         </span>
-
                                     </header>
                                     <div className="post-body-inner">
                                         <div className="post-message-container">
                                             <div className="publisher-anchor-color">
                                                 <div className="post-message">
                                                     {editingCommentId === commentId ? (
-                                                        <UpdateCommentTextArea defaultValue={Text} sendMessage={(e) => {
-                                                            setForm(e);
-                                                            setEditingCommentId(comment.id)
-                                                            setShowConfirmModal(true)
-                                                        }} />
+                                                        <UpdateCommentTextArea
+                                                            saveDraft={saveDraftComment}
+
+                                                            defaultValue={Text}
+                                                            sendMessage={(e) => {
+                                                                setForm(e);
+                                                                setEditingCommentId(comment.id);
+                                                                setShowConfirmModal(true);
+                                                            }}
+                                                            toggleChangeArea={() => toggleChangeArea(comment.id)}
+                                                        />
                                                     ) : (
                                                         <p>
-                                                            {Text.split('\n').map((line, lineIndex) => (
+                                                            {Text.split("\n").map((line, lineIndex) => (
                                                                 <React.Fragment key={lineIndex}>
                                                                     {line.split(" ").map((word, wordIndex) => {
                                                                         const newWord = word.replace(/^[ \t\r]+/, "");
-                                                                        if (newWord.startsWith("http://") || newWord.startsWith("https://")) {
+                                                                        if (
+                                                                            newWord.startsWith("http://") ||
+                                                                            newWord.startsWith("https://")
+                                                                        ) {
                                                                             return (
-                                                                                <a className="postLink" key={wordIndex} href={newWord} rel="nofollow noopener noreferrer" target="_blank">
+                                                                                <a
+                                                                                    className="postLink"
+                                                                                    key={wordIndex}
+                                                                                    href={newWord}
+                                                                                    rel="nofollow noopener noreferrer"
+                                                                                    target="_blank"
+                                                                                >
                                                                                     {newWord}
                                                                                 </a>
                                                                             );
@@ -188,33 +250,48 @@ const Comments = ({ data, sendMessage, onDelete, updateComment }) => {
                                                             ))}
                                                         </p>
                                                     )}
-                                                    {(children.data.length === 0 && User.id == user.data.id && timeDifference <= 5) && (
-                                                        <>
-                                                            <button onClick={() => toggleChangeArea(commentId)} className="post-button-edit"></button>
-                                                            <button onClick={() => onDelete(commentId, user.data.id)} className="post-button-delete"></button>
-                                                        </>
-                                                    )}
-
+                                                    {children.data.length === 0 &&
+                                                        User.id === user.data.id &&
+                                                        timeDifference <= 5 && (
+                                                            <>
+                                                                {!editingCommentId && <button
+                                                                    onClick={() => toggleChangeArea(commentId)}
+                                                                    className="post-button-edit"
+                                                                ></button>}
+                                                                <button
+                                                                    onClick={() => onDelete(commentId, user.data.id)}
+                                                                    className="post-button-delete"
+                                                                ></button>
+                                                            </>
+                                                        )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                     <footer className="comment__footer">
                                         <menu className="comment-footer__menu">
-                                            <button className="comment-footer__action" onClick={() => toggleReplyArea(commentId)}>
+                                            <button
+                                                className="comment-footer__action"
+                                                onClick={() => toggleReplyArea(commentId)}
+                                            >
                                                 <span className="text reply-button">{$t[locale].comment.reply}</span>
                                             </button>
                                         </menu>
                                     </footer>
-
-                                    {replyToCommentId === commentId && <TextArea sendMessage={(e) => onSubmit(e, comment.id)} fatherId={comment.id} />}
+                                    {replyToCommentId === commentId && (
+                                        <TextArea
+                                            saveDraft={saveDraftComment}
+                                            sendMessage={(e) => onSubmit(e, comment.id)}
+                                            fatherId={comment.id}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </li>
                     );
                 })}
             </ul>
+
         </div>
     );
 }

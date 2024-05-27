@@ -21,6 +21,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWindowSize } from '@uidotdev/usehooks';
 import ModalRegConfirm from '@/components/organisms/ModalRegConfirm';
 import getConfig from 'next/config';
+import getUserFingerPrint from "@/utils/getUserFingerPrint"
 
 
 export default function Home({
@@ -168,6 +169,9 @@ export default function Home({
     }
 
     try {
+
+      const userData = await getUserFingerPrint();
+
       const response = await server.post('/auth/local/register', {
         username: uuid,
         real_user_name: name,
@@ -178,16 +182,18 @@ export default function Home({
         confirmed: false,
         user_image: NEXT_STRAPI_IMG_DEFAULT,
         imgLink: `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`,
-        avatarId: NEXT_STRAPI_IMG_DEFAULT
+        avatarId: NEXT_STRAPI_IMG_DEFAULT,
+        history: [userData]
       });
       if (response.status === 200) {
-        handleSuccess();
-        login();
 
         Cookies.set('userToken', response.data.jwt, { expires: 7 });
         Cookies.set('user', JSON.stringify(response.data.user), { expires: 7 });
         Cookies.set('userName', response.data.user.real_user_name, { expires: 7 });
-        console.log("sdfha")
+
+
+        handleSuccess();
+        login();
         updateUser()
       } else {
         return handleError(error.response.data.error.message);

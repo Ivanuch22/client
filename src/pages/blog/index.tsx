@@ -125,9 +125,10 @@ export default function Home({
                 </div>
               </main>
 
-              <div className="p-3" style={{ paddingRight: 12, paddingLeft: 12 }}>
+              <div className="container-xxl">
                 <div className="row">
-                  <div className='ps-lg-3 ps-xl-5 col article-col gap-5 pe-md-2 d-flex flex-column'>
+                  
+                  <div className=' ps-lg-3 ps-xl-5 col article-col gap-5 pe-md-2 d-flex flex-column'>
                     {pages.map((page, index) => {
                       const { page_title, admin_date, url, heading, comments, views } = page.attributes;
                       const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
@@ -178,10 +179,9 @@ export default function Home({
                     })}
 
                   </div>
-                  <aside className=' col-md-auto  mx-360'>
-                    <Sidebar randomBanner={randomBanner}></Sidebar>
+                  <Sidebar randomBanner={randomBanner}>
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
-                  </aside>
+                  </Sidebar>
                 </div>
               </div>
               <article className="d-flex mt-5 justify-content-center">
