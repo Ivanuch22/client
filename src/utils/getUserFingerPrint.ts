@@ -112,5 +112,6 @@ export default async function getUserFingerPrint() {
     os: browserInfo.os,
     osVersion: browserInfo.osVersion,
   };
+  console.log(userData)
   return userData;
 };
