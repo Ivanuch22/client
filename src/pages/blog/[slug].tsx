@@ -296,7 +296,7 @@ const Page = ({
         admin_date: Date.now(),
         locale: toUpper(locale),
         user_name: user.real_user_name,
-        user_img: user.avatarId,
+        user_img: user.user_image.id,
         publishedAt: null,
         history: commentHistoryJson
       }
@@ -372,7 +372,7 @@ const Page = ({
           admin_date: Date.now(),
           locale: toUpper(locale),
           user_name: user.real_user_name,
-          user_img: user.avatarId,
+          user_img: user.user_image.id,
           history: commentHistoryJson
         }
 
@@ -384,7 +384,7 @@ const Page = ({
           admin_date: Date.now(),
           locale: toUpper(locale),
           user_name: user.real_user_name,
-          user_img: user.avatarId,
+          user_img: user.user_image.id,
           history: commentHistoryJson
         }
       };
