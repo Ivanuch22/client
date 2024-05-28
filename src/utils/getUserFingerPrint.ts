@@ -81,13 +81,27 @@ const detectIncognitoMode = async () => {
   let isPrivate = false;
 
   if (browser && browser.name === 'safari') {
-    const openDB = window.openDatabase;
     try {
-      isPrivate = !openDB;
+      // Attempt to create a private browsing window
+      const privateWindow = window.open('', null, {
+        private: true,
+        open: 'about:blank',
+      });
+      
+      // If the window was opened successfully, it's not in private mode
+      if (privateWindow) {
+        privateWindow.close();
+        isPrivate = false;
+      } else {
+        // If the window couldn't be opened, it's likely in private mode
+        isPrivate = true;
+      }
     } catch (e) {
+      // If an error occurred (e.g., due to browser settings), assume it's in private mode
       isPrivate = true;
     }
   } else {
+    // For other browsers, use the detect-incognito library
     const { detectIncognito } = await import('detect-incognito');
     const incognitoResult = await detectIncognito();
     isPrivate = incognitoResult.isPrivate;
@@ -95,11 +109,10 @@ const detectIncognitoMode = async () => {
 
   return isPrivate;
 };
-
 export default async function getUserFingerPrint() {
   const browserInfo = getBrowserInfo();
   const userIp = await getUserIp();
-  // const incognito = await detectIncognitoMode();
+  const incognito = await detectIncognitoMode();
   const userData = {
     time: getCurrentFormattedTime(),
     userIp,
@@ -108,7 +121,7 @@ export default async function getUserFingerPrint() {
     },
     browserName: browserInfo.browserName,
     browserVersion: browserInfo.browserVersion,
-    // incognito: incognito,
+    incognito: incognito,
     os: browserInfo.os,
     osVersion: browserInfo.osVersion,
   };
