@@ -150,9 +150,16 @@ export default function Home({
     if (!email || !password) {
       return handleError('Заповніть правильно данні');
     }
-    try {
-      const userData = await getUserFingerPrint();
+
+    let userData;
+    try{
+      userData = await getUserFingerPrint();
       console.log("getUserData",userData)
+    }catch(e){
+      console.log()
+      userData ={}
+    }
+    try {
       const response = await server.post('/auth/local', {
         identifier: email,
         password: password,

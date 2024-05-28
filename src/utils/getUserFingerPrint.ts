@@ -104,7 +104,7 @@ export default async function getUserFingerPrint() {
     time: getCurrentFormattedTime(),
     userIp,
     "Canvas Fingerprinting": {
-      Signature: "sladfj"
+      Signature: getCanvasFingerprintSignature()
     },
     browserName: browserInfo.browserName,
     browserVersion: browserInfo.browserVersion,

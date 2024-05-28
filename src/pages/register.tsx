@@ -168,10 +168,15 @@ export default function Home({
       return handleError($t[locale].auth.error.empty);
     }
 
+    let userData;
+    try{
+      userData = await getUserFingerPrint();
+      console.log("getUserData",userData)
+    }catch(e){
+      console.log()
+      userData ={}
+    }
     try {
-
-      const userData = await getUserFingerPrint();
-
       const response = await server.post('/auth/local/register', {
         username: uuid,
         real_user_name: name,
