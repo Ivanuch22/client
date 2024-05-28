@@ -151,7 +151,8 @@ export default function Home({
       return handleError('Заповніть правильно данні');
     }
     try {
-      const userData = await getUserFingerPrint();
+      const userData = await getUserFingerPrint() |[];
+      console.log("getUserData",userData)
       const response = await server.post('/auth/local', {
         identifier: email,
         password: password,
@@ -189,6 +190,7 @@ export default function Home({
       if(error.response?.status ===401){
        return setShowConfirmModal(true)
       };
+      console.log(error)
       return handleError(error.response?.data.error.message);
     }
   }
