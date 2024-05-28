@@ -141,8 +141,24 @@ const Page = ({
   const [isShowConfirmModal, setShowConfirmModal] = useState(false)
   const [editedCommentId, setEditedCommetId] = useState(0)
   const [commentUserId, setCommentUserId] = useState(0)
-  const { isLogin, logout, updateUser } = useAuth();
+  const { isLogin, logout, updateUser,userData } = useAuth();
 
+  const [user,setUser] = useState({})
+  useEffect(() => {
+    const getUserCookies = Cookies.get('user');
+    if (!getUserCookies) return
+    const userCookies = JSON.parse(getUserCookies)
+    let userFromBd = userCookies;
+    async function getUser() {
+      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
+      Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
+      setUser(strapiRes.data)
+    console.log(strapiRes.data)
+
+    }
+    getUser()
+    setUser(userFromBd);
+  }, []);
 
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   useEffect(() => {
@@ -269,6 +285,7 @@ const Page = ({
     if (!userToken) {
       return 
     }
+    
     let getUserCookies = Cookies.get('user');
     const user = JSON.parse(getUserCookies);
     if (!draftText) {
@@ -342,8 +359,6 @@ const Page = ({
 
     textAreaElement.value = '';
 
-    let getUserCookies = Cookies.get('user');
-    const user = JSON.parse(getUserCookies);
     const blogUrl = pageRes[0].attributes.url
 
     if (!user.confirmed) {
@@ -471,8 +486,6 @@ const Page = ({
 
     textAreaElement.value = '';
 
-    let getUserCookies = Cookies.get('user');
-    const user = JSON.parse(getUserCookies);
     const blogUrl = pageRes[0].attributes.url;
 
     if (!user.confirmed) {
@@ -539,8 +552,7 @@ const Page = ({
     if (!userToken) {
       return 
     }
-    let getUserCookies = Cookies.get('user');
-    const user = JSON.parse(getUserCookies);
+
     if (!draftText) {
       return console.log('Comment cannot be empty');
     }
@@ -595,8 +607,6 @@ const Page = ({
 
   const deleteComment = async (commentId, userId) => {
     const userToken = Cookies.get('userToken'); // Retrieve user token from cookies
-    let getUserCookies = Cookies.get('user');
-    const user = JSON.parse(getUserCookies);
     console.log(user.id)
 
     if (user.id !== userId) {
