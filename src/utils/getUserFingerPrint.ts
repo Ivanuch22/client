@@ -97,20 +97,20 @@ const detectIncognitoMode = async () => {
 };
 
 export default async function getUserFingerPrint() {
-  const browserInfo = getBrowserInfo();
-  const userIp = await getUserIp();
-  const incognito = await detectIncognitoMode();
+  // const browserInfo = getBrowserInfo();
+  // const userIp = await getUserIp();
+  // const incognito = await detectIncognitoMode();
   const userData = {
     time: getCurrentFormattedTime(),
     userIp,
     "Canvas Fingerprinting": {
       Signature: getCanvasFingerprintSignature()
-    },
-    browserName: browserInfo.browserName,
-    browserVersion: browserInfo.browserVersion,
-    incognito: incognito,
-    os: browserInfo.os,
-    osVersion: browserInfo.osVersion,
+    }
+    // browserName: browserInfo.browserName,
+    // browserVersion: browserInfo.browserVersion,
+    // incognito: incognito,
+    // os: browserInfo.os,
+    // osVersion: browserInfo.osVersion,
   };
   console.log(userData)
   return userData;
