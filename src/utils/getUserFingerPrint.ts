@@ -1,6 +1,4 @@
 // @ts-nocheck
-
-import { detect } from 'detect-browser';
 import getUserIp from "@/utils/getUserIp";
 import getCurrentFormattedTime from '@/utils/getCurrentFormattedTime';
 import md5 from 'md5';
@@ -76,43 +74,10 @@ const getBrowserInfo = () => {
   return { browserName, browserVersion, os, osVersion };
 };
 
-const detectIncognitoMode = async () => {
-  const browser = detect();
-  let isPrivate = false;
 
-  if (browser && browser.name === 'safari') {
-    try {
-      // Attempt to create a private browsing window
-      const privateWindow = window.open('', null, {
-        private: true,
-        open: 'about:blank',
-      });
-      
-      // If the window was opened successfully, it's not in private mode
-      if (privateWindow) {
-        privateWindow.close();
-        isPrivate = false;
-      } else {
-        // If the window couldn't be opened, it's likely in private mode
-        isPrivate = true;
-      }
-    } catch (e) {
-      // If an error occurred (e.g., due to browser settings), assume it's in private mode
-      isPrivate = true;
-    }
-  } else {
-    // For other browsers, use the detect-incognito library
-    const { detectIncognito } = await import('detect-incognito');
-    const incognitoResult = await detectIncognito();
-    isPrivate = incognitoResult.isPrivate;
-  }
-
-  return isPrivate;
-};
 export default async function getUserFingerPrint() {
   const browserInfo = getBrowserInfo();
   const userIp = await getUserIp();
-  const incognito = await detectIncognitoMode();
   const userData = {
     time: getCurrentFormattedTime(),
     userIp,
@@ -121,7 +86,6 @@ export default async function getUserFingerPrint() {
     },
     browserName: browserInfo.browserName,
     browserVersion: browserInfo.browserVersion,
-    incognito: incognito,
     os: browserInfo.os,
     osVersion: browserInfo.osVersion,
   };
