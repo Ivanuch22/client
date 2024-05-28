@@ -146,7 +146,7 @@ export default function Home({
                             </li>
                             <li className="breadcrumb-item">
                               <a className="text-white" href="/blog">
-                                {$t[locale].blog.title}
+                                {$t[locale].blog.titleName}
                               </a>
                             </li>
                           </ol>

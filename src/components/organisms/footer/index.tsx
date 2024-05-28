@@ -58,8 +58,7 @@ const Footer = () => {
 
   const { footerMenus, footerGeneral } = useDefaultLayoutContext();
   function replaceGAVWithAt(str) {
-    // Регулярний вираз для пошуку підрядків виду [ГАВ] або [гав]
-    const regex = /\[ГАВ\]|\[гав\]/g;
+    const regex = /\[[^\]]*\]/g;
     return str.replace(regex, '@');
   }
   return (
@@ -171,15 +170,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Форма в футере */}
-          {/* <div className="col-md-6 col-lg-4 mt-lg-n5">
-                        <div className="bg-light rounded" style={{ padding: '30px' }}>
-                            <input type="text" className="form-control border-0 py-2 mb-2" placeholder="Name" />
-                            <input type="email" className="form-control border-0 py-2 mb-2" placeholder="Email" />
-                            <textarea className="form-control border-0 mb-2" rows={2} placeholder="Message" defaultValue={""} />
-                            <button className="btn btn-primary w-100 py-2">Send Message</button>
-                        </div>
-                    </div> */}
+          
         </div>
       </div>
       <div className="container px-lg-5">

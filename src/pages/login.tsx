@@ -157,9 +157,16 @@ export default function Home({
         password: password,
       });
       const user = response.data.user;
-      user.history = [userData, ...user.history];
-      Cookies.set('email', response.data.user.email, { expires: 7 });
+      let userHistory;
+      if(user.history===null){
+        userHistory = []
+      }else{
+        userHistory=[...user.history]
+      }
+      user.history = [userData, ...userHistory];
 
+      Cookies.set('email', response.data.user.email, { expires: 7 });
+      console.log(user.history)
       const updateUserHistory = await server.put(`/users/${user.id}`, {
         history: user.history
       }, {

@@ -137,7 +137,7 @@ function Menu({ data, show, onTog, allPages }) {
 
             {data.map(item => renderMenuItem(item, null))}
 
-            <Link href="/blog" className={`nav-item nav-link navpart sadf`}>
+            <Link href="/blog" className={`nav-item nav-link navpart`}>
               {$t[locale].blog.titleName}
             </Link>
 
