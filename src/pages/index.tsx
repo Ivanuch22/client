@@ -12,6 +12,8 @@ import { server } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
+import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 export default function Home({
   html,
@@ -26,7 +28,22 @@ export default function Home({
 }) {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
+  const [user,setUser] = useState({})
+  useEffect(() => {
+    const getUserCookies = Cookies.get('user');
+    if (!getUserCookies) return
+    const userCookies = JSON.parse(getUserCookies)
+    let userFromBd = userCookies;
+    async function getUser() {
+      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
+      Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
+      setUser(strapiRes.data)
+    console.log(strapiRes.data)
 
+    }
+    getUser()
+    setUser(userFromBd);
+  }, []);
   return (
     <>
       <Head>
