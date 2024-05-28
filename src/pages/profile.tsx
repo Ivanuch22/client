@@ -39,7 +39,7 @@ export default function Profile({
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(NEXT_STRAPI_BASED_URL+user.user_image?.url || noImgUrl);
+  const [avatarUrl, setAvatarUrl] = useState(`${NEXT_STRAPI_BASED_URL}${user.user_image?.url}` || noImgUrl);
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const { isLogin, logout, updateUser } = useAuth();
