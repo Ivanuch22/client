@@ -151,7 +151,8 @@ export default function Home({
       return handleError('Заповніть правильно данні');
     }
     try {
-      const userData = await getUserFingerPrint();
+      // const userData = await getUserFingerPrint();
+      const userData = [];
       const response = await server.post('/auth/local', {
         identifier: email,
         password: password,
