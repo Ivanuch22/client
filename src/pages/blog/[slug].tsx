@@ -310,6 +310,8 @@ const Page = ({
         },
       });
     }catch(error){
+      console.log(error)
+
       if (error.response.status === 401) {
         router.push("/login")
         return logout();
@@ -433,6 +435,8 @@ const Page = ({
         console.log('Error posting comment:', response.status, response.data);
       }
     } catch (error) {
+      console.log(error)
+
       if (error.response.status === 401) {
         router.push("/login")
         return logout();
@@ -517,6 +521,8 @@ const Page = ({
       const comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
       setUserComments(comments);
     } catch (error) {
+      console.log(error)
+
       if (error.response.status === 401) {
         router.push("/login")
         return logout();
@@ -575,6 +581,7 @@ const Page = ({
           }
         });
     } catch (error) {
+      console.log(error)
       if (error.response.status === 401) {
         router.push("/login")
         return logout();
