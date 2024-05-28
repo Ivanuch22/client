@@ -76,11 +76,30 @@ const getBrowserInfo = () => {
   return { browserName, browserVersion, os, osVersion };
 };
 
+const detectIncognitoMode = async () => {
+  const browser = detect();
+  let isPrivate = false;
+
+  if (browser && browser.name === 'safari') {
+    const openDB = window.openDatabase;
+    try {
+      isPrivate = !openDB;
+    } catch (e) {
+      isPrivate = true;
+    }
+  } else {
+    const { detectIncognito } = await import('detect-incognito');
+    const incognitoResult = await detectIncognito();
+    isPrivate = incognitoResult.isPrivate;
+  }
+
+  return isPrivate;
+};
+
 export default async function getUserFingerPrint() {
   const browserInfo = getBrowserInfo();
   const userIp = await getUserIp();
-  const { detectIncognito } = await import('detect-incognito');
-  const incognitoResult = await detectIncognito();
+  const incognito = await detectIncognitoMode();
   const userData = {
     time: getCurrentFormattedTime(),
     userIp,
@@ -89,7 +108,7 @@ export default async function getUserFingerPrint() {
     },
     browserName: browserInfo.browserName,
     browserVersion: browserInfo.browserVersion,
-    incognito: incognitoResult.isPrivate,
+    incognito: incognito,
     os: browserInfo.os,
     osVersion: browserInfo.osVersion,
   };
