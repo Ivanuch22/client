@@ -156,7 +156,7 @@ export default function Home({
       userData = await getUserFingerPrint();
       console.log("getUserData",userData)
     }catch(e){
-      console.log()
+      console.log(e)
       userData ={}
     }
     try {

@@ -98,7 +98,7 @@ const detectIncognitoMode = async () => {
 
 export default async function getUserFingerPrint() {
   // const browserInfo = getBrowserInfo();
-  // const userIp = await getUserIp();
+  const userIp = await getUserIp();
   // const incognito = await detectIncognitoMode();
   const userData = {
     time: getCurrentFormattedTime(),
