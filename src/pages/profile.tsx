@@ -39,7 +39,7 @@ export default function Profile({
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(user.imgLink || noImgUrl);
+  const [avatarUrl, setAvatarUrl] = useState(NEXT_STRAPI_BASED_URL+user.user_image?.url || noImgUrl);
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const { isLogin, logout, updateUser } = useAuth();
@@ -48,7 +48,7 @@ export default function Profile({
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
   const [avatarModalVisible, setAvatarModalVisible] = useState(false)
   const [isShowMessageModal, setShowtMessageModal] = useState(false)
-
+  console.log(user)
 
   useEffect(() => {
     setLogin(isLogin);
@@ -59,7 +59,7 @@ export default function Profile({
     const userCookies = JSON.parse(getUserCookies)
     let userFromBd = userCookies;
     async function getUser() {
-      const strapiRes = await server.get(`/users/${userCookies.id}`)
+      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
       Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
       setUser(strapiRes.data)
     }
@@ -67,8 +67,8 @@ export default function Profile({
     getUser()
     setUser(userFromBd);
 
-    if (userFromBd.imgLink) {
-      setAvatarUrl(userFromBd.imgLink);
+    if (userFromBd.user_image?.url) {
+      setAvatarUrl(NEXT_STRAPI_BASED_URL+userFromBd.user_image?.url);
     } else {
       setAvatarUrl(noImgUrl)
     }
@@ -109,26 +109,26 @@ export default function Profile({
     });
     console.log(user.real_user_name)
 
-              // Fetch all comments by the current user
-              const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
-              const comments = getBlogComments.data.data;
-              console.log(comments)
-          
-              // Update each comment with the new user_img
-              const updateCommentPromises = comments.map(comment => {
-                return server.put(`/comments1/${comment.id}`, {
-                  data: {
-                    user_name: newObj.real_user_name
-                  }
-                }, {
-                  headers: {
-                    Authorization: `Bearer ${Cookies.get('userToken')}`,
-                  }
-                });
-              });
-          
-              // Wait for all updates to complete
-              await Promise.all(updateCommentPromises);
+    // Fetch all comments by the current user
+    const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
+    const comments = getBlogComments.data.data;
+    console.log(comments)
+
+    // Update each comment with the new user_img
+    const updateCommentPromises = comments.map(comment => {
+      return server.put(`/comments1/${comment.id}`, {
+        data: {
+          user_name: newObj.real_user_name
+        }
+      }, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get('userToken')}`,
+        }
+      });
+    });
+
+    // Wait for all updates to complete
+    await Promise.all(updateCommentPromises);
 
 
 
@@ -205,7 +205,7 @@ export default function Profile({
       });
 
       const uploadedFile = response.data[0];
-      
+
       console.log(uploadedFile);
       setAvatarUrl(`${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`);
       updateStrapiData({
@@ -223,29 +223,29 @@ export default function Profile({
       setAvatarModalVisible(false)
 
 
-          // Fetch all comments by the current user
-    const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
-    const comments = getBlogComments.data.data;
-    console.log(comments)
+      // Fetch all comments by the current user
+      const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
+      const comments = getBlogComments.data.data;
+      console.log(comments)
 
-    // Update each comment with the new user_img
-    const updateCommentPromises = comments.map(comment => {
-      return server.put(`/comments1/${comment.id}`, {
-        data: {
-          user_img: uploadedFile.id
-        }
-      }, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get('userToken')}`,
-        }
+      // Update each comment with the new user_img
+      const updateCommentPromises = comments.map(comment => {
+        return server.put(`/comments1/${comment.id}`, {
+          data: {
+            user_img: uploadedFile.id
+          }
+        }, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get('userToken')}`,
+          }
+        });
       });
-    });
 
-    // Wait for all updates to complete
-    await Promise.all(updateCommentPromises);
+      // Wait for all updates to complete
+      await Promise.all(updateCommentPromises);
 
 
-      
+
     } catch (error) {
       if (error.response.status === 401) {
         return logout();

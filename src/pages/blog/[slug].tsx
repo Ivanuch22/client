@@ -38,6 +38,8 @@ import ModalConfirm from '@/components/organisms/ModalConfirm';
 import { toLower, toUpper } from 'lodash';
 import getCurrentFormattedTime from "@/utils/getCurrentFormattedTime"
 import getUserIp from "@/utils/getUserIp"
+import { useAuth } from '@/contexts/AuthContext';
+
 
 
 
@@ -139,6 +141,7 @@ const Page = ({
   const [isShowConfirmModal, setShowConfirmModal] = useState(false)
   const [editedCommentId, setEditedCommetId] = useState(0)
   const [commentUserId, setCommentUserId] = useState(0)
+  const { isLogin, logout, updateUser } = useAuth();
 
 
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -300,11 +303,20 @@ const Page = ({
 
     }
 
-    const response = await server.post('/comments1', payload, {
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
+    try{
+      const response = await server.post('/comments1', payload, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+    }catch(error){
+      if (error.response.status === 401) {
+        router.push("/login")
+        return logout();
+      }
+    }
+
+
     console.log(response.data)
   }
 
@@ -421,6 +433,11 @@ const Page = ({
         console.log('Error posting comment:', response.status, response.data);
       }
     } catch (error) {
+      if (error.response.status === 401) {
+        router.push("/login")
+        return logout();
+
+      }
       console.error('Error during comment submission:', error);
 
       if (error.response && error.response.data) {
@@ -500,6 +517,11 @@ const Page = ({
       const comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
       setUserComments(comments);
     } catch (error) {
+      if (error.response.status === 401) {
+        router.push("/login")
+        return logout();
+
+      }
       console.error('Error updating comment:', error);
     }
 
@@ -553,6 +575,12 @@ const Page = ({
           }
         });
     } catch (error) {
+      if (error.response.status === 401) {
+        router.push("/login")
+        return logout();
+
+      }
+
       console.error('Error updating comment:', error);
     }
   }
@@ -715,7 +743,7 @@ const Page = ({
                             </li>
                             <li className="breadcrumb-item">
                               <Link className="text-white" href="/blog">
-                                {$t[locale].blog.title}
+                                {$t[locale].blog.titleName}
                               </Link>
                             </li>
                             <li className="breadcrumb-item">
