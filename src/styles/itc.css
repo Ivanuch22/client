@@ -108,6 +108,10 @@
 .mostpopular__text-block {
     width: 70%;
 }
+.p-0 li{
+list-style-type:none
+    
+}
 
 .mostpopular__text-time {
     font-size: 14px;
