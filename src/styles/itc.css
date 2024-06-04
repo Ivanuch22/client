@@ -108,7 +108,7 @@
 .mostpopular__text-block {
     width: 70%;
 }
-.p-0 li{
+.p-0 >li{
 list-style-type:none
     
 }
