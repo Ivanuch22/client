@@ -35,3 +35,4 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
 };
 
 export default DefaultLayout;
+

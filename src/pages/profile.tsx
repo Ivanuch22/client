@@ -72,6 +72,7 @@ export default function Profile({
   }, []);
 
   useEffect(() => {
+    setDefaultBirthday(user.birthday)
     if (user.user_image?.url) {
       setAvatarUrl(NEXT_STRAPI_BASED_URL+user.user_image?.url);
     } else {
@@ -221,26 +222,26 @@ export default function Profile({
       setAvatarModalVisible(false)
 
 
-      // // Fetch all comments by the current user
-      // const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
-      // const comments = getBlogComments.data.data;
-      // console.log(comments)
+      // Fetch all comments by the current user
+      const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
+      const comments = getBlogComments.data.data;
+      console.log(comments)
 
-      // // Update each comment with the new user_img
-      // const updateCommentPromises = comments.map(comment => {
-      //   return server.put(`/comments1/${comment.id}`, {
-      //     data: {
-      //       user_img: uploadedFile.id
-      //     }
-      //   }, {
-      //     headers: {
-      //       Authorization: `Bearer ${Cookies.get('userToken')}`,
-      //     }
-      //   });
-      // });
+      // Update each comment with the new user_img
+      const updateCommentPromises = comments.map(comment => {
+        return server.put(`/comments1/${comment.id}`, {
+          data: {
+            user_img: uploadedFile.id
+          }
+        }, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get('userToken')}`,
+          }
+        });
+      });
 
-      // // Wait for all updates to complete
-      // await Promise.all(updateCommentPromises);
+      // Wait for all updates to complete
+      await Promise.all(updateCommentPromises);
 
 
 
