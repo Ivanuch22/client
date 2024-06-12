@@ -28,7 +28,8 @@ export default function Profile({
   socialData,
 }) {
   const { publicRuntimeConfig } = getConfig();
-  const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
+  const { NEXT_STRAPI_BASED_URL,NEXT_STRAPI_IMG_DEFAULT } = publicRuntimeConfig;
+
   const noImgUrl = `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`;
 
   const [isError, setIsError] = useState(false);
@@ -74,7 +75,7 @@ export default function Profile({
   useEffect(() => {
     setDefaultBirthday(user.birthday)
     if (user.user_image?.url) {
-      setAvatarUrl(NEXT_STRAPI_BASED_URL+user.user_image?.url);
+      setAvatarUrl(NEXT_STRAPI_BASED_URL + user.user_image?.url);
     } else {
       setAvatarUrl(noImgUrl)
     }
@@ -193,7 +194,6 @@ export default function Profile({
     }
   }
   async function handleUpload(file) {
-
     try {
       setIsLoading(true);
       const response = await server.post(`/upload`, file, {
@@ -204,57 +204,76 @@ export default function Profile({
       });
 
       const uploadedFile = response.data[0];
-
       console.log(uploadedFile);
-      setAvatarUrl(`${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`);
-      updateStrapiData({
+
+      // Update user with the new image
+      await updateStrapiData({
         ...user,
         imgLink: `${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`,
         avatarId: uploadedFile.id,
-        user_image: uploadedFile.id
+        user_image: uploadedFile.id,
       });
+
       setUser({
         ...user,
         imgLink: `${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`,
         avatarId: uploadedFile.id,
-        user_image: {...uploadedFile}
+        user_image: { ...uploadedFile },
       });
-      setAvatarModalVisible(false)
 
+      setAvatarUrl(`${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`);
+      setAvatarModalVisible(false);
 
       // Fetch all comments by the current user
       const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
       const comments = getBlogComments.data.data;
-      console.log(comments)
+      console.log(comments);
 
       // Update each comment with the new user_img
       const updateCommentPromises = comments.map(comment => {
         return server.put(`/comments1/${comment.id}`, {
           data: {
-            user_img: uploadedFile.id
-          }
+            user_img: uploadedFile.id,
+          },
         }, {
           headers: {
             Authorization: `Bearer ${Cookies.get('userToken')}`,
-          }
+          },
         });
       });
 
       // Wait for all updates to complete
       await Promise.all(updateCommentPromises);
 
-
+      // Delete the old avatar if exists
+      if (user.avatarId) {
+        await deleteOldAvatar(user.avatarId);
+      }
 
     } catch (error) {
       if (error.response?.status === 401) {
         return logout();
       }
-      setAvatarModalVisible(false)
-
+      setAvatarModalVisible(false);
       console.error('Error uploading image: ', error);
     } finally {
-      setAvatarModalVisible(false)
+      setAvatarModalVisible(false);
       setIsLoading(false);
+    }
+  }
+
+  async function deleteOldAvatar(avatarId) {
+    try {
+      if (NEXT_STRAPI_IMG_DEFAULT == !avatarId) {
+        await server.delete(`/upload/files/${avatarId}`, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get('userToken')}`,
+          },
+        });
+      }
+
+    } catch (error) {
+      console.error('Error deleting old avatar: ', error);
     }
   }
   async function sendActivationMessage() {

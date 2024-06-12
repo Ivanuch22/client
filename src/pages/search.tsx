@@ -167,8 +167,14 @@ export async function getServerSideProps({ query, locale }: Query) {
         locale === 'ua' ? 'uk' : locale
       }`
     );
+    const serverBlog = await server.get(
+      `/blogs?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][seo_description][$containsi]=${q}&locale=${
+        locale === 'ua' ? 'uk' : locale
+      }`
+    );
     const pages = serverPages.data.data;
     const seoPages = serverSeoPages.data.data;
+    const blogPages = serverBlog.data.data;
 
     const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
@@ -180,7 +186,7 @@ export async function getServerSideProps({ query, locale }: Query) {
 
     return {
       props: {
-        pages: [...pages, ...seoPages],
+        pages: [...pages, ...seoPages,...blogPages],
         menu,
         allPages,
         footerMenus,
