@@ -17,6 +17,7 @@ import SearchResults from '@/components/organisms/SearchResults';
 import ResultsNotFound from '@/components/molecules/ResultsNotFound';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
+import removeBodyField from '@/utils/removeBodyFromArray';
 
 export interface Contacts {
   location: string;
@@ -51,6 +52,7 @@ export default function Home({
   footerGeneral,
   socialData,
 }) {
+  console.log(pages)
   const [contacts, setContacts] = useState<Contacts>(initialContacts);
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -184,9 +186,12 @@ export async function getServerSideProps({ query, locale }: Query) {
     const socialRes = await server.get('/social');
     const socialData = socialRes.data.data.attributes;
 
+
+
+  const pagesWithoutBody = removeBodyField([...pages, ...seoPages,...blogPages])
     return {
       props: {
-        pages: [...pages, ...seoPages,...blogPages],
+        pages: pagesWithoutBody,
         menu,
         allPages,
         footerMenus,

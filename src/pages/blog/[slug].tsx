@@ -42,6 +42,22 @@ import { useAuth } from '@/contexts/AuthContext';
 
 
 
+const fieldsToPopulate = [  "seo_title",
+"Text",
+"user",
+"admin_date",
+"father",
+"children",
+"locale",
+"user_name",
+"user_img",
+"history",
+]; // Додайте всі необхідні поля, окрім 'body'
+
+const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('&');
+
+
+
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -129,6 +145,7 @@ const Page = ({
   comments,
   socialData,
 }: PageAttibutes) => {
+  console.log(mostPopular, "dsf")
 
   const [usersComments, setUserComments] = useState([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -163,6 +180,7 @@ const Page = ({
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   useEffect(() => {
     setUserComments(comments)
+    console.log(comments)
   }, [comments])
 
 
@@ -192,9 +210,6 @@ const Page = ({
 
 
 
-
-  // Эта функция рекурсивно пробегаем по объекту навигации который мы возвращаем из функции getServerSideProps
-  // и генерирует одномерный мессив объектов который будет в последующем преобразован в компонент breadcrumbs
   const findAncestors = (obj: any[], url: string) => {
     const ancestors = [] as Crumb[];
     for (const item of obj) {
@@ -426,6 +441,7 @@ const Page = ({
         }) : updateChildrenInFather = null;
         if (fatherId) {
           const newFunc = async () => {
+
             const fatherComment = await server.get(`/comments1/${fatherId}?populate=*`);
             const fatherLocale = fatherComment.data.data.attributes.locale === 'UK' ? 'UA' : fatherComment.data.data.attributes.locale;
             console.log(fatherLocale)
@@ -441,7 +457,8 @@ const Page = ({
           newFunc()
         }
 
-    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
+    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
+
 
 
         comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
@@ -530,7 +547,8 @@ const Page = ({
           }
         });
 
-        const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
+        const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
+
       const comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
       setUserComments(comments);
     } catch (error) {
@@ -624,7 +642,8 @@ const Page = ({
       },
 
     });
-    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
+    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
+
 
     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
     setUserComments(comments);
@@ -819,11 +838,25 @@ const Page = ({
                               <div className='w-auto part'>{formatDateTime(admin_date)}</div>
                               <div className="w-auto comments part" >
                                 <Link href={`${url}#comment`} className="">
-                                  <img src="https://itc.ua/wp-content/themes/ITC_6.0/images/comment_outline_24.svg" height="24" width="24" alt="comment" />
-                                  <span className="disqus-comment-count" data-disqus-identifier="2259249=">{usersComments.length}</span>
+<svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
+                                                width="22px" height="22px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xmlSpace="preserve">
+                                                <g>
+                                                    <path fill="#231F20" d="M60,0H16c-2.211,0-4,1.789-4,4v6H4c-2.211,0-4,1.789-4,4v30c0,2.211,1.789,4,4,4h7c0.553,0,1,0.447,1,1v11
+		c0,1.617,0.973,3.078,2.469,3.695C14.965,63.902,15.484,64,16,64c1.039,0,2.062-0.406,2.828-1.172l14.156-14.156
+		c0,0,0.516-0.672,1.672-0.672S50,48,50,48c2.211,0,4-1.789,4-4v-8h6c2.211,0,4-1.789,4-4V4C64,1.789,62.211,0,60,0z M52,44
+		c0,1.105-0.895,2-2,2c0,0-14.687,0-15.344,0C32.709,46,32,47,32,47S20,59,18,61c-2.141,2.141-4,0.391-4-1c0-1,0-12,0-12
+		c0-1.105-0.895-2-2-2H4c-1.105,0-2-0.895-2-2V14c0-1.105,0.895-2,2-2h46c1.105,0,2,0.895,2,2V44z M62,32c0,1.105-0.895,2-2,2h-6V14
+		c0-2.211-1.789-4-4-4H14V4c0-1.105,0.895-2,2-2h44c1.105,0,2,0.895,2,2V32z"/>
+                                                    <path fill="#231F20" d="M13,24h13c0.553,0,1-0.447,1-1s-0.447-1-1-1H13c-0.553,0-1,0.447-1,1S12.447,24,13,24z" />
+                                                    <path fill="#231F20" d="M41,28H13c-0.553,0-1,0.447-1,1s0.447,1,1,1h28c0.553,0,1-0.447,1-1S41.553,28,41,28z" />
+                                                    <path fill="#231F20" d="M34,34H13c-0.553,0-1,0.447-1,1s0.447,1,1,1h21c0.553,0,1-0.447,1-1S34.553,34,34,34z" />
+                                                </g>
+                                            </svg>                                  <span className="disqus-comment-count" >{usersComments.length}</span>
                                 </Link>
                               </div>
-                              <div className='w-auto part'><img style={{ marginRight: 7 }} src="https://itc.ua/wp-content/themes/ITC_6.0/images/eye2.png" height="11" width="17" alt="views icon"></img>{views}</div>
+                              <div className='w-auto part'>
+                                <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                {views}</div>
 
                             </div>
 
@@ -930,7 +963,7 @@ export async function getServerSideProps({
     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
     await getPagesIdWithSameUrl(url).then(data => pageIds = data)
 
-    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&populate=*&sort[0]=admin_date&pagination[limit]=100`);
+    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
 
     // replace port in images
