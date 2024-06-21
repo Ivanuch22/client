@@ -326,7 +326,7 @@ export default function Home({
                       </div>
                       <ul
                         className="login-more p-t-190"
-                        style={{ paddingTop: 50 }}
+                        style={{ paddingTop: 50 ,listStyle: "none"}}
                       >
                         <li style={{ marginBottom: 4 }}>
                           <span className="txt1" style={{ marginRight: 5 }}>

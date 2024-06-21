@@ -49,7 +49,6 @@ export default function Profile({
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
   const [avatarModalVisible, setAvatarModalVisible] = useState(false)
   const [isShowMessageModal, setShowtMessageModal] = useState(false)
-  console.log(user)
 
   useEffect(() => {
     setLogin(isLogin);
@@ -213,6 +212,11 @@ export default function Profile({
         avatarId: uploadedFile.id,
         user_image: uploadedFile.id,
       });
+            // Delete the old avatar if exists
+            if (user.avatarId) {
+              await deleteOldAvatar(user.avatarId);
+              console.log("img deleted",user.avatarId)
+            }
 
       setUser({
         ...user,
@@ -245,10 +249,7 @@ export default function Profile({
       // Wait for all updates to complete
       await Promise.all(updateCommentPromises);
 
-      // Delete the old avatar if exists
-      if (user.avatarId) {
-        await deleteOldAvatar(user.avatarId);
-      }
+
 
     } catch (error) {
       if (error.response?.status === 401) {
@@ -264,12 +265,15 @@ export default function Profile({
 
   async function deleteOldAvatar(avatarId) {
     try {
-      if (NEXT_STRAPI_IMG_DEFAULT == !avatarId) {
+      if (NEXT_STRAPI_IMG_DEFAULT !== avatarId) {
+        console.log("success start")
+
         await server.delete(`/upload/files/${avatarId}`, {
           headers: {
             Authorization: `Bearer ${Cookies.get('userToken')}`,
           },
         });
+        console.log("success deleted")
       }
 
     } catch (error) {

@@ -156,7 +156,7 @@ export default function Forgot({
                                                     {$t[locale].auth.send_message}
                                                 </button>
                                             </div>
-                                            <ul className="login-more p-t-190" style={{ paddingTop: 50 }}>
+                                            <ul className="login-more p-t-190" style={{ paddingTop: 50 ,listStyle: "none"}}>
                                                 <li style={{ marginBottom: 4 }}>
                                                     <span className="txt1" style={{ marginRight: 5 }}>
                                                         {$t[locale].auth.already_have}

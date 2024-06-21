@@ -34,7 +34,6 @@ export default function Home({
   mostPopular,
   socialData,
 }) {
-  console.log(pages)
   const router = useRouter();
 
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
