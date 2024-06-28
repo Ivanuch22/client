@@ -262,7 +262,7 @@ export default function Home({
   );
 }
 export async function getServerSideProps({ query, locale }) {
-  const { page = 1, perPage = 5, heading = '' } = query;
+  const { page = 1, perPage = 15, heading = '' } = query;
   let pages, pagination, headings;
 
   const Locale = locale === 'ua' ? 'uk' : locale;
