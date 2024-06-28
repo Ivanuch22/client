@@ -72,7 +72,7 @@ export default function Home({
   }
 
   const goToPage = n => {
-    router.push(`/blog?page=${n}&perPage=${perPage ? perPage : '15'}`);
+    router.push(`/blog?page=${n}`);
   }
   function hyphenateText(text) {
     if (windowWidth > 1124) {
