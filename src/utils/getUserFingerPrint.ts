@@ -81,14 +81,11 @@ export default async function getUserFingerPrint() {
   const userData = {
     time: getCurrentFormattedTime(),
     userIp,
-    "Canvas Fingerprinting": {
-      Signature: getCanvasFingerprintSignature()
-    },
+    "Canvas Fingerprinting": getCanvasFingerprintSignature(),
     browserName: browserInfo.browserName,
     browserVersion: browserInfo.browserVersion,
     os: browserInfo.os,
     osVersion: browserInfo.osVersion,
   };
-  console.log(userData)
   return userData;
 };

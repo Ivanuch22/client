@@ -188,7 +188,8 @@ export default function Home({
         user_image: NEXT_STRAPI_IMG_DEFAULT,
         imgLink: `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`,
         avatarId: NEXT_STRAPI_IMG_DEFAULT,
-        history: [userData]
+        history: [userData],
+        reg_locale: locale?.toUpperCase
       });
       if (response.status === 200) {
 
