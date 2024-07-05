@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import formatDateTime from "@/utils/formateDateTime";
 import TextArea from "./textArea";
 import UpdateCommentTextArea from "./updateComment";
@@ -26,7 +26,6 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
         let getUserCookies = Cookies.get('user');
         if (getUserCookies) {
             setUser(JSON.parse(getUserCookies));
-
         }
     }, [comments])
 
@@ -37,10 +36,6 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
         return () => clearInterval(interval);
     }, []);
 
-
-    useEffect(() => {
-        console.log(User)
-    }, [User])
 
     const router = useRouter();
     const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -94,6 +89,17 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
         sendMessage(e, fatherId)
         toggleReplyArea(fatherId)
     }
+    const [showedComent, setShowedComment] = useState(1);
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
+    const commentCoutn = useMemo(() => comments.length);
+
+    const showMoreComments = () => {
+        setIsButtonLoading(true)
+        setTimeout(() => {
+            setShowedComment(commentCoutn)
+            setIsButtonLoading(false)
+        }, 300);
+    }
 
     return (
         <div>
@@ -118,7 +124,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
             </div>
 
             <ul className="p-0">
-                {comments.map((comment) => {
+                {comments.map((comment, index) => {
                     const commentId = comment.id;
                     const {
                         Text,
@@ -162,7 +168,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
 
                     return (
                         <li
-                            className={getCommentClass(father.data)}
+                            className={showedComent >= (index + 1) ? `${getCommentClass(father.data)} block` : `${getCommentClass(father.data)} none`}
                             id={`comment-id-${commentId}`}
                             key={commentId}
                         >
@@ -211,9 +217,9 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                                                 <div className="post-message">
                                                     {editingCommentId === commentId ? (
                                                         <UpdateCommentTextArea
-                                                        editingCommentId = {editingCommentId}
+                                                            editingCommentId={editingCommentId}
                                                             saveDraft={saveChanginDraftComment}
-                                                            commentId = {commentId}
+                                                            commentId={commentId}
                                                             defaultValue={Text}
                                                             sendMessage={(e) => {
                                                                 setForm(e);
@@ -260,7 +266,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                                                                     className="post-button-edit"
                                                                 ></button>}
                                                                 <button
-                                                                    style={editingCommentId? {bottom : "50%"}: {bottom : "0%"}}
+                                                                    style={editingCommentId ? { bottom: "50%" } : { bottom: "0%" }}
                                                                     onClick={() => onDelete(commentId, user.data.id)}
                                                                     className="post-button-delete"
                                                                 ></button>
@@ -293,6 +299,15 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                     );
                 })}
             </ul>
+            <button className={(commentCoutn - showedComent) <= 0 ? "none" : "show_more_button"} onClick={showMoreComments}>
+                <span className={isButtonLoading ? "loading show_more_button_span " : "show_more_button_span"}>
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.5083 4.5C22.0609 4.5 22.5088 4.94772 22.5088 5.5V9C22.5088 9.55228 22.0609 10 21.5083 10H18.0066C17.4541 10 17.0061 9.55228 17.0061 9C17.0061 8.44772 17.4541 8 18.0066 8H19.2991C17.8875 6.75451 16.0341 6 14.0047 6C9.88553 6 6.49196 9.11098 6.04969 13.1099C5.98898 13.6588 5.49454 14.0546 4.94533 13.9939C4.39613 13.9333 4.00012 13.4391 4.06083 12.8901C4.61393 7.88912 8.85423 4 14.0047 4C16.4879 4 18.7596 4.90468 20.5078 6.40058V5.5C20.5078 4.94772 20.9558 4.5 21.5083 4.5Z" fill="#109BFF" />
+                        <path d="M23.064 14.0061C23.6132 14.0667 24.0093 14.5609 23.9485 15.1099C23.3954 20.1109 19.1551 24 14.0047 24C11.5215 24 9.24982 23.0953 7.50152 21.5994V22.5C7.50152 23.0523 7.05359 23.5 6.50103 23.5C5.94848 23.5 5.50055 23.0523 5.50055 22.5V19C5.50055 18.4477 5.94848 18 6.50103 18H10.0027C10.5553 18 11.0032 18.4477 11.0032 19C11.0032 19.5523 10.5553 20 10.0027 20H8.71027C10.1219 21.2455 11.9752 22 14.0047 22C18.1238 22 21.5174 18.889 21.9597 14.8901C22.0204 14.3412 22.5148 13.9454 23.064 14.0061Z" fill="#109BFF" />
+                    </svg>
+                </span>
+                Показати ще {commentCoutn - showedComent}
+            </button>
 
         </div>
     );

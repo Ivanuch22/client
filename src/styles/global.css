@@ -677,3 +677,41 @@ img {
     background-color: #f2f2f2 !important;
     border-color: #dee2e6 #dee2e6 #f2f2f2 !important;
 }
+
+.none{
+  position: absolute;
+  z-index: -123;
+  opacity:  0;
+}
+.show_more_button{
+  font-family: 'Roboto', Arial, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-size: 17px;
+  line-height: 1.44;
+  display: flex;
+  background: #E7F5FF;
+  justify-content: center;
+  color: #000;
+  text-decoration: none !important;
+  font-size: 16px;
+  text-align: center;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 10px;
+  margin-bottom: 1px;
+  width: 100%;
+}
+
+.loading {
+  animation: spin 0.5s infinite linear;
+}
+
+@keyframes spin {
+  to {
+      transform: rotate(360deg);
+  }
+}
+#__next{
+  overflow: hidden;
+}
