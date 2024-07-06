@@ -89,7 +89,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
         sendMessage(e, fatherId)
         toggleReplyArea(fatherId)
     }
-    const [showedComent, setShowedComment] = useState(1);
+    const [showedComent, setShowedComment] = useState(3);
     const [isButtonLoading, setIsButtonLoading] = useState(false)
     const commentCoutn = useMemo(() => comments.length);
 
@@ -137,7 +137,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
 
             <ul className="p-0">
                 {comments.map((comment, index) => {
-                    const commentId = comment.id;
+                    const commentId = comment?.id;
                     const {
                         Text,
                         admin_date,
@@ -160,7 +160,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                         const name = comments.find((element) => {
                             return element.attributes.Text === father.data?.attributes.Text;
                         });
-                        return name?.attributes.user.data.attributes.real_user_name;
+                        return name?.attributes?.user?.data?.attributes?.real_user_name;
                     };
 
                     const getCommentClass = (fatherData) => {
@@ -270,7 +270,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                                                         </p>
                                                     )}
                                                     {children.data.length === 0 &&
-                                                        User.id === user.data.id &&
+                                                        User.id === user?.data?.id &&
                                                         timeDifference <= 5 && (
                                                             <>
                                                                 {!editingCommentId && <button
