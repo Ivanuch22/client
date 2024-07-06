@@ -253,6 +253,7 @@ export default {
     }
   },
   blog:{
+    showMore: "Show count more",
     titleName: "Blog",
     title: "Blog, delivery and customs clearance of goods.",
     description: "Blog about procurement, logistics and customs clearance of cargo. Expert opinion for your business.",
