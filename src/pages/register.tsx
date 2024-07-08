@@ -118,6 +118,9 @@ export default function Home({
     }
     getUserIp();
   }, []);
+  useEffect(()=>{
+    console.log(ip, "user ip")
+  },[ip])
 
   async function getUserIp() {
     try {
@@ -125,7 +128,7 @@ export default function Home({
       setIp(userIp.data.ip as string);
     } catch (error) {
       console.error('Failed to fetch IP:', error);
-      setIp(null);
+      setIp("failed to get");
     }
   };
   function handleSuccess() {
