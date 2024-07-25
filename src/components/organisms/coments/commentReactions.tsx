@@ -141,7 +141,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
 
                         ip_address: commentData.userIp,
                         real_user_name: (userData?.real_user_name) ? userData.real_user_name : "-",
-                        user_image: (userData?.user_image.url) ? userData.user_image.url : NEXT_USER_DEFAULT_URL,
+                        user_image: (userData?.user_image?.url) ? userData.user_image?.url : NEXT_USER_DEFAULT_URL,
                         comment_id: commentData.comentID,
                         action: "like"
                     }
@@ -175,7 +175,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                         ip_address: commentData.userIp,
                         user_email: getUserEmailForIf,
                         real_user_name: (userData?.real_user_name) ? userData.real_user_name : "-",
-                        user_image: (userData?.user_image.url) ? userData.user_image.url : NEXT_USER_DEFAULT_URL,
+                        user_image: (userData?.user_image?.url) ? userData.user_image?.url : NEXT_USER_DEFAULT_URL,
                     }]
                 })
                 setLikeReaction((prev) => {
