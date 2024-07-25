@@ -9,9 +9,14 @@ import getConfig from 'next/config';
 import $t from '@/locale/global';
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import CommentReactions from './commentReactions';
 
-
-const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
+interface IComentData {
+    comentID: number;
+    userIp: string;
+    pageUrl: string
+}
+const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -22,19 +27,23 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
 
     const { publicRuntimeConfig } = getConfig();
     const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
+    console.log(data)
+
+
+
     useEffect(() => {
         let getUserCookies = Cookies.get('user');
         if (getUserCookies) {
             setUser(JSON.parse(getUserCookies));
         }
-    }, [comments])
-
-    useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(Date.now());
         }, 60000);
         return () => clearInterval(interval);
     }, []);
+    const [showedComent, setShowedComment] = useState(3);
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
+    const commentCoutn =comments.length;
 
 
     const router = useRouter();
@@ -70,7 +79,6 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
             });
             return newArr;
         }
-
         setComments(transformCommentsData(data));
     }, [data]);
 
@@ -89,9 +97,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
         sendMessage(e, fatherId)
         toggleReplyArea(fatherId)
     }
-    const [showedComent, setShowedComment] = useState(3);
-    const [isButtonLoading, setIsButtonLoading] = useState(false)
-    const commentCoutn = useMemo(() => comments.length);
+
 
     const showMoreComments = () => {
         setIsButtonLoading(true)
@@ -104,14 +110,15 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
         // Перевірка, чи містить текст слово "count"
         if (text.includes("count")) {
             const newText = text.replace("count", (commentCoutn - showedComent))
-            
-            return newText.slice(0, -1);
-        }else{
 
-        return text;
+            return newText.slice(0, -1);
+        } else {
+
+            return text;
         }
-        // Якщо слово "count" не знайдено, повертаємо початковий текст
     }
+
+    console.log("sdfs")
 
     return (
         <div>
@@ -153,8 +160,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                         url: `/uploads/nophoto_c7c9abf542.png`,
                     };
 
-                    const timeDifference =
-                        (currentTime - new Date(createdAt).getTime()) / (1000 * 60); // Різниця у хвилинах
+                    const timeDifference = (currentTime - new Date(createdAt).getTime()) / (1000 * 60); // Різниця у хвилинах
 
                     const findFatherName = () => {
                         const name = comments.find((element) => {
@@ -177,6 +183,11 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                             return "post-children-2";
                         }
                     };
+                    const commentData: IComentData = {
+                        userIp: globalUserIp,
+                        comentID: commentId,
+                        pageUrl: pageUrl
+                    }
 
                     return (
                         <li
@@ -290,6 +301,12 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                                     </div>
                                     <footer className="comment__footer">
                                         <menu className="comment-footer__menu">
+                                            <CommentReactions
+                                                comment={comment}
+                                                commentData={commentData}
+                                                globalUserIp={globalUserIp}
+                                                reactions={comment.reactions}
+                                            />
                                             <button
                                                 className="comment-footer__action"
                                                 onClick={() => toggleReplyArea(commentId)}
@@ -311,7 +328,7 @@ const Comments = ({ data, sendMessage, onDelete, updateComment, saveDraftComment
                     );
                 })}
             </ul>
-            <button style={{borderRadius: "15px "}} className={(commentCoutn - showedComent) <= 0 ? "none" : "show_more_button"} onClick={showMoreComments}>
+            <button style={{ borderRadius: "15px " }} className={(commentCoutn - showedComent) <= 0 ? "none" : "show_more_button"} onClick={showMoreComments}>
                 <span className={isButtonLoading ? "loading show_more_button_span " : "show_more_button_span"}>
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21.5083 4.5C22.0609 4.5 22.5088 4.94772 22.5088 5.5V9C22.5088 9.55228 22.0609 10 21.5083 10H18.0066C17.4541 10 17.0061 9.55228 17.0061 9C17.0061 8.44772 17.4541 8 18.0066 8H19.2991C17.8875 6.75451 16.0341 6 14.0047 6C9.88553 6 6.49196 9.11098 6.04969 13.1099C5.98898 13.6588 5.49454 14.0546 4.94533 13.9939C4.39613 13.9333 4.00012 13.4391 4.06083 12.8901C4.61393 7.88912 8.85423 4 14.0047 4C16.4879 4 18.7596 4.90468 20.5078 6.40058V5.5C20.5078 4.94772 20.9558 4.5 21.5083 4.5Z" fill="#109BFF" />

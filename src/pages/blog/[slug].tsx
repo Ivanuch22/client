@@ -9,7 +9,7 @@ import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 
 import $t from '@/locale/global';
-import { server } from '@/http/index';
+import { server, NEXT_STRAPI_API_URL } from '@/http/index';
 import { errorText, message404 } from '../switch';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 
@@ -52,7 +52,7 @@ const fieldsToPopulate = ["seo_title",
   "user_name",
   "user_img",
   "history",
-]; // Додайте всі необхідні поля, окрім 'body'
+];
 
 const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('&');
 
@@ -60,6 +60,12 @@ const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('
 
 
 const { publicRuntimeConfig } = getConfig();
+
+interface IComentData {
+  comentID: number;
+  userIp: string;
+  pageUrl: string
+}
 
 export interface PageAttibutes {
   seo_title: string;
@@ -144,8 +150,8 @@ const Page = ({
   admin_date,
   comments,
   socialData,
+  commentsReactionsByPageUrl = []
 }: PageAttibutes) => {
-  console.log(mostPopular, "dsf")
 
   const [usersComments, setUserComments] = useState([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -159,6 +165,7 @@ const Page = ({
   const [editedCommentId, setEditedCommetId] = useState(0)
   const [commentUserId, setCommentUserId] = useState(0)
   const { isLogin, logout, updateUser, userData } = useAuth();
+  const [globalUserIp, setGlobalUserIp] = useState("")
 
   const [user, setUser] = useState({})
   useEffect(() => {
@@ -170,7 +177,8 @@ const Page = ({
       const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
       Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
       setUser(strapiRes.data)
-      console.log(strapiRes.data)
+      const getUserIps = await getUserIp()
+      setGlobalUserIp(getUserIps)
 
     }
     getUser()
@@ -180,8 +188,10 @@ const Page = ({
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   useEffect(() => {
     setUserComments(comments)
-    console.log(comments)
   }, [comments])
+
+
+
 
 
   useEffect(() => {
@@ -189,7 +199,6 @@ const Page = ({
     const incrementPageViews = async (pageId) => {
       const viewedPages = (Cookies.get('viewedPages') || '').split(',');
       if (viewedPages.includes("" + pageId)) {
-        console.log('Already viewed this page');
         return;
       }
       try {
@@ -446,12 +455,16 @@ const Page = ({
             const fatherLocale = fatherComment.data.data.attributes.locale === 'UK' ? 'UA' : fatherComment.data.data.attributes.locale;
             console.log(fatherLocale)
             if (fatherComment.data.data.attributes.user.data.attributes.sendMessage) {
-              const response = await axios.post(`/api/comment-message`, {
-                email: fatherComment.data.data.attributes.user.data.attributes.email,
-                locale: fatherComment.data.data.attributes.locale,
-                userName: fatherComment.data.data.attributes.user.data.attributes.real_user_name,
-                link: `${NEXT_FRONT_URL}${(fatherLocale === "RU" ? "" : `/${toLower(fatherLocale)}`)}${url}#comment`
-              });
+              try {
+                const response = await axios.post(`/api/comment-message`, {
+                  email: fatherComment.data.data.attributes.user.data.attributes.email,
+                  locale: fatherComment.data.data.attributes.locale,
+                  userName: fatherComment.data.data.attributes.user.data.attributes.real_user_name,
+                  link: `${NEXT_FRONT_URL}${(fatherLocale === "RU" ? "" : `/${toLower(fatherLocale)}`)}${url}#comment`
+                });
+              } catch (e) {
+                console.log(e)
+              }
             }
           }
           newFunc()
@@ -552,7 +565,6 @@ const Page = ({
       const comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
       setUserComments(comments);
     } catch (error) {
-      console.log(error)
 
       if (error.response.status === 401) {
         router.push("/login")
@@ -611,7 +623,6 @@ const Page = ({
           }
         });
     } catch (error) {
-      console.log(error)
       if (error.response.status === 401) {
         router.push("/login")
         return logout();
@@ -625,10 +636,8 @@ const Page = ({
 
   const deleteComment = async (commentId, userId) => {
     const userToken = Cookies.get('userToken'); // Retrieve user token from cookies
-    console.log(user.id)
 
     if (user.id !== userId) {
-      console.log(userId)
       return console.log("it's not your comment")
     }
 
@@ -649,6 +658,8 @@ const Page = ({
     setUserComments(comments);
 
   }
+
+
 
 
   return (
@@ -844,7 +855,7 @@ const Page = ({
                                 </Link>
                               </div>
                               <div className='w-auto part'>
-                                <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" stroke-linejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" stroke-linejoin="round"></path> </g></svg>
                                 {views}</div>
 
                             </div>
@@ -853,6 +864,8 @@ const Page = ({
                           <div dangerouslySetInnerHTML={{ __html: body }}></div>
                           <div id="comment"></div>
                           <Comments
+                            pageUrl={url}
+                            globalUserIp={globalUserIp}
                             saveDraftComment={saveDraftComment}
                             updateComment={updateComment}
                             saveChanginDraftComment={saveChanginDraftComment}
@@ -860,14 +873,15 @@ const Page = ({
                               setEditedCommetId(commentId);
                               setCommentUserId(userId)
                               setShowConfirmModal(true)
-                            }} data={usersComments} sendMessage={sendMessage} />
+                            }}
+                            data={usersComments}
+                            sendMessage={sendMessage} />
                         </>
                       )}
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
-
                   </Sidebar>
                 </div>
               </div>
@@ -912,8 +926,8 @@ export async function getServerSideProps({
 
   let pageRes = await server.get(getBlogPage(slug, $(Locale)));
   if (pageRes.data.data.length === 0) {
-    // notFoundMessage = true
-    // pageRes = await server.get(getBlogPage(slug, "ru"));
+    notFoundMessage = true
+    pageRes = await server.get(getBlogPage(slug, "ru"));
   }
   const strapiMenu = await server.get(getMenu('main'));
 
@@ -951,8 +965,13 @@ export async function getServerSideProps({
 
     const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
+    let commentsReactionsByPageUrl = await fetch(`${NEXT_STRAPI_API_URL.replace("/api", "")}/custom-comment-fields/reactionsByPage?page_url=${url}`).then(data => data.json())
+    const commentsWithReaction = comments.map((comment: any) => {
+      const findComentReaction = commentsReactionsByPageUrl.filter(reaction => reaction.comment_id === comment.id)
+      return { ...comment, reactions: findComentReaction }
+    })
 
-    // replace port in images
+
     const regex = /src="https:\/\/t-h-logistics\.com:17818\/uploads\//g;
     const replacedImagesSrcBody = body.replace(
       regex,
@@ -973,7 +992,7 @@ export async function getServerSideProps({
         notFoundMessage,
         slug,
         keywords,
-        comments,
+        comments: commentsWithReaction,
         heading,
         code,
         views,
@@ -990,10 +1009,10 @@ export async function getServerSideProps({
         footerGeneral,
         headings,
         socialData: socialData ?? null,
+        commentsReactionsByPageUrl,
       },
     };
   }
-
   return {
     props: {
       headings,
@@ -1029,8 +1048,14 @@ export async function getServerSideProps({
       },
       footerGeneral: footerGeneral ?? {},
       socialData: socialData ?? null,
+      commentsReactionsByPageUrl: []
     },
   };
 }
 
+
+
+
 export default Page;
+
+

@@ -32,10 +32,7 @@ const Switch = () => {
 
   const [pathWithoutFragment, setPathWithoutFragment]= useState(router.asPath.split('#')[0])
   
-  useEffect(()=>{
-    setPathWithoutFragment(router.asPath.split('#')[0]);
-    console.log(router.locale,pathWithoutFragment)
-  },[router.asPath])
+
 
   function handlePosition(locale: string | undefined) {
     if (locale === 'ua') {
@@ -66,6 +63,8 @@ const Switch = () => {
       triggerErrorMessage(router.locale);
     }
   }, [router.locale, pathWithoutFragment]);
+
+  
   function triggerErrorMessage(locale: string) {
     if (setErrorMessage && setErrorCode) {
       if (!isPageExists(pathWithoutFragment, locale)) {
@@ -113,7 +112,10 @@ const Switch = () => {
     );
     return pageIndex !== -1;
   }
-
+  useEffect(()=>{
+    setPathWithoutFragment(router.asPath.split('#')[0]);
+    console.log(router.locale,pathWithoutFragment)
+  },[router.asPath])
   return (
     <div>
       <div className="switch navpart">

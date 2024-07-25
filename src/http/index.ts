@@ -8,4 +8,5 @@ const server = axios.create({
   baseURL: `${NEXT_STRAPI_API_URL}`,
 });
 
+
 export { server, NEXT_STRAPI_API_URL };
