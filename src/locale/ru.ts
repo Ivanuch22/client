@@ -262,7 +262,7 @@ export default {
     mostpopular: "Блог, самое популярное",
     all: 'Все подряд',
     pageNotFoud: "На сайте нет русской версии этой страницы",
-    blog_guests: "Гостя"
+    blog_guests: "Гостевых голоса"
   },
   comment: {
     comments: "комментариев",

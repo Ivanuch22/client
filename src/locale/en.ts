@@ -261,7 +261,7 @@ export default {
     mostpopular:"Blog, most popular",
     all: 'All heading',
     pageNotFoud: "There is no English version of this page on the site",
-    blog_guests: "Guests"
+    blog_guests: "Guest Voices"
 
   },
   comment: {

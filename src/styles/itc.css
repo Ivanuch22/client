@@ -353,7 +353,6 @@ list-style-type:none
 }
 
 .post-content .post-body {
-    overflow: hidden;
     width: 100%;
     margin-bottom: 25px;
 }
@@ -509,7 +508,7 @@ list-style-type:none
     background-color: #fff;
     width: 220px;
     left: 3px;
-    max-height: 55px;
+    max-height: 550px;
     box-shadow: none;
     overflow: hidden;
     border-radius: 10px 10px 10px 0;

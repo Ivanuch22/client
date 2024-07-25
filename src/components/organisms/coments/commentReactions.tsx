@@ -47,7 +47,11 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
     }).length + +comment.attributes.admin_like)
 
 
-    
+      const shortText = (text)=>{
+        return text.length > 14
+          ? `${text.slice(0, 14)}...`
+          : text
+      }
 
 
     useEffect(() => {
@@ -185,7 +189,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {likeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 55, paddingBottom: 20 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 550, paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {likeReaction.map((reaction,index) => {
                                     if (reaction.real_user_name !== "-") {
@@ -204,7 +208,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                         <li className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                             <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_USER_DEFAULT_URL})` }}>
                                             </div>
-                                            <h3 className="comment-footer_menu_reaction_user_name">{anonimusLike} - {$t[locale].blog.blog_guests} </h3>
+                                            <h3 className="comment-footer_menu_reaction_user_name">{shortText( `${anonimusLike} - ${$t[locale].blog.blog_guests}`)}</h3>
                                         </li>
 
                                     )
@@ -228,7 +232,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {dislikeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 55, paddingBottom: 20 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 550, paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {disLikeReaction.map((reaction,index) => {
                                     if (reaction.real_user_name !== "-") {
@@ -246,7 +250,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                         <li className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                             <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_USER_DEFAULT_URL})` }}>
                                             </div>
-                                            <h3 className="comment-footer_menu_reaction_user_name"> {anonimusDisLike} - {$t[locale].blog.blog_guests}</h3>
+                                            <h3 className="comment-footer_menu_reaction_user_name"> {shortText( `${anonimusDisLike} - ${$t[locale].blog.blog_guests}`)}</h3>
                                         </li>
                                     )
 
