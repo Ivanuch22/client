@@ -189,7 +189,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                 {likeReaction.map((reaction,index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li key={index+ reaction.real_user_name} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${reaction.user_image})` }}>
                                                 </div>
                                                 <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>
@@ -232,7 +232,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                 {disLikeReaction.map((reaction,index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li key={index+ reaction.real_user_name} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${reaction.user_image})` }}>
                                                 </div>
                                                 <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>
