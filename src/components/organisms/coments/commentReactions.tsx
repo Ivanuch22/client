@@ -186,10 +186,10 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                     <div className="comment-footer_menu_reaction_block">
                         <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 55, paddingBottom: 20 }}>
                             <ul className="comment-footer_menu_reaction_list">
-                                {likeReaction.map(reaction => {
+                                {likeReaction.map((reaction,index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li key={index+ reaction.real_user_name} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${reaction.user_image})` }}>
                                                 </div>
                                                 <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>
@@ -229,10 +229,10 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                     <div className="comment-footer_menu_reaction_block">
                         <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 55, paddingBottom: 20 }}>
                             <ul className="comment-footer_menu_reaction_list">
-                                {disLikeReaction.map(reaction => {
+                                {disLikeReaction.map((reaction,index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li key={index+ reaction.real_user_name} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${reaction.user_image})` }}>
                                                 </div>
                                                 <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>

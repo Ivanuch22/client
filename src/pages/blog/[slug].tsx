@@ -353,7 +353,7 @@ const Page = ({
     } catch (error) {
       console.log(error)
 
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         router.push("/login")
         return logout();
       }
@@ -482,7 +482,7 @@ const Page = ({
     } catch (error) {
       console.log(error)
 
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         router.push("/login")
         return logout();
 
@@ -566,7 +566,7 @@ const Page = ({
       setUserComments(comments);
     } catch (error) {
 
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         router.push("/login")
         return logout();
 
@@ -623,7 +623,7 @@ const Page = ({
           }
         });
     } catch (error) {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         router.push("/login")
         return logout();
 
