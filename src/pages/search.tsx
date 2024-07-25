@@ -52,7 +52,6 @@ export default function Home({
   footerGeneral,
   socialData,
 }) {
-  console.log(pages)
   const [contacts, setContacts] = useState<Contacts>(initialContacts);
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;

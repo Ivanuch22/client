@@ -118,9 +118,7 @@ export default function Home({
     }
     getUserIp();
   }, []);
-  useEffect(()=>{
-    console.log(ip, "user ip")
-  },[ip])
+
 
   async function getUserIp() {
     try {

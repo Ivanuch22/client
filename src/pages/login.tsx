@@ -154,7 +154,6 @@ export default function Home({
     let userData;
     try{
       userData = await getUserFingerPrint();
-      console.log("getUserData",userData)
     }catch(e){
       console.log(e)
       userData ={}
@@ -174,7 +173,6 @@ export default function Home({
       user.history = [userData, ...userHistory];
 
       Cookies.set('email', response.data.user.email, { expires: 7 });
-      console.log(user.history)
       const updateUserHistory = await server.put(`/users/${user.id}`, {
         history: user.history
       }, {
@@ -182,7 +180,6 @@ export default function Home({
           Authorization: `Bearer ${response.data.jwt}`,
         },
       });
-      console.log(user.history)
 
 
       Cookies.set('userToken', response.data.jwt, { expires: 7 });

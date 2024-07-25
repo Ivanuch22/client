@@ -57,7 +57,6 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
             if (draftIntervalRef.current) {
                 clearInterval(draftIntervalRef.current);
             }
-            console.log('blur');
             saveDraft(longestDraftText);
                 setDrafts([]);
             setCommentText("")
@@ -80,13 +79,7 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
                     name="comment_text"
                     id="form_comment_text"
                     className="new-editor"
-                    onBlur={() => {
-                        setTimeout(() => {
-                            console.log(isSubmittingRef.current, drafts)
-                            
-                        }, 1000);
 
-                    }}
                     onChange={(e) => {
                         setCommentText(e.target.value);
                     }}

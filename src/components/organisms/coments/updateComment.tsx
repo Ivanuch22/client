@@ -65,7 +65,6 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
     };
     const onCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        console.log("click",longestDraftText === defaultValue)
         if (longestDraftText === defaultValue) {
             toggleChangeArea()
             setCommentText(defaultValue)
@@ -75,7 +74,6 @@ const UpdateCommentTextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId,
 
                 clearInterval(draftIntervalRef.current);
 
-            console.log('blur');
             saveDraft(longestDraftText, commentId);
             setDrafts([]);
             toggleChangeArea()

@@ -169,6 +169,13 @@ const Page = ({
 
   const [user, setUser] = useState({})
   useEffect(() => {
+
+    const getUserIpFunc = async ()=>{
+      const getUserIps = await getUserIp()
+      setGlobalUserIp(getUserIps)
+
+    }
+    getUserIpFunc()
     const getUserCookies = Cookies.get('user');
     if (!getUserCookies) return
     const userCookies = JSON.parse(getUserCookies)
@@ -177,13 +184,14 @@ const Page = ({
       const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
       Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
       setUser(strapiRes.data)
-      const getUserIps = await getUserIp()
-      setGlobalUserIp(getUserIps)
+
 
     }
+
     getUser()
     setUser(userFromBd);
   }, []);
+
 
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   useEffect(() => {
@@ -328,7 +336,6 @@ const Page = ({
         type: commentType
       }
     ]
-    console.log(user)
     let payload = {
       data: {
         user: { connect: [{ id: user.id }] },
@@ -358,9 +365,6 @@ const Page = ({
         return logout();
       }
     }
-
-
-    console.log(response.data)
   }
 
   const sendMessage = async (e, fatherId) => {
@@ -429,7 +433,6 @@ const Page = ({
           history: commentHistoryJson
         }
       };
-      console.log(commentText)
       const response = await server.post('/comments1', payload, {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -453,7 +456,6 @@ const Page = ({
 
             const fatherComment = await server.get(`/comments1/${fatherId}?populate=*`);
             const fatherLocale = fatherComment.data.data.attributes.locale === 'UK' ? 'UA' : fatherComment.data.data.attributes.locale;
-            console.log(fatherLocale)
             if (fatherComment.data.data.attributes.user.data.attributes.sendMessage) {
               try {
                 const response = await axios.post(`/api/comment-message`, {
@@ -855,7 +857,7 @@ const Page = ({
                                 </Link>
                               </div>
                               <div className='w-auto part'>
-                                <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" stroke-linejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" stroke-linejoin="round"></path> </g></svg>
+                                <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
                                 {views}</div>
 
                             </div>

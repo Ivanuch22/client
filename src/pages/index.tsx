@@ -38,7 +38,6 @@ export default function Home({
       const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
       Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
       setUser(strapiRes.data)
-    console.log(strapiRes.data)
 
     }
     getUser()

@@ -79,9 +79,7 @@ export default function Profile({
       setAvatarUrl(noImgUrl)
     }
   }, [user])
-  useEffect(() => {
-    console.log(avatarUrl)
-  }, [avatarUrl])
+
 
 
 
@@ -106,12 +104,10 @@ export default function Profile({
     Cookies.set('userName', JSON.stringify(strapiRes.data.real_user_name), {
       expires: 7,
     });
-    console.log(user.real_user_name)
 
     // Fetch all comments by the current user
     const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
     const comments = getBlogComments.data.data;
-    console.log(comments)
 
     // Update each comment with the new user_img
     const updateCommentPromises = comments.map(comment => {
@@ -168,7 +164,6 @@ export default function Profile({
     const oldPass = formData.get('oldPass');
     const newPass = formData.get('newPass');
     const token = Cookies.get('userToken');
-    console.log("hello")
     try {
       const res = await server.post(
         '/auth/change-password',
@@ -203,7 +198,7 @@ export default function Profile({
       });
 
       const uploadedFile = response.data[0];
-      console.log(uploadedFile);
+
 
       // Update user with the new image
       await updateStrapiData({
@@ -215,7 +210,6 @@ export default function Profile({
             // Delete the old avatar if exists
             if (user.avatarId) {
               await deleteOldAvatar(user.avatarId);
-              console.log("img deleted",user.avatarId)
             }
 
       setUser({
@@ -231,7 +225,6 @@ export default function Profile({
       // Fetch all comments by the current user
       const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
       const comments = getBlogComments.data.data;
-      console.log(comments);
 
       // Update each comment with the new user_img
       const updateCommentPromises = comments.map(comment => {
@@ -267,7 +260,6 @@ export default function Profile({
     try {
       if (NEXT_STRAPI_IMG_DEFAULT !== avatarId) {
         console.log("success start")
-
         await server.delete(`/upload/files/${avatarId}`, {
           headers: {
             Authorization: `Bearer ${Cookies.get('userToken')}`,
@@ -617,7 +609,6 @@ export default function Profile({
                               id="birthday"
                               onChange={e => {
                                 onChange({ ...user, birthday: e.target.value })
-                                console.log(e.target.value)
                               }
                               }
                               value={defaultBirthday}

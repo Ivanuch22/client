@@ -32,7 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
 
             let validatedLocale = "ru"
-            console.log(locale, "sdlfj")
             if (['RU', 'UK', 'EN'].includes(locale)) {
                 validatedLocale = locale;
             }

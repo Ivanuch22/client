@@ -114,7 +114,6 @@ const Switch = () => {
   }
   useEffect(()=>{
     setPathWithoutFragment(router.asPath.split('#')[0]);
-    console.log(router.locale,pathWithoutFragment)
   },[router.asPath])
   return (
     <div>

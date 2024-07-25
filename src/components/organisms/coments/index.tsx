@@ -27,7 +27,6 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
 
     const { publicRuntimeConfig } = getConfig();
     const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
-    console.log(data)
 
 
 

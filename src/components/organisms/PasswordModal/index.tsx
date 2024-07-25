@@ -16,9 +16,7 @@ const PasswordModal: React.FC<ConfirmModalProps> = ({
     description
 }) => {
     const [password, setPassword] = useState("")
-    useEffect(() => {
-        console.log(password)
-    }, [password])
+
     return (
         <div id="ConfirmModal" className="modal fade show" style={{ padding: "0 10px", background: 'rgba(0, 0, 0, .3)', display: isVisible ? 'block' : 'none' }}>
             <div className="modal-dialog modal-confirm">

@@ -39,12 +39,6 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
 
     }).length + +comment.attributes.admin_like)
 
-    console.log(likeReaction.filter(reaction => {
-        if (reaction.real_user_name == "-") {
-            return reaction
-        }
-
-    }), anonimusLike, "sdom")
 
     
 
