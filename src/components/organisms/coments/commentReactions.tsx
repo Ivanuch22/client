@@ -1,9 +1,12 @@
+// @ts-nocheck
 import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import {  NEXT_STRAPI_API_URL } from '@/http/index';
 import { IComentReaction, IReaction } from "@/types/commentReactions";
 import getConfig from "next/config";
+import $t from '@/locale/global';
+import { useRouter } from 'next/router';
 
 
 interface IComentData {
@@ -22,9 +25,13 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
     const [dislikeCount, setDislikeCount] = useState(disLikeReaction.length + +comment.attributes.admin_dislike);
     const [userCookieUserData, setCookieUserData] = useState(Cookies.get("user"));
     const userData = userCookieUserData ? JSON.parse(userCookieUserData) : null
+    const router = useRouter();
+
+  const locale = router.locale === 'ua' ? 'uk' : router.locale ||"ru";
+
 
     const { publicRuntimeConfig } = getConfig();
-    const { NEXT_USER_DEFAULT_URL } = publicRuntimeConfig;
+    const { NEXT_USER_DEFAULT_URL,NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
     const [anonimusLike, setAnonimusLike] = useState(likeReaction.filter(reaction => {
         if (reaction.real_user_name == "-") {
@@ -119,7 +126,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                         page_url: commentData.pageUrl,
                         ip_address: commentData.userIp,
                         real_user_name: (userData?.real_user_name) ? userData.real_user_name : "-",
-                        user_image: (userData?.imgLink) ? userData.imgLink : NEXT_USER_DEFAULT_URL,
+                        user_image: (userData?.imgLink) ? userData.user_image.url : NEXT_USER_DEFAULT_URL,
                         comment_id: commentData.comentID, 
                         action: "like"
                     }
@@ -149,7 +156,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                         page_url: commentData.pageUrl,
                         ip_address: commentData.userIp,
                         real_user_name: (userData?.real_user_name) ? userData.real_user_name : "-",
-                        user_image: (userData?.imgLink) ? userData.imgLink : NEXT_USER_DEFAULT_URL,
+                        user_image: (userData?.imgLink) ? userData.user_image.url : NEXT_USER_DEFAULT_URL,
                     }]
                 })
                 setLikeReaction((prev) => {
@@ -184,7 +191,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                     if (reaction.real_user_name !== "-") {
                                         return (
                                             <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
-                                                <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${reaction.user_image})` }}>
+                                                <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL}${reaction.user_image})` }}>
                                                 </div>
                                                 <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>
                                             </li>
@@ -197,7 +204,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                         <li className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                             <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_USER_DEFAULT_URL})` }}>
                                             </div>
-                                            <h3 className="comment-footer_menu_reaction_user_name">{anonimusLike} - Гостя </h3>
+                                            <h3 className="comment-footer_menu_reaction_user_name">{anonimusLike} - {$t[locale].blog.blog_guests} </h3>
                                         </li>
 
                                     )
@@ -227,7 +234,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                     if (reaction.real_user_name !== "-") {
                                         return (
                                             <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
-                                                <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${reaction.user_image})` }}>
+                                                <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL}${reaction.user_image})` }}>
                                                 </div>
                                                 <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>
                                             </li>
@@ -237,9 +244,9 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                 {anonimusDisLike > 0 &&
                                     (
                                         <li className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
-                                            <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(https://t-h-logistics.com:17818/uploads/nophoto_93a54d0c2b.png)` }}>
+                                            <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_USER_DEFAULT_URL})` }}>
                                             </div>
-                                            <h3 className="comment-footer_menu_reaction_user_name"> {anonimusDisLike} - Гостя</h3>
+                                            <h3 className="comment-footer_menu_reaction_user_name"> {anonimusDisLike} - {$t[locale].blog.blog_guests}</h3>
                                         </li>
                                     )
 

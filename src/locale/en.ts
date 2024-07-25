@@ -260,7 +260,8 @@ export default {
     keywords: "logistics, blog, import, export, china, goods, customs, foreign exchange",
     mostpopular:"Blog, most popular",
     all: 'All heading',
-    pageNotFoud: "There is no English version of this page on the site"
+    pageNotFoud: "There is no English version of this page on the site",
+    blog_guests: "Guests"
 
   },
   comment: {

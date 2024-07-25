@@ -117,7 +117,6 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
         }
     }
 
-    console.log("sdfs")
 
     return (
         <div>
@@ -156,7 +155,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                     } = comment.attributes;
 
                     const { url } = user_img?.data?.attributes || {
-                        url: `/uploads/nophoto_c7c9abf542.png`,
+                        url: `/uploads/avatardefaul_8e448093cc.png`,
                     };
 
                     const timeDifference = (currentTime - new Date(createdAt).getTime()) / (1000 * 60); // Різниця у хвилинах
