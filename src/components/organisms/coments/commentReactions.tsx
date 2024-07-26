@@ -153,8 +153,6 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 })
             } else if (fetchStatus == 200) {
                 setLikeReaction((prev) => {
-                    // console.log(prev.filter(element => (element.user_email !== userData.email) ),"coments")
-
                     return prev.filter(element => element.ip_address !== commentData.userIp || element.user_email !== getUserEmailForIf)
                 })
             }
