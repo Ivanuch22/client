@@ -206,7 +206,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {likeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 300, paddingBottom: 5 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflowY: "scroll", maxHeight: 300, paddingRight:20,  paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {likeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
@@ -249,7 +249,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {dislikeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 300, paddingBottom: 5 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflowY: "scroll", maxHeight: 300, paddingRight:20,  paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {disLikeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
