@@ -48,8 +48,8 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
 
 
     const shortText = (text) => {
-        return text.length > 14
-            ? `${text.slice(0, 14)}...`
+        return text.length > 12
+            ? `${text.slice(0, 12)}...`
             : text
     }
 
@@ -214,7 +214,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                             <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL + reaction.user_image})` }}>
                                                 </div>
-                                                <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>
+                                                <h3 className="comment-footer_menu_reaction_user_name">{shortText( reaction.real_user_name)}</h3>
                                             </li>
                                         )
                                     }
@@ -257,7 +257,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                             <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL}${reaction.user_image})` }}>
                                                 </div>
-                                                <h3 className="comment-footer_menu_reaction_user_name">{reaction.real_user_name}</h3>
+                                                <h3 className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
                                             </li>
                                         )
                                     }
