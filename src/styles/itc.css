@@ -501,7 +501,7 @@ list-style-type:none
 .comment-footer_menu_reaction_block{
     position: absolute;
     bottom: 30px;
-    padding: 10px 0px 10px 15px;
+    padding: 0;
     z-index: -1232198;
     opacity: 0;
     border: 2px solid #687a86;
@@ -519,8 +519,8 @@ list-style-type:none
 .comment-footer_menu_reaction_list{
     /* overflow-y: scroll; */
     display: grid;
-    gap: 10px;
-    padding: 0;
+    gap: 8px;
+    padding: 10px 15px 10px 15px;
 
     
 }
