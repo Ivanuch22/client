@@ -153,6 +153,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 })
             } else if (fetchStatus == 200) {
                 setLikeReaction((prev) => {
+
                     return prev.filter(element => element.ip_address !== commentData.userIp || element.user_email !== getUserEmailForIf)
                 })
             }
@@ -205,7 +206,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {likeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 550, paddingBottom: 5 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 300, paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {likeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
@@ -248,7 +249,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {dislikeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 550, paddingBottom: 5 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflow: "scroll", maxHeight: 300, paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {disLikeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
