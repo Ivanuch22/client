@@ -1,19 +1,18 @@
-// @ts-nocheck
-
+// Import necessary modules
+//@ts-nocheck
 import Head from 'next/head';
 import DefaultLayout from '@/components/layouts/default';
 import Script from 'next/script';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import $t from '@/locale/global';
-import SearchModal from '@/components/organisms/search-modal';
-import axios from 'axios';
 import { server } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
+import parse from 'html-react-parser';
+
 
 export default function Home({
   html,
@@ -28,21 +27,25 @@ export default function Home({
 }) {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
-  const [user,setUser] = useState({})
+  const [user, setUser] = useState({});
+
   useEffect(() => {
     const getUserCookies = Cookies.get('user');
-    if (!getUserCookies) return
-    const userCookies = JSON.parse(getUserCookies)
+    if (!getUserCookies) return;
+    const userCookies = JSON.parse(getUserCookies);
     let userFromBd = userCookies;
-    async function getUser() {
-      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
-      Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
-      setUser(strapiRes.data)
 
+    async function getUser() {
+      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`);
+      Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
+      setUser(strapiRes.data);
     }
-    getUser()
+
+    getUser();
     setUser(userFromBd);
   }, []);
+  const jsxContent = parse(html);
+
   return (
     <>
       <Head>
@@ -68,7 +71,8 @@ export default function Home({
             }}
           >
             <DefaultLayout>
-              <>{require('html-react-parser')(html)}</>
+              {/* <div dangerouslySetInnerHTML={{ __html: html }} /> */}
+              <div>{jsxContent}</div>
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>
@@ -76,6 +80,7 @@ export default function Home({
     </>
   );
 }
+// Import necessary modules
 
 export async function getServerSideProps({ query, locale }) {
   try {
@@ -95,9 +100,22 @@ export async function getServerSideProps({ query, locale }) {
     const socialRes = await server.get('/social');
     const socialData = socialRes.data.data.attributes;
 
+    // Transform img tags in HTML to Next.js Image components
+    const transformedHtml = index.replace(/<img ([^>]*)src="([^"]+)"([^>]*)>/g, (match, beforeSrc, src, afterSrc) => {
+      const altMatch = match.match(/alt="([^"]*)"/);
+      const alt = altMatch ? altMatch[1] : '';
+      const classMatch = match.match(/class="([^"]*)"/);
+      const className = classMatch ? classMatch[1] : '';
+      const styleMatch = match.match(/style="([^"]*)"/);
+      const style = styleMatch ? styleMatch[1] : '';
+
+      return `<Image src="${src}" alt="${alt||"sdlfj"}" width="500" height="500" class="${className}" style="${style}" />`;
+    });
+
+
     return {
       props: {
-        html: index,
+        html : transformedHtml,
         description: index_seo_description,
         title: index_title,
         keywords: index_keywords,
@@ -111,7 +129,7 @@ export async function getServerSideProps({ query, locale }) {
   } catch (error) {
     return {
       props: {
-        html: ``,
+        html: null,
         description: '',
         title: '',
         keywords: '',
@@ -123,7 +141,7 @@ export async function getServerSideProps({ query, locale }) {
           contacts: {},
         },
         footerGeneral: {},
-        socialData: {}
+        socialData: {},
       },
     };
   }

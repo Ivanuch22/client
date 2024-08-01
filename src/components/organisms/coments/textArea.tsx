@@ -50,15 +50,15 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
         const longestDraft = lastThreeDrafts.reduce((a, b) => (a.length > b.length ? a : b), "");
         setLongestDraftText(longestDraft);
     };
-    const onCancel = (e: any)=>{
+    const onCancel = (e: any) => {
         e.preventDefault();
-        
+
         if (!isSubmittingRef.current) { // Only execute onBlur if the form is not being submitted
             if (draftIntervalRef.current) {
                 clearInterval(draftIntervalRef.current);
             }
             saveDraft(longestDraftText);
-                setDrafts([]);
+            setDrafts([]);
             setCommentText("")
         }
     }
@@ -68,7 +68,7 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
         if (drafts.length >= 1) {
             isSubmittingRef.current = false;
         } else {
-            isSubmittingRef.current = true; 
+            isSubmittingRef.current = true;
         }
     }, [drafts]);
 
@@ -87,14 +87,14 @@ const TextArea: React.FC<TextAreaProps> = ({ sendMessage, fatherId, saveDraft })
                     placeholder={$t[locale].comment.placeholder}
                 ></textarea>
                 <div className="row" style={{ width: "100%" }}>
-               {commentText.length>0&&
-                 <button 
-                 type="cancel" onClick={onCancel} style={{ background: "red", marginRight: 10, border: "none"}} className="btn d-block btn-danger btn-submit-login pull-right" id="button-login-submit" >
-                 {$t[locale].comment.cancel}
-             </button>
-               }
+                    {commentText.length > 0 &&
+                        <button
+                            type="cancel" onClick={onCancel} style={{ background: "red", marginRight: 10, border: "none" }} className="btn d-block btn-danger btn-submit-login pull-right" id="button-login-submit" >
+                            {$t[locale].comment.cancel}
+                        </button>
+                    }
                     <button
-                    disabled = {(commentText.length===0? true: false)}
+                        disabled={(commentText.length === 0 ? true : false)}
                         type="submit"
                         className="btn btn-success btn-submit-login pull-right"
                         id="button-login-submit"

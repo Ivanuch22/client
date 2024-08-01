@@ -7,6 +7,7 @@ import { Crumb } from '@/components/molecules/Breacrumbs';
 import { useRouter } from 'next/router';
 import $t from '@/locale/global';
 import { useState, useEffect, useMemo } from 'react';
+import parse from 'html-react-parser';
 
 import genRatingData from '@/utils/generators/genRatingData';
 import genFaqData from '@/utils/generators/genFaqData';
@@ -216,9 +217,10 @@ const Page = ({
             dangerouslySetInnerHTML={{ __html: extraLinks }}
           />
         )}
-        <>{require('html-react-parser')(chunksHead)}</>
+        <>{parse(chunksHead)}</>
+
       </Head>
-      <>{require('html-react-parser')(chunksBodyTop)}</>
+      <>{parse(chunksBodyTop)}</>
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
@@ -288,13 +290,12 @@ const Page = ({
                         <div className="error-message">
                           <h3>
                             {errorCode != null
-                              ? `${
-                                  errorText[
-                                    Object.keys(message404).find(
-                                      key => message404[key] === errorMessage
-                                    )
-                                  ]
-                                } ${errorCode}`
+                              ? `${errorText[
+                              Object.keys(message404).find(
+                                key => message404[key] === errorMessage
+                              )
+                              ]
+                              } ${errorCode}`
                               : errorMessage}
                           </h3>
                           {errorCode != null && (
@@ -308,7 +309,7 @@ const Page = ({
                   </div>
                   <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
 
-                  <Sidebar randomBanner={randomBanner}></Sidebar>
+                    <Sidebar randomBanner={randomBanner}></Sidebar>
                   </aside>
                 </div>
               </div>
@@ -316,7 +317,7 @@ const Page = ({
           </DefaultLayoutContext.Provider>
         </div>
       </div>
-      <>{require('html-react-parser')(chunksBodyFooter)}</>
+      <>{parse(chunksBodyFooter)}</>
     </>
   );
 };
@@ -330,7 +331,7 @@ export async function getServerSideProps({
   const randomBanner = await getRandomBanner(locale);
 
   const slug = `/${query?.slug}` || '';
-  
+
 
   const pageRes = await server.get(getPageSeo(slug, $(locale)));
   const strapiMenu = await server.get(getMenu('main'));

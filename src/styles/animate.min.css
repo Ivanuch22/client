@@ -1079,9 +1079,9 @@
     opacity: 1;
   }
 }
-.zoomIn {
+/* .zoomIn {
   animation-name: zoomIn;
-}
+} */
 @keyframes zoomInDown {
   0% {
     opacity: 0;

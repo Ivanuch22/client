@@ -215,9 +215,10 @@ const Page = ({
           />
         )}
 
-        <>{require('html-react-parser')(chunksHead)}</>
+<>{parse(chunksHead)}</>
+
       </Head>
-      <>{require('html-react-parser')(chunksBodyTop)}</>
+<>{parse(chunksBodyTop)}</>
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
@@ -301,7 +302,7 @@ const Page = ({
           </DefaultLayoutContext.Provider>
         </div>
       </div>
-      <>{require('html-react-parser')(chunksBodyFooter)}</>
+      <>{parse(chunksBodyFooter)}</>
     </>
   );
 };

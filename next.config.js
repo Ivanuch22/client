@@ -1,3 +1,7 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig = {
   publicRuntimeConfig: {
     NEXT_MAILER: process.env.NEXT_MAILER,
@@ -6,7 +10,7 @@ const nextConfig = {
     NEXT_STRAPI_BASED_URL: process.env.NEXT_STRAPI_BASED_URL,
     NEXT_FRONT_URL: process.env.NEXT_FRONT_URL,
     NEXT_STRAPI_IMG_DEFAULT: process.env.NEXT_STRAPI_IMG_DEFAULT,
-    NEXT_USER_DEFAULT_URL: process.env.NEXT_USER_DEFAULT_URL
+    NEXT_USER_DEFAULT_URL: process.env.NEXT_USER_DEFAULT_URL,
   },
   compress: true,
   reactStrictMode: true,
@@ -20,7 +24,7 @@ const nextConfig = {
     minimize: true,
   },
   webpack: (config) => {
-    config.optimization.minimize = true; // Disable minification
+    config.optimization.minimize = true;
     return config;
   },
   images: {
@@ -42,4 +46,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

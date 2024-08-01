@@ -170,7 +170,7 @@ export default function Home({
                         {pages.map((page, index) => {
                           const { page_title, admin_date, url, heading, comments, views } = page.attributes;
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
-
+                          console.log(comments)
                           return (
                             <section className="row row-line" key={index}>
                               <div className="col-sm-3 col-img mb-3 mb-sm-0 blog_img_block">

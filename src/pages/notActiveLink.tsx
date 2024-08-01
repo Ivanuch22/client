@@ -1,4 +1,5 @@
 // @ts-nocheck
+import parse from 'html-react-parser';
 import { server } from '@/http/index';
 import Head from 'next/head';
 import DefaultLayout from '@/components/layouts/default';
@@ -175,10 +176,8 @@ const Page = ({
         if (item.position === 'body-footer') {
             acc += item.script;
         }
-
         return acc;
     }, ``);
-
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [errorCode, setErrorCode] = useState<number | null>(null);
 
@@ -220,9 +219,11 @@ const Page = ({
                     />
                 )}
 
-                <>{require('html-react-parser')(chunksHead)}</>
+<>{parse(chunksHead)}</>
+
             </Head>
-            <>{require('html-react-parser')(chunksBodyTop)}</>
+<>{parse(chunksBodyTop)}</>
+            
             <div className="container-xxl bg-white p-0">
                 <div className="container-xxl positi  on-relative p-0">
                     <DefaultLayoutContext.Provider
@@ -284,7 +285,7 @@ const Page = ({
                     </DefaultLayoutContext.Provider>
                 </div>
             </div>
-            <>{require('html-react-parser')(chunksBodyFooter)}</>
+            <>{parse(chunksBodyFooter)}</>
         </>
     );
 };

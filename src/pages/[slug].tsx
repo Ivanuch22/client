@@ -23,6 +23,7 @@ import { errorText, message404 } from './switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 
+import parse from 'html-react-parser';
 export interface PageAttibutes {
   seo_title: string;
   createdAt: string;
@@ -204,9 +205,11 @@ const Page = ({
           />
         )}
 
-        <>{require('html-react-parser')(chunksHead)}</>
+<>{parse(chunksHead)}</>
+
       </Head>
-      <>{require('html-react-parser')(chunksBodyTop)}</>
+<>{parse(chunksBodyTop)}</>
+
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl positi  on-relative p-0">
           <DefaultLayoutContext.Provider
@@ -276,7 +279,7 @@ const Page = ({
           </DefaultLayoutContext.Provider>
         </div>
       </div>
-      <>{require('html-react-parser')(chunksBodyFooter)}</>
+      <>{parse(chunksBodyFooter)}</>
     </>
   );
 };

@@ -56,17 +56,17 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
     const getUserEmailForIf = (userData?.email) ? userData?.email : "-";
 
     useEffect(() => {
-        const myIp = reactions.filter((element) =>{
-            if(element.user_email === getUserEmailForIf &&element.user_email !== "-"){
+        const myIp = reactions.filter((element) => {
+            if (element.user_email === getUserEmailForIf && element.user_email !== "-") {
                 return element
-            }else if(element.ip_address == globalUserIp){
+            } else if (element.ip_address == globalUserIp) {
                 return element
             }
-        } )
-        
+        })
+
         console.log(myIp, "my ip")
         console.log((globalUserIp == myIp[0]?.ip_address && (myIp[0].user_email === getUserEmailForIf)))
-        if(myIp[0]?.user_email === getUserEmailForIf &&myIp[0]?.user_email !== "-"){
+        if (myIp[0]?.user_email === getUserEmailForIf && myIp[0]?.user_email !== "-") {
             if (myIp[0]?.action == "like") {
                 setLike(true)
                 setDislike(false)
@@ -74,7 +74,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 setLike(false)
                 setDislike(true)
             }
-        }else if (globalUserIp == myIp[0]?.ip_address) {
+        } else if (globalUserIp == myIp[0]?.ip_address) {
             if (myIp[0]?.action == "like") {
                 setLike(true)
                 setDislike(false)
@@ -83,7 +83,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 setDislike(true)
             }
         }
-        
+
     }, [globalUserIp])
 
     useEffect(() => {
@@ -222,15 +222,15 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {likeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflowY: "auto", maxHeight: 300,   paddingBottom: 5 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflowY: "auto", maxHeight: 300, paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {likeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li  itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL + reaction.user_image})` }}>
                                                 </div>
-                                                <h3 className="comment-footer_menu_reaction_user_name">{shortText( reaction.real_user_name)}</h3>
+                                                <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
                                             </li>
                                         )
                                     }
@@ -265,15 +265,15 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 </button>
                 {dislikeCount > 0 && (
                     <div className="comment-footer_menu_reaction_block">
-                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflowY: "auto", maxHeight: 300,   paddingBottom: 5 }}>
+                        <div className="comment-footer_menu_reaction_scroll_block" style={{ overflowY: "auto", maxHeight: 300, paddingBottom: 5 }}>
                             <ul className="comment-footer_menu_reaction_list">
                                 {disLikeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li  itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL}${reaction.user_image})` }}>
                                                 </div>
-                                                <h3 className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
+                                                <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
                                             </li>
                                         )
                                     }

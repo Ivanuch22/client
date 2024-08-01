@@ -715,3 +715,11 @@ img {
 #__next{
   overflow: hidden;
 }
+
+
+
+.notShowOnPage{
+  position: absolute;
+  z-index: -1212;
+  opacity: 0;
+}

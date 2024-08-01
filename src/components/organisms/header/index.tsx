@@ -74,6 +74,7 @@ const Header = ({ }: HeaderProps) => {
           data-bs-toggle="collapse"
           data-bs-target="#navbarCollapse"
           onClick={() => setShowMenu(!showMenu)}
+          aria-label="Menu button"
         >
           <span className="fa fa-bars navpart"></span>
         </button>
@@ -92,6 +93,7 @@ const Header = ({ }: HeaderProps) => {
             <button
               type="button"
               className=" btn text-secondary search-btn navpart"
+              aria-label="Name"
               onClick={() => setShowModal(!showModal)}
             >
               <i className="fa fa-search navpart"></i>
@@ -99,11 +101,13 @@ const Header = ({ }: HeaderProps) => {
             {isLogin ? <Link
               href="/profile"
               className=" btn text-secondary search-btn navpart"
+              aria-label="Name"
             >
               {showProfile}
             </Link> : <Link
               href="/login"
               className=" btn text-secondary search-btn navpart"
+              aria-label="Name"
             >
               {$t[locale].auth.header_button_name}
             </Link>}
@@ -116,6 +120,7 @@ const Header = ({ }: HeaderProps) => {
               <button
                 type="button"
                 className="header_left_button btn text-secondary search-btn navpart"
+                aria-label="Name"
                 onClick={() => setShowModal(!showModal)}
               >
                 <i className="fa fa-search navpart"></i>
@@ -123,11 +128,13 @@ const Header = ({ }: HeaderProps) => {
               {isLogin ? <Link
                 href="/profile"
                 className="header_rigth_button btn text-secondary search-btn navpart"
+                aria-label="Name"
               >
                 {showProfile}
               </Link> : <Link
                 href="/login"
                 className="header_rigth_button btn text-secondary search-btn navpart"
+                aria-label="Name"
               >
                 {$t[locale].auth.header_button_name}
               </Link>}

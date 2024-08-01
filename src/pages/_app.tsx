@@ -1,11 +1,7 @@
 // @ts-nocheck
 
-// Это вспомогательный файл от next.js Сюда вы можете импортировать
-// стили как это сделано ниже
-
 import '@/styles/animate.min.css';
-import "@/styles/auth.css"
-// import '@/styles/bootstrap.min.css';
+import "@/styles/auth.css";
 import '@/styles/owl.carousel.min.css';
 import '@/styles/dropdown.css';
 import '@/styles/global.css';
@@ -13,14 +9,14 @@ import '@/styles/toggler.css';
 import '@/styles/call.btn.css';
 import '@/styles/itc.css';
 
-
-// @ts-ignore Типизации для данно библиотеки не существует
 import $ from 'jquery';
 import React, { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 
-import localFont from 'next/font/local'
+import localFont from 'next/font/local';
 import { AuthProvider } from '@/contexts/AuthContext';
+
+// Define local fonts with optimization
 const montserrat = localFont({
   src: [
     {
@@ -45,8 +41,8 @@ const montserrat = localFont({
     },
   ],
   display: 'swap',
-  variable: '--font-montserrat'
-})
+  variable: '--font-montserrat',
+});
 
 const opensans = localFont({
   src: [
@@ -72,8 +68,8 @@ const opensans = localFont({
     },
   ],
   display: 'swap',
-  variable: '--font-opensans'
-})
+  variable: '--font-opensans',
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -87,6 +83,7 @@ export default function App({ Component, pageProps }: AppProps) {
         live: true,
       });
       wow.init();
+
       if (window) {
         window.jQuery = $;
         $(window).scroll(function () {
@@ -104,33 +101,6 @@ export default function App({ Component, pageProps }: AppProps) {
             $('.back-to-top').fadeOut('slow');
           }
         });
-
-        // it didn't hide dropdown menu after hover so I had to comment it
-        // const $dropdown = $('.dropdown');
-        // const $dropdownToggle = $('.dropdown-toggle');
-        // const $dropdownMenu = $('.dropdown-menu');
-        // const showClass = 'show';
-
-        // $(window).on('load resize', function () {
-        //   if (this.matchMedia('(min-width: 992px)').matches) {
-        //     $dropdown.hover(
-        //       function () {
-        //         const $this = $(this);
-        //         $this.addClass(showClass);
-        //         $this.find($dropdownToggle).attr('aria-expanded', 'true');
-        //         $this.find($dropdownMenu).addClass(showClass);
-        //       },
-        //       function () {
-        //         const $this = $(this);
-        //         $this.removeClass(showClass);
-        //         $this.find($dropdownToggle).attr('aria-expanded', 'false');
-        //         $this.find($dropdownMenu).removeClass(showClass);
-        //       }
-        //     );
-        //   } else {
-        //     $dropdown.off('mouseenter mouseleave');
-        //   }
-        // });
 
         Promise.all([
           import('@/scripts/waypoints.min.js'),
@@ -165,11 +135,10 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    // providing fonts to use it in css by variables
-      <AuthProvider>
-    <div className={`${montserrat.variable} ${opensans.variable} font-wrapper`}>
-      <Component {...pageProps} />
-    </div>
-</AuthProvider>
+    <AuthProvider>
+      <div className={`${montserrat.variable} ${opensans.variable} font-wrapper`}>
+        <Component {...pageProps} />
+      </div>
+    </AuthProvider>
   );
 }
