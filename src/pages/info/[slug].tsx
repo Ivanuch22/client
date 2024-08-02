@@ -32,6 +32,8 @@ import { errorText, message404 } from '../switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 const { publicRuntimeConfig } = getConfig();
+import parse from 'html-react-parser';
+
 const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 export interface PageAttibutes {
   seo_title: string;
