@@ -905,6 +905,7 @@ const Page = ({
                             <div itemProp="articleBody" dangerouslySetInnerHTML={{ __html: body }}></div>
                             <div id="comment"></div>
                             <Comments
+                            admin_date={admin_date}
                               pageUrl={url}
                               globalUserIp={globalUserIp}
                               saveDraftComment={saveDraftComment}

@@ -227,7 +227,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                 {likeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li  itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li  itemProp="author" itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL + reaction.user_image})` }}>
                                                 </div>
                                                 <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
@@ -270,7 +270,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                 {disLikeReaction.map((reaction, index) => {
                                     if (reaction.real_user_name !== "-") {
                                         return (
-                                            <li  itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
+                                            <li itemProp="author"  itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL}${reaction.user_image})` }}>
                                                 </div>
                                                 <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>

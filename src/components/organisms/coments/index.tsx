@@ -16,7 +16,7 @@ interface IComentData {
     userIp: string;
     pageUrl: string
 }
-const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
+const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -26,7 +26,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
     const [form, setForm] = useState(null)
 
     const { publicRuntimeConfig } = getConfig();
-    const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
+    const { NEXT_STRAPI_BASED_URL, NEXT_FRONT_URL } = publicRuntimeConfig;
 
 
 
@@ -149,10 +149,9 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                 </div>
             </section >
 
-            <section  itemScope itemType="https://schema.org/DiscussionForumPosting">
-                <h3 className="notShowOnPage">{$t[locale].comment.comments}</h3>
-
-                {/* <ul className="p-0"> */}
+            <section itemScope itemType="https://schema.org/DiscussionForumPosting">
+                <h3 itemprop="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
+                <link itemprop="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 {comments.map((comment, index) => {
                     const commentId = comment?.id;
                     const {
@@ -198,7 +197,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                         comentID: commentId,
                         pageUrl: pageUrl
                     }
-
+                    const nowDate = new Date().toDateString()
                     return (
                         <article
                             className={showedComent >= (index + 1) ? `${getCommentClass(father.data)} block` : `${getCommentClass(father.data)} none`}
@@ -208,7 +207,11 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                             itemScope
                             itemType="https://schema.org/Comment"
                         >
-                            <link itemProp="url" href={`#comment-id-${commentId}`}/>
+                            <meta itemProp="datePublished" content={admin_date || nowDate} />
+                            <span itemProp="author" itemScope itemType="https://schema.org/Person">
+                                <span itemProp="name">Ім'я автора обговорення</span>
+                            </span>
+                            <link itemProp="url" href={`#comment-id-${commentId}`} />
                             <div className="post-content">
                                 <div data-action="profile" className="user avatar">
                                     <img
@@ -225,6 +228,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                                         <span
                                             itemProp="creator"
                                             itemScope
+                                            itemProp="author"
                                             itemType="https://schema.org/Person">
                                             <span
                                                 itemProp="name"
@@ -322,7 +326,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                                                 reactions={comment.reactions}
                                             />
                                             <button
-                                                name = "reply button"
+                                                name="reply button"
                                                 className="comment-footer__action"
                                                 onClick={() => toggleReplyArea(commentId)}>
                                                 <span className="text reply-button">{$t[locale].comment.reply}</span>
