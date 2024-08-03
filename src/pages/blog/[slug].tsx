@@ -304,11 +304,7 @@ const Page = ({
   }
 
 
-  const shortenedTitle = useMemo<string>(() => {
-    return page_title.length > 65
-      ? `${page_title.slice(0, 65)}...`
-      : page_title;
-  }, [page_title]);
+
 
   const saveDraftComment = async (draftText) => {
     const userToken = Cookies.get('userToken');
@@ -796,10 +792,10 @@ const Page = ({
                           {shortenedTitle}
                         </h1> */}
                         <h1 className="d-none text-white ">
-                          {shortenedTitle}
+                          {page_title}
                         </h1>
                         <h1 className="display-5 text-white ">
-                          {shortenedTitle}
+                          {page_title}
                         </h1>
 
 
@@ -818,7 +814,7 @@ const Page = ({
                             </li>
                             <li className="breadcrumb-item">
                               <a className="text-white" href="#">
-                                {seo_title ? shortenedTitle : '404'}
+                                {seo_title ? page_title : '404'}
                               </a>
                             </li>
                           </ol>
@@ -1033,6 +1029,13 @@ export async function getServerSideProps({
       'src="https://t-h-logistics.com/uploads/'
     );
 
+    const shortenedTitle = () => {
+      return page_title.length > 65
+        ? `${page_title.slice(0, 65)}...`
+        : page_title;
+    };
+
+
     return {
       props: {
         pageImage,
@@ -1040,7 +1043,7 @@ export async function getServerSideProps({
         seo_title,
         pageIds,
         seo_description,
-        page_title,
+        page_title : shortenedTitle(),
         url,
         pageRes: pageRes.data.data,
         body: replacedImagesSrcBody,
