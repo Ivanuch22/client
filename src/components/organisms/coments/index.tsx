@@ -149,7 +149,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                 </div>
             </section >
 
-            <section itemProp="discussionUrl" itemScope itemType="https://schema.org/DiscussionForumPosting">
+            <section  itemScope itemType="https://schema.org/DiscussionForumPosting">
                 <h3 className="notShowOnPage">{$t[locale].comment.comments}</h3>
 
                 {/* <ul className="p-0"> */}
