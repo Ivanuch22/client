@@ -158,9 +158,7 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                 <p className="notShowOnPage" itemProp="text">
                     {$t[locale].comment.comments + " " + seo_title}
                 </p>
-                <div class="notShowOnPage" itemprop="author" itemtype="https://schema.org/Person" itemscope>
-                    <div><a href="https://example.com/user/katie-pope" itemprop="url"><span itemprop="name">Katie Pope</span></a></div>
-                </div>
+
                 {comments.map((comment, index) => {
                     const commentId = comment?.id;
                     const {
@@ -229,7 +227,7 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                                 </div>
 
                                 <div className="post-body">
-                                    <header className="comment__header">
+                                    <header itemprop="author" itemtype="https://schema.org/Person" itemscope className="comment__header">
                                         <span
                                             itemProp="creator"
                                             itemScope
