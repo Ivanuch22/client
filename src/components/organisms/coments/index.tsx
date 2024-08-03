@@ -154,7 +154,9 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                 <h3 itemprop="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
                 <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
-
+                <div class="notShowOnPage" itemProp="author" itemType="https://schema.org/Person" itemScope>
+                    <span itemProp="name">Katie Pope</span>
+                </div>
                 <p className="notShowOnPage" itemProp="text">
                     {$t[locale].comment.comments + " " + seo_title}
                 </p>
@@ -227,7 +229,7 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                                 </div>
 
                                 <div className="post-body">
-                                    <header itemprop="author" itemtype="https://schema.org/Person" itemscope className="comment__header">
+                                    <header className="comment__header">
                                         <span
                                             itemProp="creator"
                                             itemScope
