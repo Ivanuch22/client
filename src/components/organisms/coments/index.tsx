@@ -155,7 +155,7 @@ const Comments = ({seo_title, admin_date, pageUrl, globalUserIp, data, sendMessa
                 <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
                 <span className="notShowOnPage" itemProp="author" itemScope itemType="https://schema.org/Person">
-                    <span itemProp="name"></span>
+                    <span itemProp="name"> Name autor</span>
                 </span>
                 <p className="notShowOnPage" itemProp="text">
                 {$t[locale].comment.comments + " "+ seo_title}
