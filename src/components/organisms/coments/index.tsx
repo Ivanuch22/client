@@ -16,7 +16,7 @@ interface IComentData {
     userIp: string;
     pageUrl: string
 }
-const Comments = ({seo_title, admin_date, pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
+const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -154,12 +154,13 @@ const Comments = ({seo_title, admin_date, pageUrl, globalUserIp, data, sendMessa
                 <h3 itemprop="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
                 <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
-                <span className="notShowOnPage" itemProp="author" itemScope itemType="https://schema.org/Person">
-                    <span itemProp="name"> Name autor</span>
-                </span>
+
                 <p className="notShowOnPage" itemProp="text">
-                {$t[locale].comment.comments + " "+ seo_title}
+                    {$t[locale].comment.comments + " " + seo_title}
                 </p>
+                <div class="notShowOnPage" itemprop="author" itemtype="https://schema.org/Person" itemscope>
+                    <div><a href="https://example.com/user/katie-pope" itemprop="url"><span itemprop="name">Katie Pope</span></a></div>
+                </div>
                 {comments.map((comment, index) => {
                     const commentId = comment?.id;
                     const {
