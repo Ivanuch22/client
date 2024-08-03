@@ -756,7 +756,8 @@ const Page = ({
             <DefaultLayout>
               {/* В компонент hero передаем заголовок страницы и данные которые там будут преобразованы в breadcrumb */}
               <div className="container-xxl position-relative p-0">
-                <div className="container-xxl py-5 bg-primary hero-header mb-5">
+                {/* <div className="container-xxl py-5 bg-primary hero-header mb-5"> */}
+                <div className="container-xxl py-5 bg-primary  mb-5">
                   <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
                     <header className="row g-5 pt-1">
                       <div
