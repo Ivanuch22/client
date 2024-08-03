@@ -16,7 +16,7 @@ interface IComentData {
     userIp: string;
     pageUrl: string
 }
-const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
+const Comments = ({seo_title, admin_date, pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -152,11 +152,14 @@ const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDele
 
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">
                 <h3 itemprop="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
-                <link itemprop="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
+                <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
-                <span itemProp="author" itemScope itemType="https://schema.org/Person">
-    <span itemProp="name">Ім'я автора обговорення</span>
-</span>
+                <span className="notShowOnPage" itemProp="author" itemScope itemType="https://schema.org/Person">
+                    <span itemProp="name"></span>
+                </span>
+                <p className="notShowOnPage" itemProp="text">
+                {$t[locale].comment.comments + " "+ seo_title}
+                </p>
                 {comments.map((comment, index) => {
                     const commentId = comment?.id;
                     const {

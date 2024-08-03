@@ -151,7 +151,6 @@ const Page = ({
   comments,
   pageImage,
   socialData,
-  commentsReactionsByPageUrl = []
 }: PageAttibutes) => {
 
   const [usersComments, setUserComments] = useState([]);
@@ -906,6 +905,7 @@ const Page = ({
                             <div itemProp="articleBody" dangerouslySetInnerHTML={{ __html: body }}></div>
                             <div id="comment"></div>
                             <Comments
+                            seo_title={seo_title}
                             admin_date={admin_date}
                               pageUrl={url}
                               globalUserIp={globalUserIp}
