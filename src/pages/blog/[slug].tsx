@@ -149,6 +149,7 @@ const Page = ({
   views,
   admin_date,
   comments,
+  pageImage,
   socialData,
   commentsReactionsByPageUrl = []
 }: PageAttibutes) => {
@@ -411,7 +412,7 @@ const Page = ({
       fatherId ? payload = {
         data: {
           user: { connect: [{ id: user.id }] },
-          blog: { connect: [{id:pageRes[0]?.id}] },
+          blog: { connect: [{ id: pageRes[0]?.id }] },
           father: { connect: [{ id: fatherId }] },
           Text: commentText,
           admin_date: Date.now(),
@@ -424,7 +425,7 @@ const Page = ({
       } : payload = {
         data: {
           user: { connect: [{ id: user.id }] },
-          blog: { connect: [{id:pageRes[0]?.id}] },
+          blog: { connect: [{ id: pageRes[0]?.id }] },
           Text: commentText,
           admin_date: Date.now(),
           locale: toUpper(locale),
@@ -473,8 +474,6 @@ const Page = ({
         }
 
         const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
-
-
 
         comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
         setUserComments(comments);
@@ -663,15 +662,21 @@ const Page = ({
 
 
 
-  console.log(chunksBodyFooter, "/blog/how-choose-cargo-carrier-and-get-lot-problems#comment")
+  console.log(pageImage,"pageImage")
 
   return (
     <>
       <Head>
+
         <title>{seo_title}</title>
         <meta name="description" content={seo_description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="keyword" content={keywords} />
+        <meta property="og:title" content={seo_title} />
+        <meta property="og:description" content={seo_description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={NEXT_STRAPI_API_URL.replace("/api", "")+url} />
+        <meta property="og:image" content={`${NEXT_STRAPI_API_URL.replace("/api", "")+pageImage?.data?.attributes?.url||"not found"}`} />
         {faq && (
           <script
             type="application/ld+json"
@@ -705,7 +710,10 @@ const Page = ({
         <>{parse(chunksHead)}</>
       </Head>
       <>{parse(chunksBodyTop)}</>
-      <div className="container-xxl bg-white p-0">
+      <section
+        itemScope
+        itemType="http://schema.org/Blog"
+        className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
             value={{
@@ -751,31 +759,35 @@ const Page = ({
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
                   <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
-                    <div className="row g-5 pt-1">
+                    <header className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
 
                       >
-                        <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft justify-content-center justify-content-xl-start ">
-                          <Link href={`/blog`}>
-                            <span className="d-inline text-white heading_title">{$t[locale].blog.all} | </span>
-                          </Link>
-                          {headings.map((heading, index) => {
-                            const headingName = heading?.attributes.Name;
-                            const isLast = index === headings.length - 1;
+                        <nav >
+                          <ol style={{ listStyleType: "none", padding: 0 }} className='text-white animated d-flex align-items-center flex-wrap slideInLeft justify-content-center justify-content-xl-start '>
+                            <li>
+                              <Link href={`/blog`}>
+                                <span className="d-inline text-white heading_title">{$t[locale].blog.all} | </span>
+                              </Link>
+                            </li>
 
-                            return (
-                              <div key={heading.id} className='d-flex gap-2 align-items-center  '>
-                                <Link href={`/blog?heading=${headingName}`}>
-                                  <span className="d-inline heading_title text-white heading_name">
-                                    {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
-                                  </span>
-                                </Link>
-                                {!isLast && <span className="d-inline heading_title text-white"> | </span>}
-                              </div>
-                            );
-                          })}
-                        </h1>
+                            {headings.map((heading, index) => {
+                              const headingName = heading?.attributes.Name;
+                              const isLast = index === headings.length - 1;
+                              return (
+                                <li key={heading.id} className='d-flex gap-2 align-items-center  '>
+                                  <Link href={`/blog?heading=${headingName}`}>
+                                    <span className="d-inline heading_title text-white heading_name">
+                                      {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
+                                    </span>
+                                  </Link>
+                                  {!isLast && <span className="d-inline heading_title text-white"> | </span>}
+                                </li>
+                              );
+                            })}
+                          </ol>
+                        </nav>
                         <h1 className="d-none text-white animated slideInLeft">
                           {shortenedTitle}
                         </h1>
@@ -804,16 +816,15 @@ const Page = ({
                           </ol>
                         </nav>
                       </div>
-                    </div>
+                    </header>
                   </div>
                 </div>
               </div>
-
-
               <div className="container-xxl">
                 <div className="row ">
                   <div className="col article-col pe-md-2">
                     <main
+
                       className="cont-body"
                       style={{ maxWidth: '90%', margin: '0 auto' }}
                     >
@@ -847,29 +858,49 @@ const Page = ({
                       )}
                       {!notFoundMessage && (
                         <>
-
-                          <article itemScope itemType="https://schema.org/BlogPosting">
+                          <article itemProp="blogPosts" itemScope itemType="https://schema.org/BlogPosting">
                             <header>
                               <div className="row">
-                                <div className='row gap-sm-2 align-items-center mb-2 ps-4'>
-                                  <Link className='text-capitalize fw-bold w-auto part  page_heading_page ' href={`/blog?heading=${heading.data?.attributes.Name}`}>{heading.data?.attributes.Name}</Link>
-                                  <time itemProp="datePublished" dateTime={formatDateTime(admin_date,true)} className='w-auto part'>{formatDateTime(admin_date)}</time>
-                                  <div className="w-auto comments part" >
-                                    <Link href={`${url}#comment`} className="">
-                                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M16.8951 4H7.10486C5.95297 4 5.36572 4.1134 4.7545 4.44028C4.19025 4.74205 3.74205 5.19025 3.44028 5.7545C3.1134 6.36572 3 6.95297 3 8.10486V13.8951C3 15.047 3.1134 15.6343 3.44028 16.2455C3.74205 16.8097 4.19025 17.258 4.7545 17.5597L4.8954 17.6314C5.4124 17.8807 5.94467 17.9827 6.84879 17.9979L7.1 18V20.2149C7.1 20.6467 7.2693 21.0614 7.57155 21.3698L7.68817 21.478C8.33091 22.0196 9.29233 21.9937 9.90488 21.3933L13.366 18H16.8951C18.047 18 18.6343 17.8866 19.2455 17.5597C19.8097 17.258 20.258 16.8097 20.5597 16.2455C20.8866 15.6343 21 15.047 21 13.8951V8.10486C21 6.95297 20.8866 6.36572 20.5597 5.7545C20.258 5.19025 19.8097 4.74205 19.2455 4.44028C18.6343 4.1134 18.047 4 16.8951 4ZM6.91166 5.80107L16.8951 5.8C17.7753 5.8 18.0818 5.85919 18.3966 6.02755C18.6472 6.16155 18.8384 6.35282 18.9725 6.60338C19.1408 6.91818 19.2 7.2247 19.2 8.10486V13.8951L19.1956 14.2628C19.1792 14.8698 19.1149 15.1303 18.9725 15.3966C18.8384 15.6472 18.6472 15.8384 18.3966 15.9725C18.0818 16.1408 17.7753 16.2 16.8951 16.2H13L12.8832 16.2076C12.6907 16.2328 12.5103 16.3198 12.3701 16.4572L8.9 19.857V17.1C8.9 16.6029 8.49706 16.2 8 16.2H7.10486L6.73724 16.1956C6.13019 16.1792 5.86975 16.1149 5.60338 15.9725C5.35282 15.8384 5.16155 15.6472 5.02755 15.3966C4.85919 15.0818 4.8 14.7753 4.8 13.8951V8.10486L4.80439 7.73724C4.8208 7.13019 4.88509 6.86975 5.02755 6.60338C5.16155 6.35282 5.35282 6.16155 5.60338 6.02755C5.89396 5.87214 6.1775 5.80975 6.91166 5.80107Z" fill="#D3DCE2" />
-                                      </svg>
-                                      <span className="disqus-comment-count" >{usersComments.length}</span>
-                                    </Link>
-                                  </div>
-                                  <div className='w-auto part'>
-                                    <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
-                                    {views}</div>
-                                </div>
+                                <dl className='row gap-sm-2 align-items-center mb-2 ps-0'>
+                                  <dt className='notShowOnPage'>
+                                    {$t[locale].seo.category}
+                                  </dt>
+                                  <dd style={{ width: "" }}>
+                                    <Link className='text-capitalize fw-bold w-auto part  page_heading_page ' href={`/blog?heading=${heading.data?.attributes.Name}`}>{heading.data?.attributes.Name}</Link>
+                                  </dd>
+                                  <dt className='notShowOnPage'>
+                                    {$t[locale].seo.publishTime}
+
+                                  </dt>
+                                  <dd>
+                                    <time itemProp="datePublished" dateTime={admin_date} className='w-auto part'>{formatDateTime(admin_date)}</time>
+                                  </dd>
+                                  <dt className='notShowOnPage'>
+                                    {$t[locale].seo.comments}
+
+                                  </dt>
+                                  <dd >
+                                    <div className="w-auto comments part" >
+                                      <Link href={`${url}#comment`} className="">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M16.8951 4H7.10486C5.95297 4 5.36572 4.1134 4.7545 4.44028C4.19025 4.74205 3.74205 5.19025 3.44028 5.7545C3.1134 6.36572 3 6.95297 3 8.10486V13.8951C3 15.047 3.1134 15.6343 3.44028 16.2455C3.74205 16.8097 4.19025 17.258 4.7545 17.5597L4.8954 17.6314C5.4124 17.8807 5.94467 17.9827 6.84879 17.9979L7.1 18V20.2149C7.1 20.6467 7.2693 21.0614 7.57155 21.3698L7.68817 21.478C8.33091 22.0196 9.29233 21.9937 9.90488 21.3933L13.366 18H16.8951C18.047 18 18.6343 17.8866 19.2455 17.5597C19.8097 17.258 20.258 16.8097 20.5597 16.2455C20.8866 15.6343 21 15.047 21 13.8951V8.10486C21 6.95297 20.8866 6.36572 20.5597 5.7545C20.258 5.19025 19.8097 4.74205 19.2455 4.44028C18.6343 4.1134 18.047 4 16.8951 4ZM6.91166 5.80107L16.8951 5.8C17.7753 5.8 18.0818 5.85919 18.3966 6.02755C18.6472 6.16155 18.8384 6.35282 18.9725 6.60338C19.1408 6.91818 19.2 7.2247 19.2 8.10486V13.8951L19.1956 14.2628C19.1792 14.8698 19.1149 15.1303 18.9725 15.3966C18.8384 15.6472 18.6472 15.8384 18.3966 15.9725C18.0818 16.1408 17.7753 16.2 16.8951 16.2H13L12.8832 16.2076C12.6907 16.2328 12.5103 16.3198 12.3701 16.4572L8.9 19.857V17.1C8.9 16.6029 8.49706 16.2 8 16.2H7.10486L6.73724 16.1956C6.13019 16.1792 5.86975 16.1149 5.60338 15.9725C5.35282 15.8384 5.16155 15.6472 5.02755 15.3966C4.85919 15.0818 4.8 14.7753 4.8 13.8951V8.10486L4.80439 7.73724C4.8208 7.13019 4.88509 6.86975 5.02755 6.60338C5.16155 6.35282 5.35282 6.16155 5.60338 6.02755C5.89396 5.87214 6.1775 5.80975 6.91166 5.80107Z" fill="#D3DCE2" />
+                                        </svg>
+                                        <span className="disqus-comment-count" >{usersComments.length}</span>
+                                      </Link>
+                                    </div>
+                                  </dd>
+                                  <dt className='notShowOnPage'>
+                                    {$t[locale].seo.views}
+                                  </dt>
+                                  <dd>
+                                    <div className='w-auto part'>
+                                      <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+                                      {views}</div>
+                                  </dd>
+
+
+                                </dl>
                               </div>
-                              {/* <h2 itemprop="headline">Назва статті</h2>
-                              <p>Автор: <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">Ім'я автора</span></span></p>
-                              <p>Опубліковано: <time >1 серпня 2024</time></p> */}
                             </header>
                             <div itemProp="articleBody" dangerouslySetInnerHTML={{ __html: body }}></div>
                             <div id="comment"></div>
@@ -900,7 +931,7 @@ const Page = ({
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>
-      </div>
+      </section>
       <>{parse(chunksBodyFooter)}</>
     </>
   );
@@ -967,11 +998,12 @@ export async function getServerSideProps({
       rating,
       extraLinks,
       code,
-      admin_date,
       article,
       views,
       publishedAt,
+      admin_date,
       howto,
+      image:pageImage,
     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
     await getPagesIdWithSameUrl(url).then(data => pageIds = data)
 
@@ -992,6 +1024,7 @@ export async function getServerSideProps({
 
     return {
       props: {
+        pageImage,
         admin_date,
         seo_title,
         pageIds,
@@ -1011,7 +1044,7 @@ export async function getServerSideProps({
         extraLinks: genListItemData(extraLinks),
         rating: genRatingData(rating.data),
         faq: genFaqData(faq.data),
-        article: genArticleData(article, publishedAt, Locale, slug),
+        article: genArticleData(article, admin_date, Locale, slug),
         howto: getHowToData(howto),
         randomBanner,
         mostPopular,
@@ -1027,6 +1060,7 @@ export async function getServerSideProps({
   }
   return {
     props: {
+      pageImage: null,
       headings,
       admin_date: "",
       seo_title: '',

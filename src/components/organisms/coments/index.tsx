@@ -208,6 +208,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                             itemScope
                             itemType="https://schema.org/Comment"
                         >
+                            <link itemProp="url" href={`#comment-id-${commentId}`}/>
                             <div className="post-content">
                                 <div data-action="profile" className="user avatar">
                                     <img
@@ -248,7 +249,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                                             </span>
                                         </span>
                                         <span className="post-meta">
-                                            <time className="time-ago" itemprop="dateCreated" datetime={formatDateTime(admin_date, true)} title={formatDateTime(admin_date, true)}>
+                                            <time className="time-ago" itemProp="dateCreated" dateTime={admin_date} title={formatDateTime(admin_date, true)}>
                                                 {formatDateTime(admin_date, true)}
                                             </time>
                                         </span>
@@ -321,6 +322,7 @@ const Comments = ({ pageUrl, globalUserIp, data, sendMessage, onDelete, updateCo
                                                 reactions={comment.reactions}
                                             />
                                             <button
+                                                name = "reply button"
                                                 className="comment-footer__action"
                                                 onClick={() => toggleReplyArea(commentId)}>
                                                 <span className="text reply-button">{$t[locale].comment.reply}</span>

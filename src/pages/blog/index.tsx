@@ -157,7 +157,6 @@ export default function Home({
                   </div>
                 </div>
               </main>
-
               <div className="container-xxl">
                 <div className="row">
                   <div className="col article-col pe-md-2">

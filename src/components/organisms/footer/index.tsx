@@ -68,46 +68,52 @@ const Footer = () => {
     >
       <div className="container py-5 px-lg-5">
         <div className="row gy-5 gx-4 pt-5">
-          <div className="col-lg-5 col-md-12">
+          <nav className="col-lg-5 col-md-12">
             <div className="row gy-5 g-4">
-              <div className="col-md-6 pt-2">
+              <ul style={{listStyleType: "none"}} className="col-md-6 pt-2">
                 <h5 className="fw-bold text-white mb-4">
                   {$t[locale].footer.about.title}
                 </h5>
                 {footerMenus?.about?.items?.map(item => {
                   return (
-                    <Link
-                      key={item.id}
-                      className="btn btn-link"
-                      href={item.attributes.url}
-                    >
-                      {locale === 'ru'
-                        ? item.attributes.title
-                        : item.attributes[`title_${locale}`]}
-                    </Link>
+                    <li>
+                      <Link
+                        key={item.id}
+                        className="btn btn-link"
+                        href={item.attributes.url}
+                      >
+                        {locale === 'ru'
+                          ? item.attributes.title
+                          : item.attributes[`title_${locale}`]}
+                      </Link>
+                    </li>
+
                   );
                 })}
-              </div>
-              <div className="col-md-6 pt-2">
+              </ul>
+              <ul  style={{listStyleType: "none"}} className="col-md-6 pt-2">
                 <h5 className="fw-bold text-white mb-4">
                   {$t[locale].footer.services.title}
                 </h5>
                 {footerMenus?.services?.items?.map(item => {
                   return (
-                    <Link
-                      key={item.id}
-                      className="btn btn-link"
-                      href={item.attributes.url}
-                    >
-                      {locale === 'ru'
-                        ? item.attributes.title
-                        : item.attributes[`title_${locale}`]}
-                    </Link>
+                    <li>
+                      <Link
+                        key={item.id}
+                        className="btn btn-link"
+                        href={item.attributes.url}
+                      >
+                        {locale === 'ru'
+                          ? item.attributes.title
+                          : item.attributes[`title_${locale}`]}
+                      </Link>
+                    </li>
+
                   );
                 })}
-              </div>
+              </ul>
             </div>
-          </div>
+          </nav>
           <div className="col-md-6 pt-2 col-lg-3">
             <h5 className="fw-bold text-white mb-4">
               {$t[locale].footer.get_in_touch.title}
@@ -170,7 +176,7 @@ const Footer = () => {
             </div>
           </div>
 
-          
+
         </div>
       </div>
       <div className="container px-lg-5">

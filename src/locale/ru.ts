@@ -270,5 +270,11 @@ export default {
     placeholder: "Написать комментарий",
     reply: "Ответить",
     cancel: "Отменить"
+  },
+  seo:{
+    publishTime: " Дата публикации",
+    comments: "Комментарии",
+    category: "Категория",
+views:"Просмотри"
   }
 };

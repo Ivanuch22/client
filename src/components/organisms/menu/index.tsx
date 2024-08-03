@@ -79,14 +79,15 @@ function Menu({ data, show, onTog, allPages }) {
               ? item.attributes.title
               : item.attributes[`title_${locale}`]}
           </span>
-          <div
+          <ul
+          style={{ listStyleType: "none" }}
             className={`dropdown-menu ${isOpen ? 'show' : ''}`}
             style={{ position: 'absolute', right: 0, top: '100%' }}
           >
             {item.attributes.children.data.map(child => (
-              <div key={child.id}>{renderMenuItem(child, item.id)}</div>
+              <li  key={child.id}>{renderMenuItem(child, item.id)}</li>
             ))}
-          </div>
+          </ul>
         </div>
       );
     } else if (
@@ -97,28 +98,30 @@ function Menu({ data, show, onTog, allPages }) {
           item.attributes.url.startsWith('/info')
       )
     ) {
-      if(locale === 'ru'){
-        if(item.attributes.title === 'nopage'){
+      if (locale === 'ru') {
+        if (item.attributes.title === 'nopage') {
           return <></>
         }
-      }else{
-        if(item.attributes[`title_${locale}`] === 'nopage'){
+      } else {
+        if (item.attributes[`title_${locale}`] === 'nopage') {
           return <></>
         }
       }
 
       return (
-        <Link
-          href={item.attributes.url}
-          className={`nav-link navpart`}
-          key={item.id}
-          onClick={() => onTog()}
-        >
-          {' '}
-          {locale === 'ru'
-            ? item.attributes.title
-            : item.attributes[`title_${locale}`]}{' '}
-        </Link>
+
+          <Link
+            href={item.attributes.url}
+            className={`nav-link navpart`}
+            key={item.id}
+            onClick={() => onTog()}
+          >
+            {' '}
+            {locale === 'ru'
+              ? item.attributes.title
+              : item.attributes[`title_${locale}`]}{' '}
+          </Link>
+
       );
     }
   };
@@ -130,7 +133,7 @@ function Menu({ data, show, onTog, allPages }) {
         id="navbarCollapse"
       >
         {!!data && (
-          <div className="navbar-nav ms-auto py-0">
+          <div className="navbar-nav ms-auto py-0" style={{alignItems: "center"}}>
             <Link href="/" className={`nav-item nav-link navpart`}>
               {$t[locale].menu.main}
             </Link>

@@ -10,9 +10,6 @@ import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import Image from 'next/image';
-import parse from 'html-react-parser';
-
 
 export default function Home({
   html,
@@ -44,7 +41,6 @@ export default function Home({
     getUser();
     setUser(userFromBd);
   }, []);
-  const jsxContent = parse(html);
 
   return (
     <>
@@ -71,8 +67,7 @@ export default function Home({
             }}
           >
             <DefaultLayout>
-              {/* <div dangerouslySetInnerHTML={{ __html: html }} /> */}
-              <div>{jsxContent}</div>
+              <div dangerouslySetInnerHTML={{ __html: html }} />
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>
@@ -80,7 +75,7 @@ export default function Home({
     </>
   );
 }
-// Import necessary modules
+
 
 export async function getServerSideProps({ query, locale }) {
   try {
@@ -100,22 +95,11 @@ export async function getServerSideProps({ query, locale }) {
     const socialRes = await server.get('/social');
     const socialData = socialRes.data.data.attributes;
 
-    // Transform img tags in HTML to Next.js Image components
-    const transformedHtml = index.replace(/<img ([^>]*)src="([^"]+)"([^>]*)>/g, (match, beforeSrc, src, afterSrc) => {
-      const altMatch = match.match(/alt="([^"]*)"/);
-      const alt = altMatch ? altMatch[1] : '';
-      const classMatch = match.match(/class="([^"]*)"/);
-      const className = classMatch ? classMatch[1] : '';
-      const styleMatch = match.match(/style="([^"]*)"/);
-      const style = styleMatch ? styleMatch[1] : '';
-
-      return `<Image src="${src}" alt="${alt||"sdlfj"}" width="500" height="500" class="${className}" style="${style}" />`;
-    });
 
 
     return {
       props: {
-        html : transformedHtml,
+        html : index,
         description: index_seo_description,
         title: index_title,
         keywords: index_keywords,

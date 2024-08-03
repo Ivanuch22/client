@@ -270,5 +270,11 @@ export default {
     placeholder: "Write comment",
     reply: "Reply",
     cancel: "Cancel"
+  },
+  seo:{
+    publishTime: "Date of publication",
+    comments: "Comments",
+    category: "Category",
+    views:"Views"
   }
 };

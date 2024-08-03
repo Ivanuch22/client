@@ -28,6 +28,8 @@
     font-size: 15px;
     color: #7E868B;
     font-weight: 400;
+    display: flex;
+    align-items: center;
 }
 
 .entry-header {
@@ -98,6 +100,8 @@
 .mostpopular__text-title {
     font-size: 14px;
     margin-bottom: 5px;
+    line-height: 1.2;
+    color: #1d2833;
     font-weight: 700 !important;
 }
 

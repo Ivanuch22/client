@@ -21,7 +21,7 @@ export default (data: any, pubDate: string, locale: string, slug: string) => {
     } as any
 
     if(images?.data?.length){
-        microdata.images = images.data.reduce((acc: any, image: any) => {
+        microdata.image = images.data.reduce((acc: any, image: any) => {
             acc.push(`${NEXT_FRONT_URL}${image.attributes.url}`)
             
             return acc;
