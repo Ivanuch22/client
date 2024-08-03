@@ -765,7 +765,8 @@ const Page = ({
 
                       >
                         <nav >
-                          <ol style={{ listStyleType: "none", padding: 0 }} className='text-white animated d-flex align-items-center flex-wrap slideInLeft justify-content-center justify-content-xl-start '>
+                          <ol style={{ listStyleType: "none", padding: 0 }} className='text-white  d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '>
+                          {/* <ol style={{ listStyleType: "none", padding: 0 }} className='text-white animated slideInLeft d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '> */}
                             <li>
                               <Link href={`/blog`}>
                                 <span className="d-inline text-white heading_title">{$t[locale].blog.all} | </span>
@@ -788,16 +789,23 @@ const Page = ({
                             })}
                           </ol>
                         </nav>
-                        <h1 className="d-none text-white animated slideInLeft">
+                        {/* <h1 className="d-none text-white animated slideInLeft">
                           {shortenedTitle}
                         </h1>
                         <h1 className="display-5 text-white animated slideInLeft">
+                          {shortenedTitle}
+                        </h1> */}
+                        <h1 className="d-none text-white ">
+                          {shortenedTitle}
+                        </h1>
+                        <h1 className="display-5 text-white ">
                           {shortenedTitle}
                         </h1>
 
 
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
+                          <ol className="breadcrumb justify-content-center justify-content-md-start ">
+                          {/* <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"> */}
                             <li className="breadcrumb-item">
                               <Link className="text-white" href="/">
                                 {$t[locale].menu.main}
