@@ -859,6 +859,7 @@ const Page = ({
                       {!notFoundMessage && (
                         <>
                           <article itemProp="blogPosts" itemScope itemType="https://schema.org/BlogPosting">
+                            
                             <header>
                               <div className="row">
                                 <dl className='row gap-sm-2 align-items-center mb-2 ps-0'>

@@ -152,6 +152,7 @@ const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDele
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">
                 <h3 itemprop="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
                 <link itemprop="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
+
                 {comments.map((comment, index) => {
                     const commentId = comment?.id;
                     const {
@@ -211,6 +212,7 @@ const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDele
                             <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                 <span className="notShowOnPage" itemProp="name">Ім'я автора обговорення</span>
                             </span>
+
                             <link itemProp="url" href={`#comment-id-${commentId}`} />
                             <div className="post-content">
                                 <div data-action="profile" className="user avatar">
@@ -272,7 +274,7 @@ const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDele
                                                 toggleChangeArea={() => toggleChangeArea(comment.id)}
                                             />
                                         ) : (
-                                            <p itemprop="text">
+                                            <p itemProp="text">
                                                 {Text.split("\n").map((line, lineIndex) => (
                                                     <React.Fragment key={lineIndex}>
                                                         {line.split(" ").map((word, wordIndex) => {
