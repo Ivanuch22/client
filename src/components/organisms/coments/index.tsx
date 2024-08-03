@@ -209,7 +209,7 @@ const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDele
                         >
                             <meta itemProp="datePublished" content={admin_date || nowDate} />
                             <span itemProp="author" itemScope itemType="https://schema.org/Person">
-                                <span itemProp="name">Ім'я автора обговорення</span>
+                                <span className="notShowOnPage" itemProp="name">Ім'я автора обговорення</span>
                             </span>
                             <link itemProp="url" href={`#comment-id-${commentId}`} />
                             <div className="post-content">
@@ -228,7 +228,6 @@ const Comments = ({ admin_date, pageUrl, globalUserIp, data, sendMessage, onDele
                                         <span
                                             itemProp="creator"
                                             itemScope
-                                            itemProp="author"
                                             itemType="https://schema.org/Person">
                                             <span
                                                 itemProp="name"
