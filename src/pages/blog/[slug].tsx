@@ -870,7 +870,7 @@ const Page = ({
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                   {articleStrapi?.author}
                                 </span>
-                                <Image src={`${NEXT_FRONT_URL}${articleStrapi?.images?.data[0]?.attributes?.url}`} alt=""/>
+                                <Image itemProp="image" src={`${NEXT_FRONT_URL}${articleStrapi?.images?.data[0]?.attributes?.url}`} alt=""/>
                                 <div itemProp="headline">{articleStrapi?.title}</div>
                               </div>
 
