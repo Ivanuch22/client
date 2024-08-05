@@ -868,8 +868,8 @@ const Page = ({
                             {articleStrapi && (
                               <div className='notShowOnPage'>
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
-                                  <link itemProp="url" href={NEXT_FRONT_URL + pageUrl} />
-                                  <span itemProp="name" href={NEXT_FRONT_URL + pageUrl} >
+                                  <link itemProp="url" href={NEXT_FRONT_URL + url} />
+                                  <span itemProp="name" href={NEXT_FRONT_URL + url} >
                                     {articleStrapi?.author}
                                   </span>
                                 </span>
