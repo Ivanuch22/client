@@ -156,6 +156,9 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
                 <div class="notShowOnPage" itemProp="author" itemType="https://schema.org/Person" itemScope>
                     <span itemProp="name">Katie Pope</span>
+                    <img itemProp="image" src="https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA" alt="Изображение автора" />
+                    <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
+
                 </div>
                 <p className="notShowOnPage" itemProp="text">
                     {$t[locale].comment.comments + " " + seo_title}

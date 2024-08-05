@@ -39,6 +39,7 @@ import { toLower, toUpper } from 'lodash';
 import getCurrentFormattedTime from "@/utils/getCurrentFormattedTime"
 import getUserIp from "@/utils/getUserIp"
 import { useAuth } from '@/contexts/AuthContext';
+import Image from 'next/image';
 
 
 
@@ -151,6 +152,7 @@ const Page = ({
   comments,
   pageImage,
   socialData,
+  articleStrapi
 }: PageAttibutes) => {
 
   const [usersComments, setUserComments] = useState([]);
@@ -657,7 +659,7 @@ const Page = ({
 
 
 
-  console.log(pageImage,"pageImage")
+  console.log(pageImage, "pageImage")
 
   return (
     <>
@@ -670,8 +672,8 @@ const Page = ({
         <meta property="og:title" content={seo_title} />
         <meta property="og:description" content={seo_description} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={NEXT_STRAPI_API_URL.replace("/api", "")+url} />
-        <meta property="og:image" content={`${NEXT_STRAPI_API_URL.replace("/api", "")+pageImage?.data?.attributes?.url||"not found"}`} />
+        <meta property="og:url" content={NEXT_STRAPI_API_URL.replace("/api", "") + url} />
+        <meta property="og:image" content={`${NEXT_STRAPI_API_URL.replace("/api", "") + pageImage?.data?.attributes?.url || "not found"}`} />
         {faq && (
           <script
             type="application/ld+json"
@@ -762,7 +764,7 @@ const Page = ({
                       >
                         <nav >
                           <ol style={{ listStyleType: "none", padding: 0 }} className='text-white  d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '>
-                          {/* <ol style={{ listStyleType: "none", padding: 0 }} className='text-white animated slideInLeft d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '> */}
+                            {/* <ol style={{ listStyleType: "none", padding: 0 }} className='text-white animated slideInLeft d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '> */}
                             <li>
                               <Link href={`/blog`}>
                                 <span className="d-inline text-white heading_title">{$t[locale].blog.all} | </span>
@@ -801,7 +803,7 @@ const Page = ({
 
                         <nav aria-label="breadcrumb">
                           <ol className="breadcrumb justify-content-center justify-content-md-start ">
-                          {/* <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"> */}
+                            {/* <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"> */}
                             <li className="breadcrumb-item">
                               <Link className="text-white" href="/">
                                 {$t[locale].menu.main}
@@ -863,7 +865,16 @@ const Page = ({
                       {!notFoundMessage && (
                         <>
                           <article itemProp="blogPosts" itemScope itemType="https://schema.org/BlogPosting">
-                            
+                            {articleStrapi && (
+                              <div className='notShowOnPage'>
+                                <span itemProp="author" itemScope itemType="https://schema.org/Person">
+                                  {articleStrapi?.author}
+                                </span>
+                                <Image src={`${NEXT_FRONT_URL}${articleStrapi?.images?.data[0]?.attributes?.url}`} alt=""/>
+                                <div itemProp="headline">{articleStrapi?.title}</div>
+                              </div>
+
+                            )}
                             <header>
                               <div className="row">
                                 <dl className='row gap-sm-2 align-items-center mb-2 ps-0'>
@@ -910,8 +921,8 @@ const Page = ({
                             <div itemProp="articleBody" dangerouslySetInnerHTML={{ __html: body }}></div>
                             <div id="comment"></div>
                             <Comments
-                            seo_title={seo_title}
-                            admin_date={admin_date}
+                              seo_title={seo_title}
+                              admin_date={admin_date}
                               pageUrl={url}
                               globalUserIp={globalUserIp}
                               saveDraftComment={saveDraftComment}
@@ -1010,7 +1021,7 @@ export async function getServerSideProps({
       publishedAt,
       admin_date,
       howto,
-      image:pageImage,
+      image: pageImage,
     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
     await getPagesIdWithSameUrl(url).then(data => pageIds = data)
 
@@ -1043,7 +1054,7 @@ export async function getServerSideProps({
         seo_title,
         pageIds,
         seo_description,
-        page_title : shortenedTitle(),
+        page_title: shortenedTitle(),
         url,
         pageRes: pageRes.data.data,
         body: replacedImagesSrcBody,
@@ -1069,6 +1080,7 @@ export async function getServerSideProps({
         headings,
         socialData: socialData ?? null,
         commentsReactionsByPageUrl,
+        articleStrapi
       },
     };
   }
@@ -1108,7 +1120,8 @@ export async function getServerSideProps({
       },
       footerGeneral: footerGeneral ?? {},
       socialData: socialData ?? null,
-      commentsReactionsByPageUrl: []
+      commentsReactionsByPageUrl: [],
+      articleStrapi: null
     },
   };
 }
