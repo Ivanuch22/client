@@ -9,7 +9,7 @@ import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 
 import $t from '@/locale/global';
-import { server, NEXT_STRAPI_API_URL } from '@/http/index';
+import { server, NEXT_STRAPI_API_URL, serverForPlugins } from '@/http/index';
 import { errorText, message404 } from '../switch';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 
@@ -349,6 +349,7 @@ const Page = ({
 
     }
 
+
     try {
       const response = await server.post('/comments1', payload, {
         headers: {
@@ -437,6 +438,13 @@ const Page = ({
         },
       });
 
+      const createCommentHistory = await serverForPlugins.post("/custom-comment-fields/custom-history/create",{
+        collectionId: response?.data?.data?.id,
+        collection :"Blog Comment",
+        history: commentHistoryJson
+      })
+
+
       if (response.status === 200) {
         let comments = [];
         let updateChildrenInFather;
@@ -522,7 +530,7 @@ const Page = ({
 
     const userIp = await getUserIp()
     const currentTime = getCurrentFormattedTime()
-    const commentType = "post"
+    const commentType = "edit"
     const newHistoryEntry =
     {
       time: currentTime,
@@ -544,6 +552,7 @@ const Page = ({
       const currentHistory = currentComment.attributes.history || [];
 
       const updatedHistory = [newHistoryEntry, ...currentHistory];
+      
 
       await server.put(`/comments1/${commentId}`,
         {
@@ -557,6 +566,13 @@ const Page = ({
             'Authorization': `Bearer ${userToken}`,
           }
         });
+
+        const updateUserHistory = await serverForPlugins.put("/custom-comment-fields/custom-history/update",{
+          collectionId: commentId,
+          collection :"Blog Comment",
+          history: newHistoryEntry
+        })
+
 
       const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
 
@@ -635,6 +651,18 @@ const Page = ({
   const deleteComment = async (commentId, userId) => {
     const userToken = Cookies.get('userToken'); // Retrieve user token from cookies
 
+
+    const userIp = await getUserIp()
+    const currentTime = getCurrentFormattedTime()
+    const commentType = "delete"
+    const newHistoryEntry = {
+        time: currentTime,
+        user_ip: userIp,
+        text: "",
+        type: commentType
+      }
+    
+
     if (user.id !== userId) {
       return console.log("it's not your comment")
     }
@@ -649,6 +677,12 @@ const Page = ({
       },
 
     });
+    
+    const updateCommentHistory = await serverForPlugins.put("/custom-comment-fields/custom-history/update",{
+      collectionId: commentId,
+      collection :"Blog Comment",
+      history: newHistoryEntry
+    })
     const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
 
 

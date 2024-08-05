@@ -8,5 +8,9 @@ const server = axios.create({
   baseURL: `${NEXT_STRAPI_API_URL}`,
 });
 
+const serverForPlugins = axios.create({
+  baseURL: `${NEXT_STRAPI_API_URL.replace("/api", "")}`,
+});
 
-export { server, NEXT_STRAPI_API_URL };
+
+export { server,serverForPlugins, NEXT_STRAPI_API_URL };

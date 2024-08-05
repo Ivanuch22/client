@@ -6,7 +6,7 @@ import Script from 'next/script';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import $t from '@/locale/global';
-import { server } from '@/http';
+import { server,serverForPlugins } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
@@ -163,23 +163,33 @@ export default function Home({
         identifier: email,
         password: password,
       });
-      const user = response.data.user;
-      let userHistory;
-      if(user.history===null){
-        userHistory = []
-      }else{
-        userHistory=[...user.history]
+      // const user = response.data.user;
+      // let userHistory;
+      // if(user.history===null){
+      //   userHistory = []
+      // }else{
+      //   userHistory=[...user.history]
+      // }
+      try{
+        const updateUserHistory = await serverForPlugins.put("/custom-comment-fields/custom-history/update",{
+          collectionId: response.data.user.id,
+          collection :"User",
+          history: userData
+        })
+      }catch(e){
+        console.log("user data not updated")
       }
-      user.history = [userData, ...userHistory];
+
+      // user.history = [userData, ...userHistory];
 
       Cookies.set('email', response.data.user.email, { expires: 7 });
-      const updateUserHistory = await server.put(`/users/${user.id}`, {
-        history: user.history
-      }, {
-        headers: {
-          Authorization: `Bearer ${response.data.jwt}`,
-        },
-      });
+      // const updateUserHistory = await server.put(`/users/${user.id}`, {
+      //   history: user.history
+      // }, {
+      //   headers: {
+      //     Authorization: `Bearer ${response.data.jwt}`,
+      //   },
+      // });
 
 
       Cookies.set('userToken', response.data.jwt, { expires: 7 });

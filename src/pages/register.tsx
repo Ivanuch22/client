@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import $t from '@/locale/global';
 import axios from 'axios';
-import { server } from '@/http';
+import { server,serverForPlugins } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
@@ -194,19 +194,26 @@ export default function Home({
       });
       if (response.status === 200) {
 
+        const createUserHistory = await serverForPlugins.post("/custom-comment-fields/custom-history/create",{
+          collectionId: response.data.user.id,
+          collection :"User",
+          history: [userData]
+        })
+
         Cookies.set('userToken', response.data.jwt, { expires: 7 });
         Cookies.set('user', JSON.stringify(response.data.user), { expires: 7 });
         Cookies.set('userName', response.data.user.real_user_name, { expires: 7 });
-
 
         handleSuccess();
         login();
         updateUser()
       } else {
-        return handleError(error.response.data.error.message);
+        console.log("asd;lkfj")
+        return handleError(error?.response?.data?.error?.message);
       }
     } catch (error) {
-      return handleError(error.response.data.error.message);
+      console.log(error)
+      return handleError(error?.response?.data?.error?.message);
     }
   }
   return (
