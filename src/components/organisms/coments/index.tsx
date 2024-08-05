@@ -235,7 +235,7 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                                 <div className="post-body">
                                     <header className="comment__header">
                                         <span
-                                            itemProp="creator"
+                                            itemProp="author"
                                             itemScope
                                             itemType="https://schema.org/Person">
                                             <span
