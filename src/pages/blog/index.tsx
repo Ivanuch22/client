@@ -18,6 +18,7 @@ import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import removeBodyField from '@/utils/removeBodyFromArray';
+import Image from 'next/image';
 
 const { publicRuntimeConfig } = getConfig();
 const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
@@ -165,31 +166,38 @@ export default function Home({
                       className="cont-body"
                       style={{ maxWidth: '90%', margin: '0 auto' }}
                     >
-                      <div className=' col article-col gap-5  d-flex flex-column col  '>
+                      <section itemScope itemType="http://schema.org/Blog" className=' col article-col gap-5  d-flex flex-column col  '>
+
                         {pages.map((page, index) => {
+
                           const { page_title, admin_date, url, heading, comments, views } = page.attributes;
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
                           console.log(comments)
                           return (
-                            <section className="row row-line" key={index}>
+                            <article itemProp="blogPosts" itemScope itemType="http://schema.org/BlogPosting" className="row row-line" key={index}>
+                              <meta itemProp="headline" content={page_title} />
+                              <meta itemProp="datePublished" content={admin_date} />
+                              <meta itemProp="interactionCount" content={`UserComments:${comments.data.length}`} />
                               <div className="col-sm-3 col-img mb-3 mb-sm-0 blog_img_block">
                                 <div className="col-img-in">
                                   <Link
                                     href={`${sanitizeImageUrl(url)}`}
                                     className="thumb-responsive lazy-load a-not-img lazy-loaded mostpopularImgBlock"
-                                    style={{ backgroundImage: `url(${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)})` }}
-                                  />
+                                  // style={{ backgroundImage: `url(${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)})` }}
+                                  >
+                                    <Image itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
+                                  </Link>
                                 </div>
                               </div>
                               <div className="col-sm-9 col-txt d-flex flex-column justify-content-between blog_text_block  " style={{ paddingRight: 0 }}>
                                 <h2 className="entry-title text-uppercase">
-                                  <Link className="entry-title text-uppercase h4" href={url}>{hyphenateText(page_title)}</Link>
+                                  <Link itemProp="mainEntityOfPage" className="entry-title text-uppercase h4" href={url}>{hyphenateText(page_title)}</Link>
                                 </h2>
                                 <div className="hidden-sm hidden-xs pb-2">
                                   <div className="entry-header" style={{ clear: "both" }}>
                                     <div className="align-items-center d-flex gap-3">
                                       <span className="category-color" style={{ color: "#933758" }}>
-                                        <Link href={`/blog?heading=${heading.data?.attributes.Name}`} className="text-info text-capitalize fw-bold a-not-img">
+                                        <Link itemProp="articleSection" href={`/blog?heading=${heading.data?.attributes.Name}`} className="text-info text-capitalize fw-bold a-not-img">
                                           {heading.data?.attributes.Name}
                                         </Link>
                                       </span>
@@ -197,10 +205,10 @@ export default function Home({
                                         {formatDateTime(admin_date, false)}
                                       </span>
                                       <span className="comments part" >
-                                        <Link href={`${url}#comment`} className="align-items-center d-flex">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M16.8951 4H7.10486C5.95297 4 5.36572 4.1134 4.7545 4.44028C4.19025 4.74205 3.74205 5.19025 3.44028 5.7545C3.1134 6.36572 3 6.95297 3 8.10486V13.8951C3 15.047 3.1134 15.6343 3.44028 16.2455C3.74205 16.8097 4.19025 17.258 4.7545 17.5597L4.8954 17.6314C5.4124 17.8807 5.94467 17.9827 6.84879 17.9979L7.1 18V20.2149C7.1 20.6467 7.2693 21.0614 7.57155 21.3698L7.68817 21.478C8.33091 22.0196 9.29233 21.9937 9.90488 21.3933L13.366 18H16.8951C18.047 18 18.6343 17.8866 19.2455 17.5597C19.8097 17.258 20.258 16.8097 20.5597 16.2455C20.8866 15.6343 21 15.047 21 13.8951V8.10486C21 6.95297 20.8866 6.36572 20.5597 5.7545C20.258 5.19025 19.8097 4.74205 19.2455 4.44028C18.6343 4.1134 18.047 4 16.8951 4ZM6.91166 5.80107L16.8951 5.8C17.7753 5.8 18.0818 5.85919 18.3966 6.02755C18.6472 6.16155 18.8384 6.35282 18.9725 6.60338C19.1408 6.91818 19.2 7.2247 19.2 8.10486V13.8951L19.1956 14.2628C19.1792 14.8698 19.1149 15.1303 18.9725 15.3966C18.8384 15.6472 18.6472 15.8384 18.3966 15.9725C18.0818 16.1408 17.7753 16.2 16.8951 16.2H13L12.8832 16.2076C12.6907 16.2328 12.5103 16.3198 12.3701 16.4572L8.9 19.857V17.1C8.9 16.6029 8.49706 16.2 8 16.2H7.10486L6.73724 16.1956C6.13019 16.1792 5.86975 16.1149 5.60338 15.9725C5.35282 15.8384 5.16155 15.6472 5.02755 15.3966C4.85919 15.0818 4.8 14.7753 4.8 13.8951V8.10486L4.80439 7.73724C4.8208 7.13019 4.88509 6.86975 5.02755 6.60338C5.16155 6.35282 5.35282 6.16155 5.60338 6.02755C5.89396 5.87214 6.1775 5.80975 6.91166 5.80107Z" fill="#D3DCE2"/>
-</svg>                                     <span className="disqus-comment-count"  >{comments.data.length}</span>
+                                        <Link itemProp="discussionUrl" href={`${url}#comment`} className="align-items-center d-flex">
+                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M16.8951 4H7.10486C5.95297 4 5.36572 4.1134 4.7545 4.44028C4.19025 4.74205 3.74205 5.19025 3.44028 5.7545C3.1134 6.36572 3 6.95297 3 8.10486V13.8951C3 15.047 3.1134 15.6343 3.44028 16.2455C3.74205 16.8097 4.19025 17.258 4.7545 17.5597L4.8954 17.6314C5.4124 17.8807 5.94467 17.9827 6.84879 17.9979L7.1 18V20.2149C7.1 20.6467 7.2693 21.0614 7.57155 21.3698L7.68817 21.478C8.33091 22.0196 9.29233 21.9937 9.90488 21.3933L13.366 18H16.8951C18.047 18 18.6343 17.8866 19.2455 17.5597C19.8097 17.258 20.258 16.8097 20.5597 16.2455C20.8866 15.6343 21 15.047 21 13.8951V8.10486C21 6.95297 20.8866 6.36572 20.5597 5.7545C20.258 5.19025 19.8097 4.74205 19.2455 4.44028C18.6343 4.1134 18.047 4 16.8951 4ZM6.91166 5.80107L16.8951 5.8C17.7753 5.8 18.0818 5.85919 18.3966 6.02755C18.6472 6.16155 18.8384 6.35282 18.9725 6.60338C19.1408 6.91818 19.2 7.2247 19.2 8.10486V13.8951L19.1956 14.2628C19.1792 14.8698 19.1149 15.1303 18.9725 15.3966C18.8384 15.6472 18.6472 15.8384 18.3966 15.9725C18.0818 16.1408 17.7753 16.2 16.8951 16.2H13L12.8832 16.2076C12.6907 16.2328 12.5103 16.3198 12.3701 16.4572L8.9 19.857V17.1C8.9 16.6029 8.49706 16.2 8 16.2H7.10486L6.73724 16.1956C6.13019 16.1792 5.86975 16.1149 5.60338 15.9725C5.35282 15.8384 5.16155 15.6472 5.02755 15.3966C4.85919 15.0818 4.8 14.7753 4.8 13.8951V8.10486L4.80439 7.73724C4.8208 7.13019 4.88509 6.86975 5.02755 6.60338C5.16155 6.35282 5.35282 6.16155 5.60338 6.02755C5.89396 5.87214 6.1775 5.80975 6.91166 5.80107Z" fill="#D3DCE2" />
+                                          </svg>                                     <span className="disqus-comment-count"  >{comments.data.length}</span>
                                         </Link>
                                       </span>
                                       <div className='view part'>
@@ -215,11 +223,11 @@ export default function Home({
                                   </div>
                                 </div>
                               </div>
-                            </section>
+                            </article>
                           );
                         })}
 
-                      </div>
+                      </section>
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>

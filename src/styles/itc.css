@@ -10,6 +10,13 @@
 
 .thumb-responsive.lazy-loaded {
     background-size: cover !important;
+    overflow: hidden;
+}
+.thumb-responsive.lazy-loaded img{
+    max-width: 120% !important;
+    width: 120% !important;
+    position: relative;
+    left: -10%;
 }
 
 .entry-title {
