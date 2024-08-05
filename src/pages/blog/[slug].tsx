@@ -311,7 +311,6 @@ const Page = ({
   const saveDraftComment = async (draftText) => {
     const userToken = Cookies.get('userToken');
 
-
     if (!userToken) {
       return
     }
@@ -530,7 +529,7 @@ const Page = ({
 
     const userIp = await getUserIp()
     const currentTime = getCurrentFormattedTime()
-    const commentType = "edit"
+    const commentType = "post"
     const newHistoryEntry =
     {
       time: currentTime,
@@ -600,18 +599,19 @@ const Page = ({
     if (!draftText) {
       return console.log('Comment cannot be empty');
     }
+    console.log("saving cancel")
+
 
     const userIp = await getUserIp()
     const currentTime = getCurrentFormattedTime()
     const commentType = "edit"
-    const newHistoryEntry = [
-      {
+    const newHistoryEntry = {
         time: currentTime,
         user_ip: userIp,
         text: draftText,
         type: commentType
       }
-    ]
+    
 
     try {
       const currentCommentResponse = await server.get(`/comments1/${commentId}`, {
@@ -624,6 +624,11 @@ const Page = ({
       const currentHistory = currentComment.attributes.history || [];
 
       const updatedHistory = [newHistoryEntry, ...currentHistory];
+      const updateCommentHistory = await serverForPlugins.put("/custom-comment-fields/custom-history/update",{
+        collectionId: commentId,
+        collection :"Blog Comment",
+        history: newHistoryEntry
+      })
 
       await server.put(`/comments1/${commentId}`,
         {
