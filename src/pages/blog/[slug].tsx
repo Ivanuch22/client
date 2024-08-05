@@ -686,12 +686,12 @@ const Page = ({
             dangerouslySetInnerHTML={{ __html: rating }}
           />
         )}
-        {article && (
+        {/* {article && (
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: article }}
           />
-        )}
+        )} */}
         {howto && (
           <script
             type="application/ld+json"
@@ -868,9 +868,12 @@ const Page = ({
                             {articleStrapi && (
                               <div className='notShowOnPage'>
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
-                                  {articleStrapi?.author}
+                                  <link itemProp="url" href={NEXT_FRONT_URL + pageUrl} />
+                                  <span itemProp="name" href={NEXT_FRONT_URL + pageUrl} >
+                                    {articleStrapi?.author}
+                                  </span>
                                 </span>
-                                <Image width={10} height={10} itemProp="image" src={`${NEXT_FRONT_URL}${articleStrapi?.images?.data[0]?.attributes?.url}`} alt=""/>
+                                <Image width={10} height={10} itemProp="image" src={`${articleStrapi?.images?.data[0]?.attributes?.url}`} alt="" />
                                 <div itemProp="headline">{articleStrapi?.title}</div>
                               </div>
 
@@ -1080,7 +1083,7 @@ export async function getServerSideProps({
         headings,
         socialData: socialData ?? null,
         commentsReactionsByPageUrl,
-        articleStrapi:article
+        articleStrapi: article
       },
     };
   }

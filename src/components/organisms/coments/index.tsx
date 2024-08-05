@@ -151,6 +151,7 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
             </section >
 
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">
+                <img itemProp="image" src="https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA" alt="Изображение автора" />
                 <h3 itemprop="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
                 <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
