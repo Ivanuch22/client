@@ -238,6 +238,8 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                                             itemProp="author"
                                             itemScope
                                             itemType="https://schema.org/Person">
+                                            <link itemProp="url" href={`#comment-id-${commentId}`} />
+
                                             <span
                                                 itemProp="name"
                                                 className="author publisher-anchor-color">
