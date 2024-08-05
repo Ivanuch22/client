@@ -870,7 +870,7 @@ const Page = ({
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                   {articleStrapi?.author}
                                 </span>
-                                <Image itemProp="image" src={`${NEXT_FRONT_URL}${articleStrapi?.images?.data[0]?.attributes?.url}`} alt=""/>
+                                <Image width={10} height={10} itemProp="image" src={`${NEXT_FRONT_URL}${articleStrapi?.images?.data[0]?.attributes?.url}`} alt=""/>
                                 <div itemProp="headline">{articleStrapi?.title}</div>
                               </div>
 
@@ -1080,7 +1080,7 @@ export async function getServerSideProps({
         headings,
         socialData: socialData ?? null,
         commentsReactionsByPageUrl,
-        articleStrapi
+        articleStrapi:article
       },
     };
   }
