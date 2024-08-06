@@ -21,7 +21,7 @@ import removeBodyField from '@/utils/removeBodyFromArray';
 import Image from 'next/image';
 
 const { publicRuntimeConfig } = getConfig();
-const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
+const { NEXT_STRAPI_BASED_URL,NEXT_FRONT_URL } = publicRuntimeConfig;
 
 export default function Home({
   pages,
@@ -169,8 +169,9 @@ export default function Home({
                       <section itemScope itemType="http://schema.org/Blog" className=' col article-col gap-5  d-flex flex-column col  '>
 
                         {pages.map((page, index) => {
-
-                          const { page_title, admin_date, url, heading, comments, views } = page.attributes;
+                          
+                          const { page_title, admin_date, url, heading, comments, views,article } = page.attributes;
+                          console.log(article, "article")
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
                           console.log(comments)
                           return (
@@ -223,6 +224,21 @@ export default function Home({
                                   </div>
                                 </div>
                               </div>
+                              {article && (
+                              <div 
+                              className='notShowOnPage'
+                              >
+                                <span itemProp="author" itemScope itemType="https://schema.org/Person">
+                                  <link itemProp="url" href={NEXT_FRONT_URL + url} />
+                                  <span itemProp="name" href={NEXT_FRONT_URL + url} >
+                                    {article?.author}
+                                  </span>
+                                </span>
+                                <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(article?.images?.data[0]?.attributes.url)}`} alt="" />
+                                <div itemProp="headline">{article?.title}</div>
+                              </div>
+
+                            )}
                             </article>
                           );
                         })}
@@ -279,7 +295,8 @@ export async function getServerSideProps({ query, locale }) {
 
 
   try {
-    const fieldsToPopulate = ["seo_title",
+    const fieldsToPopulate = [
+      "seo_title",
       "page_title",
       "seo_description",
       "url",
@@ -288,14 +305,15 @@ export async function getServerSideProps({ query, locale }) {
       "extraLinks",
       "code",
       "rating",
-      "article",
+      "article.images", // Змінено тут для включення поля images у article
       "howto",
       "image",
       "admin_date",
       "heading",
       "is_popular",
       "views",
-      "comments",]; // Додайте всі необхідні поля, окрім 'body'
+      "comments",
+    ];// Додайте всі необхідні поля, окрім 'body'
 
     const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('&');
 
