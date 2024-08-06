@@ -120,27 +120,30 @@ export default function Home({
                         style={{ marginTop: '40px', marginBottom: '50px' }}
                       >
                         <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
-                          <nav style={{display: "flex"}} itemScope itemType="http://schema.org/BreadcrumbList">
-                            <Link href={`/blog`} itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                              <h2 className="d-inline text-white heading_title" itemProp="name">{$t[locale].blog.all}</h2>
-                              <meta itemProp="position" content="1" />
-                              <span className="d-inline heading_title text-white"> | </span>
-                            </Link>
-                            {headings.map((heading, index) => {
-                              const headingName = heading?.attributes.Name;
-                              const isLast = index === headings.length - 1;
-                              return (
-                                <div key={heading.id} className='d-flex gap-2 align-items-center ' itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                                  <Link href={`/blog?heading=${headingName}`} itemProp="item">
-                                    <h2 className="d-inline heading_title text-white heading_name" itemProp="name">
-                                      {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
-                                    </h2>
-                                    <meta itemProp="position" content={index + 2} />
-                                  </Link>
-                                  {!isLast && <span className="d-inline heading_title text-white"> | </span>}
-                                </div>
-                              );
-                            })}
+                          <nav  itemScope itemType="http://schema.org/BreadcrumbList">
+                            <div style={{ display: "flex" }} itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                              <Link href={`/blog`} itemProp="item">
+                                <h2 className="d-inline text-white heading_title" itemProp="name">{$t[locale].blog.all}</h2>
+                                <meta itemProp="position" content="1" />
+                                <span className="d-inline heading_title text-white"> | </span>
+                              </Link>
+                              {headings.map((heading, index) => {
+                                const headingName = heading?.attributes.Name;
+                                const isLast = index === headings.length - 1;
+                                return (
+                                  <div key={heading.id} className='d-flex gap-2 align-items-center ' itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                                    <Link href={`/blog?heading=${headingName}`} itemProp="item">
+                                      <h2 className="d-inline heading_title text-white heading_name" itemProp="name">
+                                        {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
+                                      </h2>
+                                      <meta itemProp="position" content={index + 2} />
+                                    </Link>
+                                    {!isLast && <span className="d-inline heading_title text-white"> | </span>}
+                                  </div>
+                                );
+                              })}
+                            </div>
+
                           </nav>
                         </h1>
                         <nav aria-label="breadcrumb">
