@@ -552,11 +552,11 @@ const Page = ({
             'Authorization': `Bearer ${userToken}`,
           }
         });
-        const updateUserHistory = await serverForPlugins.put("/custom-comment-fields/custom-history/update", {
-          collectionId: commentId,
-          collection: "Blog Comment",
-          history: newHistoryEntry
-        })
+      const updateUserHistory = await serverForPlugins.put("/custom-comment-fields/custom-history/update", {
+        collectionId: commentId,
+        collection: "Blog Comment",
+        history: newHistoryEntry
+      })
 
 
       const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
@@ -807,22 +807,28 @@ const Page = ({
 
 
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-md-start ">
-                            {/* <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"> */}
-                            <li className="breadcrumb-item">
-                              <Link className="text-white" href="/">
-                                {$t[locale].menu.main}
+                          <ol  itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start ">
+                            {/* <ol  itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"> */}
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/">
+                                <span itemProp="name">
+                                  {$t[locale].menu.main}
+                                </span>
                               </Link>
                             </li>
-                            <li className="breadcrumb-item">
-                              <Link className="text-white" href="/blog">
-                                {$t[locale].blog.titleName}
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/blog">
+                                <span itemProp="name">
+                                  {$t[locale].blog.titleName}
+                                </span>
                               </Link>
                             </li>
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {seo_title ? page_title : '404'}
-                              </a>
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href={url}>
+                                <span itemProp="name">
+                                  {seo_title ? page_title : '404'}
+                                </span>
+                              </Link>
                             </li>
                           </ol>
                         </nav>

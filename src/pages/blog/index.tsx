@@ -120,18 +120,22 @@ export default function Home({
                         style={{ marginTop: '40px', marginBottom: '50px' }}
                       >
                         <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
-                          <nav  itemScope itemType="http://schema.org/BreadcrumbList">
-                            <div style={{ display: "flex" }} itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                              <Link href={`/blog`} itemProp="item">
-                                <h2 className="d-inline text-white heading_title" itemProp="name">{$t[locale].blog.all}</h2>
+                          <nav >
+                            <ul itemScope itemType="http://schema.org/BreadcrumbList" style={{ paddingLeft: 0, listStyleType: "none", display: "flex" }} >
+                              <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className='d-flex gap-2 align-items-center '>
+                                <Link href={`/blog`} itemProp="item" className="d-inline text-white heading_title" >
+                                  <span itemProp="name">
+                                  {$t[locale].blog.all}
+                                  </span>
+                                </Link>
                                 <meta itemProp="position" content="1" />
                                 <span className="d-inline heading_title text-white"> | </span>
-                              </Link>
+                              </li>
                               {headings.map((heading, index) => {
                                 const headingName = heading?.attributes.Name;
                                 const isLast = index === headings.length - 1;
                                 return (
-                                  <div key={heading.id} className='d-flex gap-2 align-items-center ' itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                                  <li key={heading.id} className='d-flex gap-2 align-items-center ' itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
                                     <Link href={`/blog?heading=${headingName}`} itemProp="item">
                                       <h2 className="d-inline heading_title text-white heading_name" itemProp="name">
                                         {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
@@ -139,24 +143,29 @@ export default function Home({
                                       <meta itemProp="position" content={index + 2} />
                                     </Link>
                                     {!isLast && <span className="d-inline heading_title text-white"> | </span>}
-                                  </div>
+                                  </li>
                                 );
                               })}
-                            </div>
-
+                            </ul>
                           </nav>
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.main}
-                              </a>
+                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/">
+                                <meta itemProp="position" content="1" />
+                                <span itemProp="name">
+                                  {$t[locale].menu.main}
+                                </span>
+                              </Link>
                             </li>
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="/blog">
-                                {$t[locale].blog.titleName}
-                              </a>
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/blog">
+                                <meta itemProp="position" content="2" />
+                                <span itemProp="name">
+                                  {$t[locale].blog.titleName}
+                                </span>
+                              </Link>
                             </li>
                           </ol>
                         </nav>
