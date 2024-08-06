@@ -807,10 +807,12 @@ const Page = ({
 
 
                         <nav aria-label="breadcrumb">
-                          <ol  itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start ">
+                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start ">
                             {/* <ol  itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"> */}
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className="text-white" href="/">
+                                <meta itemProp="position" content="1" />
+
                                 <span itemProp="name">
                                   {$t[locale].menu.main}
                                 </span>
@@ -818,6 +820,8 @@ const Page = ({
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className="text-white" href="/blog">
+                                <meta itemProp="position" content="2" />
+
                                 <span itemProp="name">
                                   {$t[locale].blog.titleName}
                                 </span>
@@ -825,6 +829,8 @@ const Page = ({
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className="text-white" href={url}>
+                                <meta itemProp="position" content="3" />
+
                                 <span itemProp="name">
                                   {seo_title ? page_title : '404'}
                                 </span>
