@@ -21,7 +21,7 @@ import removeBodyField from '@/utils/removeBodyFromArray';
 import Image from 'next/image';
 
 const { publicRuntimeConfig } = getConfig();
-const { NEXT_STRAPI_BASED_URL,NEXT_FRONT_URL } = publicRuntimeConfig;
+const { NEXT_STRAPI_BASED_URL, NEXT_FRONT_URL } = publicRuntimeConfig;
 
 export default function Home({
   pages,
@@ -120,24 +120,28 @@ export default function Home({
                         style={{ marginTop: '40px', marginBottom: '50px' }}
                       >
                         <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
-                          <Link href={`/blog`}>
-                            <h2 className="d-inline text-white heading_title">{$t[locale].blog.all} | </h2>
-                          </Link>
-                          {headings.map((heading, index) => {
-                            const headingName = heading?.attributes.Name;
-                            const isLast = index === headings.length - 1;
-
-                            return (
-                              <div key={heading.id} className='d-flex gap-2 align-items-center  '>
-                                <Link href={`/blog?heading=${headingName}`}>
-                                  <h2 className="d-inline heading_title text-white heading_name">
-                                    {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
-                                  </h2>
-                                </Link>
-                                {!isLast && <span className="d-inline heading_title text-white"> | </span>}
-                              </div>
-                            );
-                          })}
+                          <nav style={{display: "flex"}} itemScope itemType="http://schema.org/BreadcrumbList">
+                            <Link href={`/blog`} itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                              <h2 className="d-inline text-white heading_title" itemProp="name">{$t[locale].blog.all}</h2>
+                              <meta itemProp="position" content="1" />
+                              <span className="d-inline heading_title text-white"> | </span>
+                            </Link>
+                            {headings.map((heading, index) => {
+                              const headingName = heading?.attributes.Name;
+                              const isLast = index === headings.length - 1;
+                              return (
+                                <div key={heading.id} className='d-flex gap-2 align-items-center ' itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                                  <Link href={`/blog?heading=${headingName}`} itemProp="item">
+                                    <h2 className="d-inline heading_title text-white heading_name" itemProp="name">
+                                      {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
+                                    </h2>
+                                    <meta itemProp="position" content={index + 2} />
+                                  </Link>
+                                  {!isLast && <span className="d-inline heading_title text-white"> | </span>}
+                                </div>
+                              );
+                            })}
+                          </nav>
                         </h1>
                         <nav aria-label="breadcrumb">
                           <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
@@ -169,8 +173,8 @@ export default function Home({
                       <section itemScope itemType="http://schema.org/Blog" className=' col article-col gap-5  d-flex flex-column col  '>
 
                         {pages.map((page, index) => {
-                          
-                          const { page_title, admin_date, url, heading, comments, views,article } = page.attributes;
+
+                          const { page_title, admin_date, url, heading, comments, views, article } = page.attributes;
                           console.log(article, "article")
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
                           console.log(comments)
@@ -212,10 +216,11 @@ export default function Home({
                                           </svg>                                     <span className="disqus-comment-count"  >{comments.data.length}</span>
                                         </Link>
                                       </span>
-                                      <div className='view part'>
+                                      <div className='view part' itemProp="interactionStatistic" itemScope itemType="http://schema.org/InteractionCounter">
+                                        <meta itemProp="interactionType" content="http://schema.org/ViewAction" />
                                         <div className='w-auto align-items-center d-flex'>
                                           <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
-
+                                          <meta itemProp="userInteractionCount" content={views} />
                                           {views}</div>
 
                                       </div>
@@ -225,20 +230,20 @@ export default function Home({
                                 </div>
                               </div>
                               {article && (
-                              <div 
-                              className='notShowOnPage'
-                              >
-                                <span itemProp="author" itemScope itemType="https://schema.org/Person">
-                                  <link itemProp="url" href={NEXT_FRONT_URL + url} />
-                                  <span itemProp="name" href={NEXT_FRONT_URL + url} >
-                                    {article?.author}
+                                <div
+                                  className='notShowOnPage'
+                                >
+                                  <span itemProp="author" itemScope itemType="https://schema.org/Person">
+                                    <link itemProp="url" href={NEXT_FRONT_URL + url} />
+                                    <span itemProp="name" href={NEXT_FRONT_URL + url} >
+                                      {article?.author}
+                                    </span>
                                   </span>
-                                </span>
-                                <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(article?.images?.data[0]?.attributes.url)}`} alt="" />
-                                <div itemProp="headline">{article?.title}</div>
-                              </div>
+                                  <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(article?.images?.data[0]?.attributes.url)}`} alt="" />
+                                  <div itemProp="headline">{article?.title}</div>
+                                </div>
 
-                            )}
+                              )}
                             </article>
                           );
                         })}
