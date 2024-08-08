@@ -18,6 +18,7 @@ import ResultsNotFound from '@/components/molecules/ResultsNotFound';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import removeBodyField from '@/utils/removeBodyFromArray';
+import Link from 'next/link';
 
 export interface Contacts {
   location: string;
@@ -124,15 +125,21 @@ export default function Home({
                         </h1>
                         <nav aria-label="breadcrumb">
                           <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.main}
-                              </a>
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item"  className="text-white" href="/">
+                                <span style={{ color: "white" }} itemProp="name">
+                                  {$t[locale].menu.main}
+                                </span>
+                                <meta itemProp="position" content="1" />
+                              </Link>
                             </li>
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.search}
-                              </a>
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item"  className="text-white" href={router.asPath}>
+                                <span style={{ color: "white" }} itemProp="name">
+                                  {$t[locale].menu.search}
+                                </span>
+                                <meta itemProp="position" content="2" />
+                              </Link>
                             </li>
                           </ol>
                         </nav>
@@ -159,18 +166,15 @@ export async function getServerSideProps({ query, locale }: Query) {
 
   try {
     const serverPages = await server.get(
-      `/pages?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][body][$containsi]=${q}&locale=${
-        locale === 'ua' ? 'uk' : locale
+      `/pages?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][body][$containsi]=${q}&locale=${locale === 'ua' ? 'uk' : locale
       }`
     );
     const serverSeoPages = await server.get(
-      `/page-seos?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][seo_description][$containsi]=${q}&locale=${
-        locale === 'ua' ? 'uk' : locale
+      `/page-seos?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][seo_description][$containsi]=${q}&locale=${locale === 'ua' ? 'uk' : locale
       }`
     );
     const serverBlog = await server.get(
-      `/blogs?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][seo_description][$containsi]=${q}&locale=${
-        locale === 'ua' ? 'uk' : locale
+      `/blogs?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][seo_description][$containsi]=${q}&locale=${locale === 'ua' ? 'uk' : locale
       }`
     );
     const pages = serverPages.data.data;
@@ -187,7 +191,7 @@ export async function getServerSideProps({ query, locale }: Query) {
 
 
 
-  const pagesWithoutBody = removeBodyField([...pages, ...seoPages,...blogPages])
+    const pagesWithoutBody = removeBodyField([...pages, ...seoPages, ...blogPages])
     return {
       props: {
         pages: pagesWithoutBody,

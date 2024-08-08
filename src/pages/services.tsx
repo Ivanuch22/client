@@ -48,7 +48,8 @@ export default function Home({
 }) {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
-
+  const getPath = useRouter()
+  console.log(getPath,"sdl;fj")
   const { query } = router;
   const { perPage } = query;
 
@@ -97,16 +98,22 @@ export default function Home({
                           {$t[locale].menu.services}
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.main}
-                              </a>
+                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/">
+                                <span style={{ color: "white" }} itemProp="name">
+                                  {$t[locale].menu.main}
+                                </span>
+                                <meta itemProp="position" content="1" />
+                              </Link>
                             </li>
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.services}
-                              </a>
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href={getPath.asPath}>
+                                <span style={{ color: "white" }} itemProp="name">
+                                  {$t[locale].menu.services}
+                                </span>
+                                <meta itemProp="position" content="2" />
+                              </Link>
                             </li>
                           </ol>
                         </nav>

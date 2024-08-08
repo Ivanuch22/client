@@ -28,7 +28,7 @@ export default function Profile({
   socialData,
 }) {
   const { publicRuntimeConfig } = getConfig();
-  const { NEXT_STRAPI_BASED_URL,NEXT_STRAPI_IMG_DEFAULT } = publicRuntimeConfig;
+  const { NEXT_STRAPI_BASED_URL, NEXT_STRAPI_IMG_DEFAULT } = publicRuntimeConfig;
 
   const noImgUrl = `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`;
 
@@ -207,10 +207,10 @@ export default function Profile({
         avatarId: uploadedFile.id,
         user_image: uploadedFile.id,
       });
-            // Delete the old avatar if exists
-            if (user.avatarId) {
-              await deleteOldAvatar(user.avatarId);
-            }
+      // Delete the old avatar if exists
+      if (user.avatarId) {
+        await deleteOldAvatar(user.avatarId);
+      }
 
       setUser({
         ...user,
@@ -304,6 +304,7 @@ export default function Profile({
     setIsDisabled(false);
   }
 
+  const getPath = useRouter()
 
 
 
@@ -344,17 +345,23 @@ export default function Profile({
                           {$t[locale].auth.profile.profile}
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.main}
-                              </a>
+                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/">
+                                <span style={{ color: "white" }} itemProp="name">
+                                  {$t[locale].menu.main}
+                                </span>
+                                <meta itemProp="position" content="1" />
+                              </Link>
                             </li>
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].auth.profile.profile}
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href={getPath.asPath}>
+                                <span style={{ color: "white" }} itemProp="name">
+                                  {$t[locale].auth.profile.profile}
+                                </span>
+                                <meta itemProp="position" content="2" />
 
-                              </a>
+                              </Link>
                             </li>
                           </ol>
                         </nav>
