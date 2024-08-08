@@ -9,15 +9,17 @@ export default (data: any, pubDate: string, locale: string, slug: string) => {
         title,
         body,
         images,
+        author
     } = data;
 
     const microdata = {
         "@context": "https://schema.org",
         "@type": "Article",
-        "url": `${NEXT_FRONT_URL}/${$(locale)}${slug}`,
+        "url": `${NEXT_FRONT_URL}/${$(locale === 'ru' ? '' : locale)}${slug}`,
         "headline": title,
         "articleBody": body,
-        "datePublished": pubDate
+        "datePublished": pubDate,
+        "autor": author
     } as any
 
     if(images?.data?.length){

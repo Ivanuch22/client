@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import Footer from '../organisms/footer';
 import Header from '../organisms/header';
 import Call from '../molecules/Call';
+import Link from 'next/link';
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -18,13 +19,13 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
           <Header />
           {children}
           {isLoaded && (
-            <a
-              href="#"
+            <Link
+              href="/"
               className="btn btn-lg btn-secondary btn-lg-square back-to-top"
               style={{ zIndex: 10, display: 'none' }}
             >
               <i className="bi bi-arrow-up" />
-            </a>
+            </Link>
           )}
           <Footer />
           <Call />
