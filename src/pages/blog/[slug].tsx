@@ -160,7 +160,7 @@ const Page = ({
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const [isShowNotFoutMessage, setIsShowNotFoutMessage] = useState(false)
   const [isShowMessageModal, setShowtMessageModal] = useState(false)
-  const { NEXT_FRONT_URL, NEXT_MAILER } = publicRuntimeConfig;
+  const { NEXT_FRONT_URL, NEXT_MAILER ,NEXT_STRAPI_BASED_URL} = publicRuntimeConfig;
   const router = useRouter();
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
   const [isShowConfirmModal, setShowConfirmModal] = useState(false)
@@ -168,8 +168,8 @@ const Page = ({
   const [commentUserId, setCommentUserId] = useState(0)
   const { isLogin, logout, updateUser, userData } = useAuth();
   const [globalUserIp, setGlobalUserIp] = useState("")
-
   const [user, setUser] = useState({})
+
   useEffect(() => {
 
     const getUserIpFunc = async () => {
@@ -661,7 +661,9 @@ const Page = ({
     setUserComments(comments);
 
   }
-
+  function sanitizeImageUrl(url) {
+    return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
+  }
 
 
   console.log(pageImage, "pageImage")
@@ -759,8 +761,8 @@ const Page = ({
             <DefaultLayout>
               {/* В компонент hero передаем заголовок страницы и данные которые там будут преобразованы в breadcrumb */}
               <div className="container-xxl position-relative p-0">
-                {/* <div className="container-xxl py-5 bg-primary hero-header mb-5"> */}
-                <div className="container-xxl py-5 bg-primary  mb-5">
+                <div className="container-xxl py-5 bg-primary hero-header mb-5">
+                  {/* <div className="container-xxl py-5 bg-primary  mb-5"> */}
                   <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
                     <header className="row g-5 pt-1">
                       <div
@@ -768,10 +770,10 @@ const Page = ({
 
                       >
                         <nav >
-                          <ol style={{ listStyleType: "none", padding: 0 }} className='text-white  d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '>
-                            {/* <ol style={{ listStyleType: "none", padding: 0 }} className='text-white animated slideInLeft d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '> */}
+                          {/* <ol style={{ listStyleType: "none", padding: 0 }} className='text-white  d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '> */}
+                          <ol style={{ listStyleType: "none", padding: 0 }} className='text-white animated slideInLeft d-flex align-items-center flex-wrap  justify-content-center justify-content-xl-start '>
                             <li>
-                              <Link href={`/blog`}>
+                              <Link style={{ fontWeight: 600 }} href={`/blog`}>
                                 <span className="d-inline text-white heading_title">{$t[locale].blog.all} | </span>
                               </Link>
                             </li>
@@ -781,7 +783,7 @@ const Page = ({
                               const isLast = index === headings.length - 1;
                               return (
                                 <li key={heading.id} className='d-flex gap-2 align-items-center  '>
-                                  <Link href={`/blog?heading=${headingName}`}>
+                                  <Link style={{ fontWeight: 600 }} href={`/blog?heading=${headingName}`}>
                                     <span className="d-inline heading_title text-white heading_name">
                                       {headingName.charAt(0).toUpperCase() + headingName.slice(1)}
                                     </span>
@@ -792,34 +794,33 @@ const Page = ({
                             })}
                           </ol>
                         </nav>
-                        {/* <h1 className="d-none text-white animated slideInLeft">
-                          {shortenedTitle}
+                        <h1 className="d-none text-white animated slideInLeft">
+                          {page_title}
                         </h1>
                         <h1 className="display-5 text-white animated slideInLeft">
-                          {shortenedTitle}
-                        </h1> */}
-                        <h1 className="d-none text-white ">
+                          {page_title}
+                        </h1>
+                        {/* <h1 className="d-none text-white ">
                           {page_title}
                         </h1>
                         <h1 className="display-5 text-white ">
                           {page_title}
-                        </h1>
+                        </h1> */}
 
 
                         <nav aria-label="breadcrumb">
-                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start ">
-                            {/* <ol  itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"> */}
+                          {/* <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start "> */}
+                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href="/">
+                              <Link itemProp="item" className=" text-white" href="/">
                                 <meta itemProp="position" content="1" />
-
                                 <span itemProp="name">
                                   {$t[locale].menu.main}
                                 </span>
                               </Link>
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href="/blog">
+                              <Link itemProp="item" className=" text-white" href="/blog">
                                 <meta itemProp="position" content="2" />
 
                                 <span itemProp="name">
@@ -828,7 +829,7 @@ const Page = ({
                               </Link>
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href={url}>
+                              <Link itemProp="item" className=" text-white" href={url}>
                                 <meta itemProp="position" content="3" />
 
                                 <span itemProp="name">
@@ -883,17 +884,19 @@ const Page = ({
                         <>
                           <article itemProp="blogPosts" itemScope itemType="https://schema.org/BlogPosting">
                             {articleStrapi && (
-                              <div className='notShowOnPage'>
+                              <div
+                               className='notShowOnPage'
+                              >
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                   <link itemProp="url" href={NEXT_FRONT_URL + url} />
                                   <span itemProp="name" href={NEXT_FRONT_URL + url} >
                                     {articleStrapi?.author}
                                   </span>
                                 </span>
-                                <Image width={10} height={10} itemProp="image" src={`${articleStrapi?.images?.data[0]?.attributes?.url}`} alt="" />
-                                <div itemProp="headline">{articleStrapi?.title}</div>
+                                <Image width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL+pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText} key={pageImage.data.id} />
+                                <div itemProp="headline">{seo_title}</div>
+                                <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>
-
                             )}
                             <header>
                               <div className="row">
@@ -901,7 +904,7 @@ const Page = ({
                                   <dt className='notShowOnPage'>
                                     {$t[locale].seo.category}
                                   </dt>
-                                  <dd style={{ width: "" }}>
+                                  <dd>
                                     <Link className='text-capitalize fw-bold w-auto part  page_heading_page ' href={`/blog?heading=${heading.data?.attributes.Name}`}>{heading.data?.attributes.Name}</Link>
                                   </dd>
                                   <dt className='notShowOnPage'>
@@ -938,9 +941,11 @@ const Page = ({
                                 </dl>
                               </div>
                             </header>
-                            <div itemProp="articleBody" dangerouslySetInnerHTML={{ __html: body }}></div>
+                            <div  dangerouslySetInnerHTML={{ __html: body }}></div>
                             <div id="comment"></div>
                             <Comments
+                            blogImage={pageImage}
+                            articleStrapi={articleStrapi}
                               seo_title={seo_title}
                               admin_date={admin_date}
                               pageUrl={url}

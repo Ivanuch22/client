@@ -76,7 +76,7 @@ const Footer = () => {
                 </h5>
                 {footerMenus?.about?.items?.map(item => {
                   return (
-                    <li>
+                    <li key={item.id}>
                       <Link
                         key={item.id}
                         className="btn btn-link"
@@ -97,7 +97,7 @@ const Footer = () => {
                 </h5>
                 {footerMenus?.services?.items?.map(item => {
                   return (
-                    <li>
+                    <li key={item.id}>
                       <Link
                         key={item.id}
                         className="btn btn-link"

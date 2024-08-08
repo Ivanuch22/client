@@ -10,13 +10,14 @@ import $t from '@/locale/global';
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import CommentReactions from './commentReactions';
+import Image from "next/image";
 
 interface IComentData {
     comentID: number;
     userIp: string;
     pageUrl: string
 }
-const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
+const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, globalUserIp, data, sendMessage, onDelete, updateComment, saveDraftComment, saveChanginDraftComment }) => {
     const [comments, setComments] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [replyToCommentId, setReplyToCommentId] = useState(null);
@@ -116,6 +117,9 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
             return text;
         }
     }
+    function sanitizeImageUrl(url) {
+        return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
+    }
 
     const nowDate = new Date().toDateString()
 
@@ -151,19 +155,31 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
             </section >
 
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">
-                <img className="notShowOnPage" itemProp="image" src="https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA" alt="Изображение автора" />
-                <h3 itemprop="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
+                {/* <img className="notShowOnPage" itemProp="image" src="https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA" alt="Изображение автора" /> */}
+                <h3 itemProp="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
                 <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
-                <div class="notShowOnPage" itemProp="author" itemType="https://schema.org/Person" itemScope>
-                    <span itemProp="name">Katie Pope</span>
-                    <img itemProp="image" src="https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA" alt="Изображение автора" />
-                    <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
+                {articleStrapi && (
+                    <>
+                        <div
+                            className="notShowOnPage"
+                            itemProp="author" itemType="https://schema.org/Person" itemScope>
+                            <span itemProp="name">{articleStrapi.author}</span>
+                            {articleStrapi?.images.data.map((image) => {
+                                console.log(sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url), "sdlfk;j")
+                                return (
+                                    <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
+                                )
+                            })}
+                            <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
 
-                </div>
-                <p className="notShowOnPage" itemProp="text">
-                    {$t[locale].comment.comments + " " + seo_title}
-                </p>
+                        </div>
+                        <p className="notShowOnPage" itemProp="text">
+                            {articleStrapi.commentText}
+                        </p>
+                    </>
+                )}
+
 
                 {comments.map((comment, index) => {
                     const commentId = comment?.id;
@@ -223,7 +239,7 @@ const Comments = ({ seo_title, admin_date, pageUrl, globalUserIp, data, sendMess
                             <link itemProp="url" href={`#comment-id-${commentId}`} />
                             <div className="post-content">
                                 <div data-action="profile" className="user avatar">
-                                    <img
+                                    <Image
                                         src={`${NEXT_STRAPI_BASED_URL}${url}`}
                                         alt={`Аватар ${real_user_name}`}
                                         className="image-refresh"

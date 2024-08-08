@@ -52,26 +52,38 @@ function generateSiteMap(posts, tags, accordions, blogs) {
        <loc>${NEXT_FRONT_URL}/ua/contacts</loc>
        <priority>0.8</priority>
      </url>
+     <url>
+        <loc>${NEXT_FRONT_URL}/ua/blog</loc>
+        <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/blog</loc>
+       <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/en/blog</loc>
+       <priority>0.8</priority>
+     </url>
+
      ${posts
-       .map(page => {
-         return `
+      .map(page => {
+        return `
        <url>
            <loc>${NEXT_FRONT_URL}/${getReadableLocale(
-           page.attributes.locale
-         )}${removeFirstSlash(page.attributes.url, page.attributes.locale)}</loc>
+          page.attributes.locale
+        )}${removeFirstSlash(page.attributes.url, page.attributes.locale)}</loc>
            <priority>0.8</priority>
        </url>
      `;
-       })
-       .join('')}
+      })
+      .join('')}
 
     ${tags
       .map(page => {
         return `
       <url>
-          <loc>${NEXT_FRONT_URL}/${getReadableLocale(page.attributes.locale)}${
-          page.attributes.locale == 'ru' ? '' : '/'
-        }service${page.attributes.url}</loc>
+          <loc>${NEXT_FRONT_URL}/${getReadableLocale(page.attributes.locale)}${page.attributes.locale == 'ru' ? '' : '/'
+          }service${page.attributes.url}</loc>
           <priority>0.8</priority>
       </url>
     `;
@@ -92,17 +104,17 @@ function generateSiteMap(posts, tags, accordions, blogs) {
       .join('')}
 
       ${blogs
-        .map(page => {
-          return `
+      .map(page => {
+        return `
         <url>
             <loc>${NEXT_FRONT_URL}/${getReadableLocale(
-            page.attributes.locale
-          )}${removeFirstSlash(page.attributes.url, page.attributes.locale)}</loc>
+          page.attributes.locale
+        )}${removeFirstSlash(page.attributes.url, page.attributes.locale)}</loc>
             <priority>0.8</priority>
         </url>
       `;
-        })
-        .join('')}
+      })
+      .join('')}
    </urlset>
  `;
 }
@@ -158,7 +170,7 @@ export async function getServerSideProps({ res }) {
     const accordions = await fetchUrls('accordions');
     const blogs = await fetchUrls('blogs');
 
-    const sitemap = generateSiteMap(posts, tags, accordions,blogs);
+    const sitemap = generateSiteMap(posts, tags, accordions, blogs);
 
     res.setHeader('Content-Type', 'text/xml');
     res.write(sitemap);

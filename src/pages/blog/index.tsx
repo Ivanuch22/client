@@ -68,7 +68,7 @@ export default function Home({
 
   const windowWidth = useWindowWidth();
 
-  function sanitizeImageUrl(url) {
+   function sanitizeImageUrl(url) {
     return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
   }
 
@@ -125,7 +125,7 @@ export default function Home({
                               <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className='d-flex gap-2 align-items-center '>
                                 <Link href={`/blog`} itemProp="item" className="d-inline text-white heading_title" >
                                   <span itemProp="name">
-                                  {$t[locale].blog.all}
+                                    {$t[locale].blog.all}
                                   </span>
                                 </Link>
                                 <meta itemProp="position" content="1" />
@@ -185,14 +185,13 @@ export default function Home({
                       <section itemScope itemType="http://schema.org/Blog" className=' col article-col gap-5  d-flex flex-column col  '>
 
                         {pages.map((page, index) => {
-
-                          const { page_title, admin_date, url, heading, comments, views, article } = page.attributes;
+                          const { page_title, admin_date, url, heading, comments, views, article,seo_title } = page.attributes;
                           console.log(article, "article")
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
                           console.log(comments)
                           return (
                             <article itemProp="blogPosts" itemScope itemType="http://schema.org/BlogPosting" className="row row-line" key={index}>
-                              <meta itemProp="headline" content={page_title} />
+                              <meta itemProp="headline" content={seo_title} />
                               <meta itemProp="datePublished" content={admin_date} />
                               <meta itemProp="interactionCount" content={`UserComments:${comments.data.length}`} />
                               <div className="col-sm-3 col-img mb-3 mb-sm-0 blog_img_block">
@@ -200,7 +199,6 @@ export default function Home({
                                   <Link
                                     href={`${sanitizeImageUrl(url)}`}
                                     className="thumb-responsive lazy-load a-not-img lazy-loaded mostpopularImgBlock"
-                                  // style={{ backgroundImage: `url(${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)})` }}
                                   >
                                     <Image itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
                                   </Link>
@@ -251,15 +249,17 @@ export default function Home({
                                       {article?.author}
                                     </span>
                                   </span>
-                                  <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(article?.images?.data[0]?.attributes.url)}`} alt="" />
-                                  <div itemProp="headline">{article?.title}</div>
+                                  {article?.images.data.map((image)=>{
+                                    return (
+                                      <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL+image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
+                                    )
+                                  })}
                                 </div>
 
                               )}
                             </article>
                           );
                         })}
-
                       </section>
                     </main>
                   </div>
@@ -269,7 +269,7 @@ export default function Home({
                 </div>
               </div>
               <article className="d-flex mt-5 justify-content-center">
-                {2 && (
+                {pagination.pageCount > 1 && (
                   <PaginationControl
                     page={paginationPage}
                     between={4}
