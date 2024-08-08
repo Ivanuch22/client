@@ -155,9 +155,12 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
             </section >
 
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">
-                <p className="notShowOnPage" itemProp="text">
-                    {articleStrapi.commentText}
+                {articleStrapi&&(
+                    <p className="notShowOnPage" itemProp="text">
+                    {articleStrapi?.commentText}
                 </p>
+                )}
+                
                 {articleStrapi?.images.data.map((image) => {
                     console.log(sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url), "sdlfk;j")
                     return (
