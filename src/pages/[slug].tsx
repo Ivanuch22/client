@@ -205,10 +205,10 @@ const Page = ({
           />
         )}
 
-<>{parse(chunksHead)}</>
+        <>{parse(chunksHead)}</>
 
       </Head>
-<>{parse(chunksBodyTop)}</>
+      <>{parse(chunksBodyTop)}</>
 
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl positi  on-relative p-0">
@@ -232,14 +232,14 @@ const Page = ({
                   seo_title
                     ? findAncestors(crumbs, `${slug}`)
                     : [
-                        {
-                          title: '404',
-                          title_uk: '404',
-                          title_en: '404',
-                          url: '',
-                          id: 404,
-                        },
-                      ]
+                      {
+                        title: '404',
+                        title_uk: '404',
+                        title_en: '404',
+                        url: '',
+                        id: 404,
+                      },
+                    ]
                 }
               />
               <div className="container-xxl">
@@ -254,13 +254,12 @@ const Page = ({
                         <div className="error-message">
                           <h3>
                             {errorCode != null
-                              ? `${
-                                  errorText[
-                                    Object.keys(message404).find(
-                                      key => message404[key] === errorMessage
-                                    )
-                                  ]
-                                } ${errorCode}`
+                              ? `${errorText[
+                              Object.keys(message404).find(
+                                key => message404[key] === errorMessage
+                              )
+                              ]
+                              } ${errorCode}`
                               : errorMessage}
                           </h3>
                           {errorCode != null && (
@@ -295,6 +294,7 @@ export async function getServerSideProps({
   const slug = `/${query?.slug}` || '';
 
   const pageRes = await server.get(getPage(slug, $(locale)));
+  console.log(pageRes, "pageres")
 
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
@@ -362,13 +362,6 @@ export async function getServerSideProps({
       },
     };
   }
-
-  // return {
-  //   redirect: {
-  //     destination: '/',
-  //     permanent: false,
-  //   },
-  // };
 
   return {
     props: {

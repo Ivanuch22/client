@@ -20,7 +20,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
           {children}
           {isLoaded && (
             <Link
-              href="/"
+              href="#"
               className="btn btn-lg btn-secondary btn-lg-square back-to-top"
               style={{ zIndex: 10, display: 'none' }}
             >

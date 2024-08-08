@@ -41,7 +41,7 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
                   <span style={{ color: "white" }} itemProp="name">
                     {locale === 'ru' ? crumb.title : crumb[`title_${locale}`]}
                   </span>
-                  <meta itemProp="position" content={postion + 1} />
+                  <meta itemProp="position" content={postion + 2} />
                 </Link>
               </li>
             );

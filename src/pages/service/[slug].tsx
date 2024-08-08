@@ -261,7 +261,7 @@ const Page = ({
                               </Link>
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href="/">
+                              <Link itemProp="item" className="text-white" href="/services">
                                 <span itemProp="name">
                                   {$t[locale].menu.services}
                                 </span>
