@@ -19,7 +19,7 @@ export default (data: any, pubDate: string, locale: string, slug: string) => {
         "headline": title,
         "articleBody": body,
         "datePublished": pubDate,
-        "autor": author
+        "author": author
     } as any
 
     if(images?.data?.length){
