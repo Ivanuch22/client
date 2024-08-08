@@ -127,8 +127,8 @@ export default function Home({
                                   <span itemProp="name">
                                     {$t[locale].blog.all}
                                   </span>
-                                </Link>
                                 <meta itemProp="position" content="1" />
+                                </Link>
                                 <span className="d-inline heading_title text-white"> | </span>
                               </li>
                               {headings.map((heading, index) => {

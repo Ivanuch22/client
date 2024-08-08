@@ -256,27 +256,25 @@ const Page = ({
                               <Link itemProp="item" className="text-white" href="/">
                                 <span itemProp="name">
                                   {$t[locale].menu.main}
-
                                 </span>
+                                <meta itemProp="position" content="1" />
                               </Link>
-                              <meta itemProp="position" content="1" />
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className="text-white" href="/">
                                 <span itemProp="name">
                                   {$t[locale].menu.services}
                                 </span>
+                                <meta itemProp="position" content="2" />
                               </Link>
-                              <meta itemProp="position" content="2" />
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className="text-white" href={url}>
                                 <span itemProp="name">
                                   {seo_title ? shortenedTitle : '404'}
                                 </span>
+                                <meta itemProp="position" content="3" />
                               </Link>
-                              <meta itemProp="position" content="3" />
-
                             </li>
                           </ol>
                         </nav>

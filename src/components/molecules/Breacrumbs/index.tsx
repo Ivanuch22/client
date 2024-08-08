@@ -28,8 +28,8 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
             <span style={{ color: "white" }} itemProp="name">
               {$t[locale].menu.main}
             </span>
-          </Link>
           <meta itemProp="position" content="1" />
+          </Link>
 
         </li>
         {crumbs.length ? (
@@ -41,8 +41,8 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
                   <span style={{ color: "white" }} itemProp="name">
                     {locale === 'ru' ? crumb.title : crumb[`title_${locale}`]}
                   </span>
-                </Link>
                 <meta itemProp="position" content={postion + 1} />
+                </Link>
               </li>
             );
           })
@@ -52,8 +52,8 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
               <span style={{ color: "white" }} itemProp="name">
                 {pageTitle}
               </span>
-            </Link>
             <meta itemProp="position" content="1" />
+            </Link>
           </li>
         )}
       </ol>
