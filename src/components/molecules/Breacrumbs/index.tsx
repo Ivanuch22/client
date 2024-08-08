@@ -24,7 +24,7 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
     <nav aria-label="breadcrumb">
       <ol temScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
         <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item" style={{ color: 'white' }}>
-          <Link href="/">
+          <Link itemProp="item" href="/">
             <span style={{ color: "white" }} itemProp="name">
               {$t[locale].menu.main}
             </span>
@@ -37,7 +37,7 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
             console.log(crumb)
             return (
               <li itemProp="itemListElement" key={crumb.id} itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item" style={{ color: 'white' }}>
-                <Link href={crumb.url}>
+                <Link itemProp="item" href={crumb.url}>
                   <span style={{ color: "white" }} itemProp="name">
                     {locale === 'ru' ? crumb.title : crumb[`title_${locale}`]}
                   </span>
@@ -48,7 +48,7 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
           })
         ) : (
           <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item" style={{ color: 'white' }}>
-            <Link href="/">
+            <Link itemProp="item" href="/">
               <span style={{ color: "white" }} itemProp="name">
                 {pageTitle}
               </span>
