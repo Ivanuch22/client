@@ -19,7 +19,12 @@ export default (data: any, pubDate: string, locale: string, slug: string) => {
         "headline": title,
         "articleBody": body,
         "datePublished": pubDate,
-        "author": author
+        "author": [{
+            "@type": "Person",
+            "name": author,
+            "url": `${NEXT_FRONT_URL}/${$(locale === 'ru' ? '' : locale)}${slug}`
+          }]
+
     } as any
 
     if(images?.data?.length){
