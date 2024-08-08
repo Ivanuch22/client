@@ -155,7 +155,9 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
             </section >
 
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">
-                {/* <img className="notShowOnPage" itemProp="image" src="https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA" alt="Изображение автора" /> */}
+                <p className="notShowOnPage" itemProp="text">
+                    {articleStrapi.commentText}
+                </p>
                 <h3 itemProp="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
                 <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
                 <meta itemProp="datePublished" content={admin_date || nowDate} />
@@ -174,9 +176,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
 
                         </div>
-                        <p className="notShowOnPage" itemProp="text">
-                            {articleStrapi.commentText}
-                        </p>
+
                     </>
                 )}
 
