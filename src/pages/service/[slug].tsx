@@ -25,6 +25,7 @@ import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import { errorText, message404 } from '../switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
+import Link from 'next/link';
 const { publicRuntimeConfig } = getConfig();
 const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 export interface PageAttibutes {
@@ -250,21 +251,32 @@ const Page = ({
                           {shortenedTitle}
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.main}
-                              </a>
+                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/">
+                                <span itemProp="name">
+                                  {$t[locale].menu.main}
+
+                                </span>
+                              </Link>
+                              <meta itemProp="position" content="1" />
                             </li>
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {$t[locale].menu.services}
-                              </a>
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href="/">
+                                <span itemProp="name">
+                                  {$t[locale].menu.services}
+                                </span>
+                              </Link>
+                              <meta itemProp="position" content="2" />
                             </li>
-                            <li className="breadcrumb-item">
-                              <a className="text-white" href="#">
-                                {seo_title ? shortenedTitle : '404'}
-                              </a>
+                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
+                              <Link itemProp="item" className="text-white" href={url}>
+                                <span itemProp="name">
+                                  {seo_title ? shortenedTitle : '404'}
+                                </span>
+                              </Link>
+                              <meta itemProp="position" content="3" />
+
                             </li>
                           </ol>
                         </nav>
