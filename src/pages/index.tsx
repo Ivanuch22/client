@@ -10,6 +10,8 @@ import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import getConfig from 'next/config';
+import generateHreflangTags from '@/utils/generators/generateHreflangTags';
 
 export default function Home({
   html,
@@ -25,6 +27,11 @@ export default function Home({
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const [user, setUser] = useState({});
+
+  const asPath = router.asPath
+  const { publicRuntimeConfig } = getConfig();
+  const { NEXT_FRONT_URL } = publicRuntimeConfig;
+  const hreflangTags = generateHreflangTags(NEXT_FRONT_URL, asPath);
 
   useEffect(() => {
     const getUserCookies = Cookies.get('user');
@@ -46,6 +53,7 @@ export default function Home({
     <>
       <Head>
         <title>{title}</title>
+        <div dangerouslySetInnerHTML={{ __html: hreflangTags }} />
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -99,7 +107,7 @@ export async function getServerSideProps({ query, locale }) {
 
     return {
       props: {
-        html : index,
+        html: index,
         description: index_seo_description,
         title: index_title,
         keywords: index_keywords,
