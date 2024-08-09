@@ -58,6 +58,25 @@ export default function Home({
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const [prevLocale, setPrevLocale] = useState(locale);
 
+
+  const asPath = router.asPath
+  const { publicRuntimeConfig } = getConfig();
+  const { NEXT_FRONT_URL } = publicRuntimeConfig;
+
+  const generateHrefLangTags = () => {
+    const locales = ['ru', 'en', 'ua'];
+    const hrefLangTags = locales.map((lang) => {
+      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
+      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
+    });
+
+    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
+    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
+    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
+
+    return hrefLangTags;
+  };
+
   // Функция которая делает запрос к страпи для получения контактов
   const fetchContacts = async () => {
     try {
@@ -87,6 +106,9 @@ export default function Home({
 
     return acc;
   }, []);
+
+
+
   return (
     <>
       <Head>
@@ -95,6 +117,7 @@ export default function Home({
         <meta name="keywords" content={$t[locale].contacts.seo_keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        {generateHrefLangTags()}
       </Head>
       <Script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"

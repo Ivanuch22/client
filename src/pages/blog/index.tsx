@@ -83,10 +83,27 @@ export default function Home({
     return text
   }
 
+  const asPath = router.asPath
+  const { publicRuntimeConfig } = getConfig();
+  const { NEXT_FRONT_URL } = publicRuntimeConfig;
+  const generateHrefLangTags = () => {
+    const locales = ['ru', 'en', 'ua'];
+    const hrefLangTags = locales.map((lang) => {
+      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
+      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
+    });
+
+    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
+    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
+    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
+
+    return hrefLangTags;
+  };
   return (
     <>
       <Head>
         <title>{$t[locale].blog.title}</title>
+        {generateHrefLangTags()}
         <meta
           name="description"
           content={$t[locale].blog.description}

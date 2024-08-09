@@ -215,9 +215,25 @@ export default function Home({
       return handleError(error?.response?.data?.error?.message);
     }
   }
+  const asPath = router.asPath
+  const { NEXT_FRONT_URL } = publicRuntimeConfig;
+  const generateHrefLangTags = () => {
+    const locales = ['ru', 'en', 'ua'];
+    const hrefLangTags = locales.map((lang) => {
+      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
+      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
+    });
+
+    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
+    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
+    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
+
+    return hrefLangTags;
+  };
   return (
     <>
       <Head>
+        {generateHrefLangTags()}
         <title>Register</title>
         <meta name="description" content="register" />
         <meta name="keywords" content="register noindex, follow" />
