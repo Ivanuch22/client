@@ -279,7 +279,7 @@ const Page = ({
                               </Link>
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href={url}>
+                              <Link itemProp="item" className="text-white" href={"/service"+url}>
                                 <span itemProp="name">
                                   {seo_title ? shortenedTitle : '404'}
                                 </span>
