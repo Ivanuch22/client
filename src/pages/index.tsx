@@ -53,9 +53,8 @@ export default function Home({
     <>
       <Head>
         <title>{title}</title>
-        <div dangerouslySetInnerHTML={{ __html: hreflangTags }} />
-        {/* <meta name="description" content={description} /> */}
-        {/* <meta name="keywords" content={keywords} /> */}
+        <meta name="description" content={description} />
+        <meta name="keywords" content={keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -63,6 +62,8 @@ export default function Home({
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
         defer
       ></Script>
+        <div dangerouslySetInnerHTML={{ __html: hreflangTags }} />
+
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
