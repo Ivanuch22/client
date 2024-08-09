@@ -336,7 +336,6 @@ export async function getServerSideProps({ query, locale }) {
       "url",
       "keywords",
       "faq",
-      "extraLinks",
       "code",
       "rating",
       "article.images", // Змінено тут для включення поля images у article

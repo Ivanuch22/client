@@ -20,11 +20,13 @@ export default (data: any) => {
         description,
     } = data;
 
+
     const microdata = {
         "@context": "http://schema.org",
         "@type": "HowTo",
         "name": title,
         "description": description,
+        
         "step": data.steps.reduce((acc: any, {title, body, image}: ISTep, i: number) => {
             const step = {
                 "@type": "HowToStep",

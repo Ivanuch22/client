@@ -226,7 +226,6 @@ export async function getServerSideProps({ query, locale }: Query) {
       },
     };
   } catch (error) {
-    console.log(error);
     return {
       props: {
         notFound: true,

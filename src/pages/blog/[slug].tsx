@@ -135,7 +135,6 @@ const Page = ({
   rating,
   notFoundMessage,
   heading,
-  extraLinks,
   code,
   pageIds,
   article,
@@ -719,12 +718,6 @@ const Page = ({
             dangerouslySetInnerHTML={{ __html: howto }}
           />
         )}
-        {extraLinks && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: extraLinks }}
-          />
-        )}
         <>{parse(chunksHead)}</>
       </Head>
       <>{parse(chunksBodyTop)}</>
@@ -1053,7 +1046,6 @@ export async function getServerSideProps({
       faq,
       heading,
       rating,
-      extraLinks,
       code,
       article,
       views,
@@ -1105,7 +1097,6 @@ export async function getServerSideProps({
         heading,
         code,
         views,
-        extraLinks: genListItemData(extraLinks),
         rating: genRatingData(rating.data),
         faq: genFaqData(faq.data),
         article: genArticleData(article, admin_date, Locale, slug),
@@ -1145,7 +1136,6 @@ export async function getServerSideProps({
       heading: "",
       article: null,
       faq: [],
-      extraLinks: [],
       notFoundMessage: true,
       code: [],
       howto: null,

@@ -16,7 +16,6 @@ import genArticleData from '@/utils/generators/genArticleData';
 import getHowToData from '@/utils/generators/getHowToData';
 import { getMenu, getPageSeo } from '@/utils/queries';
 import { $ } from '@/utils/utils';
-import ExtraLinks from '@/components/organisms/ExtraLinks';
 import genListItemData from '@/utils/generators/genListItemData';
 import getConfig from 'next/config';
 import Sidebar from '@/components/organisms/Sidebar';
@@ -92,7 +91,6 @@ const Page = ({
   url,
   faq,
   rating,
-  extraLinks,
   code,
   article,
   howto,
@@ -228,12 +226,6 @@ const Page = ({
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: howto }}
-          />
-        )}
-        {extraLinks && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: extraLinks }}
           />
         )}
         <>{parse(chunksHead)}</>
@@ -387,7 +379,6 @@ export async function getServerSideProps({
       keywords,
       faq,
       rating,
-      extraLinks,
       code,
       article,
       publishedAt,
@@ -412,7 +403,6 @@ export async function getServerSideProps({
         slug,
         keywords,
         code,
-        extraLinks: genListItemData(extraLinks),
         rating: genRatingData(rating.data),
         faq: genFaqData(faq.data),
         article: genArticleData(article, publishedAt, locale, slug),
@@ -440,7 +430,6 @@ export async function getServerSideProps({
       rating: null,
       article: null,
       faq: [],
-      extraLinks: [],
       code: [],
       howto: null,
       randomBanner,

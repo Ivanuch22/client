@@ -101,7 +101,6 @@ const Page = ({
   url,
   faq,
   rating,
-  extraLinks,
   code,
   article,
   howto,
@@ -224,12 +223,6 @@ const Page = ({
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: howto }}
-          />
-        )}
-        {extraLinks && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: extraLinks }}
           />
         )}
 
@@ -357,7 +350,6 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
       keywords,
       faq,
       rating,
-      extraLinks,
       code,
       article,
       publishedAt,
@@ -421,13 +413,11 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
         crumbs,
         slug,
         keywords,
-        extraLinks,
         code,
         rating: genRatingData(rating.data),
         faq: genFaqData(faq.data),
         article: genArticleData(article, publishedAt, locale, slug),
         howto: getHowToData(howto),
-        extraLinks: genListItemData(extraLinks),
         randomBanner,
         menu,
         allPages,
@@ -438,12 +428,6 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
       },
     };
   }
-  // return {
-  //   redirect: {
-  //     destination: '/',
-  //     permanent: false,
-  //   },
-  // };
   return {
     props: {
       seo_title: '',
@@ -457,7 +441,6 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
       rating: null,
       article: null,
       faq: [],
-      extraLinks: [],
       code: [],
       howto: null,
       randomBanner,

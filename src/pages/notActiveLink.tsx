@@ -13,7 +13,6 @@ import genArticleData from '@/utils/generators/genArticleData';
 
 import getHowToData from '@/utils/generators/getHowToData';
 import { getMenu, getPage } from '@/utils/queries';
-import ExtraLinks from '@/components/organisms/ExtraLinks';
 import { $ } from '@/utils/utils';
 import genListItemData from '@/utils/generators/genListItemData';
 import { useEffect, useState } from 'react';
@@ -90,7 +89,6 @@ const Page = ({
     url,
     faq,
     rating,
-    extraLinks,
     code,
     article,
     howto,
@@ -212,12 +210,6 @@ const Page = ({
                         dangerouslySetInnerHTML={{ __html: howto }}
                     />
                 )}
-                {extraLinks && (
-                    <script
-                        type="application/ld+json"
-                        dangerouslySetInnerHTML={{ __html: extraLinks }}
-                    />
-                )}
 
 <>{parse(chunksHead)}</>
 
@@ -328,7 +320,6 @@ export async function getServerSideProps({
             keywords,
             faq,
             rating,
-            extraLinks,
             code,
             article,
             publishedAt,
@@ -352,13 +343,11 @@ export async function getServerSideProps({
                 crumbs,
                 slug,
                 keywords,
-                extraLinks,
                 code,
                 rating: genRatingData(rating.data),
                 faq: genFaqData(faq.data),
                 article: genArticleData(article, publishedAt, locale, slug),
                 howto: getHowToData(howto),
-                extraLinks: genListItemData(extraLinks),
                 randomBanner,
                 menu,
                 allPages,
@@ -383,7 +372,6 @@ export async function getServerSideProps({
             rating: null,
             article: null,
             faq: [],
-            extraLinks: [],
             code: [],
             howto: null,
             randomBanner,

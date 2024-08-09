@@ -48,7 +48,7 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
           })
         ) : (
           <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item" style={{ color: 'white' }}>
-            <Link itemProp="item" href="/">
+            <Link itemProp="item" href={router.asPath}>
               <span style={{ color: "white" }} itemProp="name">
                 {pageTitle}
               </span>
