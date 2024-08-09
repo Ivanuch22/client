@@ -31,7 +31,7 @@ export default function Home({
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  // const hreflangTags = generateHreflangTags(NEXT_FRONT_URL, asPath);
+  const hreflangTags = generateHreflangTags(NEXT_FRONT_URL, asPath);
 
   useEffect(() => {
     const getUserCookies = Cookies.get('user');
@@ -53,7 +53,7 @@ export default function Home({
     <>
       <Head>
         <title>{title}</title>
-        {/* <div dangerouslySetInnerHTML={{ __html: hreflangTags }} /> */}
+        <div dangerouslySetInnerHTML={{ __html: hreflangTags }} />
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -75,7 +75,7 @@ export default function Home({
             }}
           >
             <DefaultLayout>
-              {/* <div dangerouslySetInnerHTML={{ __html: html }} /> */}
+              <div dangerouslySetInnerHTML={{ __html: html }} />
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>
