@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import CommentReactions from './commentReactions';
 import Image from "next/image";
+import Link from "next/link";
 
 interface IComentData {
     comentID: number;
@@ -264,28 +265,29 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                             itemScope
                                             itemType="https://schema.org/Person">
                                             <link itemProp="url" href={`#comment-id-${commentId}`} />
-
-                                            <span
-                                                itemProp="name"
-                                                className="author publisher-anchor-color">
-                                                {real_user_name}
-                                                {father.data !== null ? (
-                                                    <span
-                                                        style={{ color: "#494e58", fontSize: 12 }}
-                                                        className="parent-link-container"
-                                                    >
-                                                        <img
-                                                            style={{ margin: "0 12px 0 10px" }}
-                                                            width={15}
-                                                            src="https://cdn-icons-png.flaticon.com/512/591/591866.png"
-                                                            alt=""
-                                                        />
-                                                        {findFatherName()}
-                                                    </span>
-                                                ) : (
-                                                    ""
-                                                )}
-                                            </span>
+                                            <Link href={`/user/${user.data.attributes.username}`}>
+                                                <span
+                                                    itemProp="name"
+                                                    className="author publisher-anchor-color">
+                                                    {real_user_name}
+                                                    {father.data !== null ? (
+                                                        <span
+                                                            style={{ color: "#494e58", fontSize: 12 }}
+                                                            className="parent-link-container"
+                                                        >
+                                                            <img
+                                                                style={{ margin: "0 12px 0 10px" }}
+                                                                width={15}
+                                                                src="https://cdn-icons-png.flaticon.com/512/591/591866.png"
+                                                                alt=""
+                                                            />
+                                                            {findFatherName()}
+                                                        </span>
+                                                    ) : (
+                                                        ""
+                                                    )}
+                                                </span>
+                                            </Link>
                                         </span>
                                         <span className="post-meta">
                                             <time className="time-ago" itemProp="dateCreated" dateTime={admin_date} title={formatDateTime(admin_date, true)}>
