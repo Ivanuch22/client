@@ -280,11 +280,18 @@ const Page = ({
                       )}
                       {/* Displaying rich text */}
                       {listPagesData.length>0 && (
-                        listPagesData.map(page => (
-                          <>
-                            <h1>{page.title}</h1>
-                            <Link href={page.url}>{page.url}</Link>
-                          </>
+                        listPagesData.map((page, index) => (
+                          <div style={{ marginLeft: page.children ? '30px' : '0' }} key={index}>
+                            <h4 class="mb-1">
+                              <Link href={page.url}>
+                              {locale === 'ru'
+                                  ? page.title
+                                  : page[`title_${locale}`]}
+                              </Link>
+                            </h4>
+                            <Link class="font-13 text-success mb-3" href={page.url}>{`${NEXT_FRONT_URL}${page.url}`}</Link>
+                            <hr class="hr"></hr>
+                          </div>
 
                         ))
                       )}
@@ -317,33 +324,54 @@ export async function getServerSideProps({
 
   const pageRes = await server.get(getPage(slug, $(locale)));
 
-
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
   const { menu, allPages, footerMenus, footerGeneral } =
     await getHeaderFooterMenus(strapiLocale);
 
-
+  
   function collectChildren(data, array) {
     let results = [];
-    function traverse(children) {
+    function traverse(children, bool) {
       if (children && children.data) {
         for (let child of children.data) {
-          const { title, url } = child.attributes;
-          array.push({ title, url });
-          traverse(child.attributes.children);
+          const { title, url, title_en, title_uk } = child.attributes;
+          array.push({ title, url, title_en, title_uk, children: bool });
+          traverse(child.attributes.children, true);
         }
       }
     }
-    traverse(data.attributes.children);
+    traverse(data?.attributes.children, false);
     return results;
   }
+  function findChildrenByUrl(obj, targetUrl) {
+    let result = [];
+
+    function search(item) {
+        if (typeof item === 'object' && item !== null) {
+            for (let key in item) {
+                if (item[key] === targetUrl && item.children) {
+                    item.children.data.map(el => result.push(el.attributes))
+                    return;
+                }
+                if (typeof item[key] === 'object') {
+                    search(item[key]);
+                }
+            }
+        }
+    }
+
+    search(obj);
+    return result;
+}
 
   const getMenuUrlArray = menu.map((element) => element.attributes.url)
+  const getMenuUrlArray2 =  findChildrenByUrl(menu, resolvedUrl)
   const getPageListUrl = getMenuUrlArray.filter((url) => url === resolvedUrl)[0]
   const listPagesData = []
-
+  
   if (getPageListUrl) collectChildren(menu.filter(element => element.attributes.url === getPageListUrl)[0], listPagesData)
+    console.log('getMenuUrlArray', listPagesData.length)
 
   const strapiMenu = await server.get(getMenu('main'));
 
@@ -400,7 +428,7 @@ export async function getServerSideProps({
         footerMenus,
         footerGeneral,
         socialData: socialData ?? null,
-        listPagesData
+        listPagesData: listPagesData.length > 0 ? listPagesData : getMenuUrlArray2,
       },
     };
   }
