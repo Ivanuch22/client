@@ -24,6 +24,7 @@ import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 
 import parse from 'html-react-parser';
 import getConfig from 'next/config';
+import Link from 'next/link';
 export interface PageAttibutes {
   seo_title: string;
   createdAt: string;
@@ -99,6 +100,7 @@ const Page = ({
   footerMenus,
   footerGeneral,
   socialData,
+  listPagesData
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -171,7 +173,7 @@ const Page = ({
   const generateHrefLangTags = () => {
     const locales = ['ru', 'en', 'ua'];
     const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
+      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
     });
 
@@ -277,7 +279,18 @@ const Page = ({
                         </div>
                       )}
                       {/* Displaying rich text */}
+                      {listPagesData.length>0 && (
+                        listPagesData.map(page => (
+                          <>
+                            <h1>{page.title}</h1>
+                            <Link href={page.url}>{page.url}</Link>
+                          </>
+
+                        ))
+                      )}
+                      {listPagesData.length<=0&& (
                       <div dangerouslySetInnerHTML={{ __html: body }}></div>
+                      )}
                     </div>
                   </div>
                   <Sidebar randomBanner={randomBanner}></Sidebar>
@@ -309,6 +322,28 @@ export async function getServerSideProps({
 
   const { menu, allPages, footerMenus, footerGeneral } =
     await getHeaderFooterMenus(strapiLocale);
+
+
+  function collectChildren(data, array) {
+    let results = [];
+    function traverse(children) {
+      if (children && children.data) {
+        for (let child of children.data) {
+          const { title, url } = child.attributes;
+          array.push({ title, url });
+          traverse(child.attributes.children);
+        }
+      }
+    }
+    traverse(data.attributes.children);
+    return results;
+  }
+
+  const getMenuUrlArray = menu.map((element) => element.attributes.url)
+  const getPageListUrl = getMenuUrlArray.filter((url) => url === resolvedUrl)[0]
+  const listPagesData = []
+
+  if (getPageListUrl) collectChildren(menu.filter(element => element.attributes.url === getPageListUrl)[0], listPagesData)
 
   const strapiMenu = await server.get(getMenu('main'));
 
@@ -365,6 +400,7 @@ export async function getServerSideProps({
         footerMenus,
         footerGeneral,
         socialData: socialData ?? null,
+        listPagesData
       },
     };
   }
@@ -393,7 +429,8 @@ export async function getServerSideProps({
         contacts: {},
       },
       footerGeneral: footerGeneral ?? {},
-      socialData: socialData ?? {}
+      socialData: socialData ?? {},
+      listPagesData
     },
   };
 }
