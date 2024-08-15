@@ -54,6 +54,7 @@ const Switch = () => {
 
   useEffect(() => {
     handlePosition(router.locale);
+    console.log(pathWithoutFragment,router.locale,"sdfsdfsd")
     if (isPageWithLocaleExists(pathWithoutFragment, router.locale)) {
       if (setErrorMessage && setErrorCode) {
         setErrorMessage('');
@@ -82,7 +83,7 @@ const Switch = () => {
       router.pathname != '/[slug]' &&
       router.pathname != '/info/[slug]' &&
       router.pathname != '/blog/[slug]' &&
-      router.pathname != '/service/[slug]'
+      router.pathname != '/usefull'
     ) {
       return true;
     }

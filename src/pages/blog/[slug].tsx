@@ -170,7 +170,6 @@ const Page = ({
   const [user, setUser] = useState({})
 
   useEffect(() => {
-
     const getUserIpFunc = async () => {
       const getUserIps = await getUserIp()
       setGlobalUserIp(getUserIps)
@@ -706,12 +705,12 @@ const Page = ({
             dangerouslySetInnerHTML={{ __html: rating }}
           />
         )}
-        {/* {article && (
+        {article && (
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: article }}
           />
-        )} */}
+        )}
         {howto && (
           <script
             type="application/ld+json"
@@ -897,12 +896,12 @@ const Page = ({
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                   <link itemProp="url" href={NEXT_FRONT_URL + url} />
                                   <span itemProp="name" href={NEXT_FRONT_URL + url} >
-                                    {articleStrapi?.author}
+                                    {articleStrapi?.author.data.attributes.real_user_name}
                                   </span>
                                 </span>
                                 <Image width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL+pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText} key={pageImage.data.id} />
                                 <div itemProp="headline">{seo_title}</div>
-                                <div itemProp="articleBody">{articleStrapi.body}</div>
+                                <div itemProp="articleBody">{articleStrapi.body}</div>фів
                               </div>
                             )}
                             <header>
@@ -1110,7 +1109,7 @@ export async function getServerSideProps({
         headings,
         socialData: socialData ?? null,
         commentsReactionsByPageUrl,
-        articleStrapi: article
+        articleStrapi: article,
       },
     };
   }

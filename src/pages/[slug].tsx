@@ -24,6 +24,7 @@ import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 
 import parse from 'html-react-parser';
 import getConfig from 'next/config';
+import Link from 'next/link';
 export interface PageAttibutes {
   seo_title: string;
   createdAt: string;
@@ -99,6 +100,7 @@ const Page = ({
   footerMenus,
   footerGeneral,
   socialData,
+  listPagesData
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -171,7 +173,7 @@ const Page = ({
   const generateHrefLangTags = () => {
     const locales = ['ru', 'en', 'ua'];
     const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
+      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
     });
 
@@ -277,7 +279,25 @@ const Page = ({
                         </div>
                       )}
                       {/* Displaying rich text */}
+                      {listPagesData.length>0 && (
+                        listPagesData.map((page, index) => (
+                          <div style={{ marginLeft: page.children ? '30px' : '0' }} key={index}>
+                            <h4 class="mb-1">
+                              <Link href={page.url}>
+                              {locale === 'ru'
+                                  ? page.title
+                                  : page[`title_${locale}`]}
+                              </Link>
+                            </h4>
+                            <Link class="font-13 text-success mb-3" href={page.url}>{`${NEXT_FRONT_URL}${page.url}`}</Link>
+                            <hr class="hr"></hr>
+                          </div>
+
+                        ))
+                      )}
+                      {listPagesData.length<=0&& (
                       <div dangerouslySetInnerHTML={{ __html: body }}></div>
+                      )}
                     </div>
                   </div>
                   <Sidebar randomBanner={randomBanner}></Sidebar>
@@ -304,11 +324,54 @@ export async function getServerSideProps({
 
   const pageRes = await server.get(getPage(slug, $(locale)));
 
-
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
   const { menu, allPages, footerMenus, footerGeneral } =
     await getHeaderFooterMenus(strapiLocale);
+
+  
+  function collectChildren(data, array) {
+    let results = [];
+    function traverse(children, bool) {
+      if (children && children.data) {
+        for (let child of children.data) {
+          const { title, url, title_en, title_uk } = child.attributes;
+          array.push({ title, url, title_en, title_uk, children: bool });
+          traverse(child.attributes.children, true);
+        }
+      }
+    }
+    traverse(data?.attributes.children, false);
+    return results;
+  }
+  function findChildrenByUrl(obj, targetUrl) {
+    let result = [];
+
+    function search(item) {
+        if (typeof item === 'object' && item !== null) {
+            for (let key in item) {
+                if (item[key] === targetUrl && item.children) {
+                    item.children.data.map(el => result.push(el.attributes))
+                    return;
+                }
+                if (typeof item[key] === 'object') {
+                    search(item[key]);
+                }
+            }
+        }
+    }
+
+    search(obj);
+    return result;
+}
+
+  const getMenuUrlArray = menu.map((element) => element.attributes.url)
+  const getMenuUrlArray2 =  findChildrenByUrl(menu, resolvedUrl)
+  const getPageListUrl = getMenuUrlArray.filter((url) => url === resolvedUrl)[0]
+  const listPagesData = []
+  
+  if (getPageListUrl) collectChildren(menu.filter(element => element.attributes.url === getPageListUrl)[0], listPagesData)
+    console.log('getMenuUrlArray', listPagesData.length)
 
   const strapiMenu = await server.get(getMenu('main'));
 
@@ -365,6 +428,7 @@ export async function getServerSideProps({
         footerMenus,
         footerGeneral,
         socialData: socialData ?? null,
+        listPagesData: listPagesData.length > 0 ? listPagesData : getMenuUrlArray2,
       },
     };
   }
@@ -393,7 +457,8 @@ export async function getServerSideProps({
         contacts: {},
       },
       footerGeneral: footerGeneral ?? {},
-      socialData: socialData ?? {}
+      socialData: socialData ?? {},
+      listPagesData
     },
   };
 }

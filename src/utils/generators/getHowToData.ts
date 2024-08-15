@@ -1,18 +1,5 @@
 const { NEXT_FRONT_URL } = process.env;
 
-interface ISTep {
-    title: string;
-    body: string;
-    image: {
-        data: {
-            id: number;
-            attributes: {
-                url: string;
-            }
-        }
-    }
-}
-
 export default (data: any) => {
     if(!data){ return null; }
     const {
@@ -45,4 +32,17 @@ export default (data: any) => {
      }
 
     return JSON.stringify(microdata);
+}
+
+interface ISTep {
+    title: string;
+    body: string;
+    image: {
+        data: {
+            id: number;
+            attributes: {
+                url: string;
+            }
+        }
+    }
 }

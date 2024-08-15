@@ -20,7 +20,7 @@ import ImgEditor from '@/components/organisms/ImgEditor';
 import getConfig from 'next/config';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
 
-export default function Profile({
+export default function User({
   menu,
   allPages,
   footerMenus,
