@@ -203,7 +203,6 @@ export default function Home({
 
                         {pages.map((page, index) => {
                           const { page_title, admin_date, url, heading, comments, views, article,seo_title } = page.attributes;
-                          console.log(article, "article")
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
                           console.log(comments)
                           return (
@@ -263,7 +262,7 @@ export default function Home({
                                   <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                     <link itemProp="url" href={NEXT_FRONT_URL + url} />
                                     <span itemProp="name" href={NEXT_FRONT_URL + url} >
-                                      {article?.author}
+                                      {article?.author.data.attributes.real_user_name}
                                     </span>
                                   </span>
                                   {article?.images.data.map((image)=>{
@@ -349,8 +348,7 @@ export async function getServerSideProps({ query, locale }) {
     ];// Додайте всі необхідні поля, окрім 'body'
 
     const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('&');
-
-    const getPages = await server.get(`/blogs?${populateParams}&locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc`);
+    const getPages = await server.get(`/blogs?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`);
     pages = getPages.data.data;
     pagination = getPages.data.meta.pagination;
   } catch (e) {

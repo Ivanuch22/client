@@ -25,7 +25,7 @@ export const getPageSeo = (slug: string, locale: string) => {
 export const getBlogPage = (slug: string, locale: string) => {
   return `/blogs?${qs.stringify({
       locale: locale,
-      populate: ['faq.items',"heading","image", 'extraLinks', 'code', 'rating', 'article.images', 'howto.steps.image'],
+      populate: ['faq.items',"heading","image", 'extraLinks', 'code', 'rating', 'article.images', 'howto.steps.image', 'article.author'],
       filters: {
         url: {
           $eq: slug,

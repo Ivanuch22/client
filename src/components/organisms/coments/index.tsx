@@ -176,7 +176,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                         <div
                             className="notShowOnPage"
                             itemProp="author" itemType="https://schema.org/Person" itemScope>
-                            <span itemProp="name">{articleStrapi.author}</span>
+                            <span itemProp="name">{articleStrapi?.author.data.attributes.real_user_name}</span>
                             {articleStrapi?.images.data.map((image) => {
                                 console.log(sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url), "sdlfk;j")
                                 return (
