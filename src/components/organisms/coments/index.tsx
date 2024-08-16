@@ -178,12 +178,12 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             itemProp="author" itemType="https://schema.org/Person" itemScope>
                             <span itemProp="name">{articleStrapi?.author.data.attributes.real_user_name}</span>
                             {articleStrapi?.images.data.map((image) => {
-                                console.log(sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url), "sdlfk;j")
+                                // console.log(sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url), "sdlfk;j")
                                 return (
                                     <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
                                 )
                             })}
-                            <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
+                            <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author.data.attributes.username}`} />
 
                         </div>
 
@@ -264,7 +264,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                             itemProp="author"
                                             itemScope
                                             itemType="https://schema.org/Person">
-                                            <link itemProp="url" href={`#comment-id-${commentId}`} />
+                                            <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${user.data.attributes.username}`} />
                                             <Link href={`/user/${user.data.attributes.username}`}>
                                                 <span
                                                     itemProp="name"
@@ -279,7 +279,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                                                 style={{ margin: "0 12px 0 10px" }}
                                                                 width={15}
                                                                 src="https://cdn-icons-png.flaticon.com/512/591/591866.png"
-                                                                alt=""
+                                                                alt="User icon"
                                                             />
                                                             {findFatherName()}
                                                         </span>
