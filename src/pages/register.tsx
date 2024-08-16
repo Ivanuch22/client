@@ -172,9 +172,7 @@ export default function Home({
     let userData;
     try{
       userData = await getUserFingerPrint();
-      console.log("getUserData",userData)
     }catch(e){
-      console.log()
       userData ={}
     }
     try {
@@ -207,11 +205,9 @@ export default function Home({
         login();
         updateUser()
       } else {
-        console.log("asd;lkfj")
         return handleError(error?.response?.data?.error?.message);
       }
     } catch (error) {
-      console.log(error)
       return handleError(error?.response?.data?.error?.message);
     }
   }
@@ -415,7 +411,6 @@ export async function getServerSideProps({ query, locale }) {
   try {
     const strapiLocale = locale === 'ua' ? 'uk' : locale;
     const res = await server.get(`/code?locale=${$(strapiLocale)}`);
-    console.log(res)
     const {
       index = '',
       index_seo_description,
@@ -427,7 +422,6 @@ export async function getServerSideProps({ query, locale }) {
       await getHeaderFooterMenus(strapiLocale);
 
     const socialRes = await server.get('/social');
-    console.log(socialRes)
     const socialData = socialRes.data.data.attributes;
 
     return {

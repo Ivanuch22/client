@@ -63,9 +63,6 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 return element
             }
         })
-
-        console.log(myIp, "my ip")
-        console.log((globalUserIp == myIp[0]?.ip_address && (myIp[0].user_email === getUserEmailForIf)))
         if (myIp[0]?.user_email === getUserEmailForIf && myIp[0]?.user_email !== "-") {
             if (myIp[0]?.action == "like") {
                 setLike(true)
@@ -134,9 +131,6 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
             return 400
         }
     }
-    useEffect(() => {
-        console.log(disLikeReaction)
-    }, [disLikeReaction])
 
     const onClick = async (e: any) => {
         const buttonType = e.currentTarget.getAttribute('data-type');

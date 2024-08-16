@@ -262,7 +262,7 @@ export default function Home({
                                   <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                     <link itemProp="url" href={NEXT_FRONT_URL + url} />
                                     <span itemProp="name" href={NEXT_FRONT_URL + url} >
-                                      {article?.author.data.attributes.real_user_name}
+                                      {article?.author?.data?.attributes?.real_user_name}
                                     </span>
                                   </span>
                                   {article?.images.data.map((image)=>{
