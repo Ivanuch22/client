@@ -173,6 +173,7 @@ const Page = ({
     const getUserIpFunc = async () => {
       const getUserIps = await getUserIp()
       setGlobalUserIp(getUserIps)
+      console.log('getUserIps', getUserIps)
 
     }
     getUserIpFunc()
@@ -896,12 +897,12 @@ const Page = ({
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
                                   <link itemProp="url" href={NEXT_FRONT_URL + url} />
                                   <span itemProp="name" href={NEXT_FRONT_URL + url} >
-                                    {articleStrapi?.author?.data?.attributes?.real_user_name}
+                                    {articleStrapi?.author.data.attributes.real_user_name}
                                   </span>
                                 </span>
                                 <Image width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL+pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText} key={pageImage.data.id} />
                                 <div itemProp="headline">{seo_title}</div>
-                                <div itemProp="articleBody">{articleStrapi.body}</div>фів
+                                <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>
                             )}
                             <header>

@@ -281,7 +281,7 @@ const Page = ({
                       {/* Displaying rich text */}
                       {listPagesData.length>0 && (
                         listPagesData.map((page, index) => (
-                          <div style={{ marginLeft: page.children ? '30px' : '0' }} key={index}>
+                          <div style={{ marginLeft: page.childrenStatus ? '30px' : '0' }} key={index}>
                             <h4 class="mb-1">
                               <Link href={page.url}>
                               {locale === 'ru'
@@ -336,7 +336,7 @@ export async function getServerSideProps({
       if (children && children.data) {
         for (let child of children.data) {
           const { title, url, title_en, title_uk } = child.attributes;
-          array.push({ title, url, title_en, title_uk, children: bool });
+          array.push({ title, url, title_en, title_uk, childrenStatus: bool });
           traverse(child.attributes.children, true);
         }
       }

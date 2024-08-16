@@ -260,9 +260,9 @@ export default function Home({
                                   className='notShowOnPage'
                                 >
                                   <span itemProp="author" itemScope itemType="https://schema.org/Person">
-                                    <link itemProp="url" href={NEXT_FRONT_URL + url} />
-                                    <span itemProp="name" href={NEXT_FRONT_URL + url} >
-                                      {article?.author?.data?.attributes?.real_user_name}
+                                    <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${article?.author.data.attributes.username}`} />
+                                    <span itemProp="name" href={`${NEXT_FRONT_URL}/user/${article?.author.data.attributes.username}`} >
+                                      {article?.author.data.attributes.real_user_name}
                                     </span>
                                   </span>
                                   {article?.images.data.map((image)=>{

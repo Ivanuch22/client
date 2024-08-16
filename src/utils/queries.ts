@@ -44,7 +44,7 @@ export const getBlogPage = (slug: string, locale: string) => {
 
 export const getPage = (slug: string, locale: string) => {
     return `/pages?${qs.stringify({
-        populate: ['faq.items', 'extraLinks', 'code', 'rating', 'article.images', 'howto.steps.image'],
+        populate: ['faq.items', 'extraLinks', 'code', 'rating', 'article.images', 'howto.steps.image', 'article.author'],
         locale: locale,
         filters: {
           url: {
