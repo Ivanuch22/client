@@ -111,7 +111,7 @@ export default function User({
                         style={{ marginTop: '40px', marginBottom: '50px' }}
                       >
                         <h1 className="display-4 text-white animated slideInLeft">
-                          {$t[locale].auth.profile.profile}
+                          {dataUser[0]?.real_user_name}
                         </h1>
                         <nav aria-label="breadcrumb">
                           <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
@@ -126,7 +126,7 @@ export default function User({
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className="text-white" href={getPath.asPath}>
                                 <span style={{ color: "white" }} itemProp="name">
-                                  {$t[locale].auth.profile.profile}
+                                {dataUser[0]?.real_user_name}
                                 </span>
                                 <meta itemProp="position" content="2" />
 
@@ -162,7 +162,6 @@ export default function User({
                           </div>
                           <div className="flex-grow-1 ms-3">
                             <h5>{dataUser[0]?.real_user_name}</h5>
-                            <p className="mb-0">{dataUser[0].email}</p>
                           </div>
 
                         </div>
