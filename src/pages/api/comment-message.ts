@@ -46,7 +46,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 
             await transporter.sendMail(mailoptions);
-            console.log('Письмо успешно отправлено')
             return res.json({
                 data: 'Message sent successfully'
             })

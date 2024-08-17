@@ -7,6 +7,7 @@ import { IComentReaction, IReaction } from "@/types/commentReactions";
 import getConfig from "next/config";
 import $t from '@/locale/global';
 import { useRouter } from 'next/router';
+import Link from "next/link";
 
 
 interface IComentData {
@@ -31,7 +32,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
 
 
     const { publicRuntimeConfig } = getConfig();
-    const { NEXT_USER_DEFAULT_URL, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
+    const { NEXT_USER_DEFAULT_URL, NEXT_STRAPI_BASED_URL, NEXT_FRONT_URL } = publicRuntimeConfig;
 
     const [anonimusLike, setAnonimusLike] = useState(likeReaction.filter(reaction => {
         if (reaction.real_user_name == "-" && reaction.user_email === "-") {
@@ -112,13 +113,14 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                     ip_address: commentData.userIp,
                     comment_id: commentData.comentID,
                     user_email: getUserEmailForIf,
+                    username: userData?.username,
                     action
                 }, {
                     headers: {
                         'Authorization': `Bearer ${userToken}`,
                     }
                 })
-                return updateComment.status
+                return updateComment
             } else {
                 let updateComment = await axios.post(`${NEXT_STRAPI_API_URL.replace("/api", "")}/custom-comment-fields/comment-actions`, {
                     page_url: commentData.pageUrl,
@@ -134,9 +136,6 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
             return 400
         }
     }
-    useEffect(() => {
-        console.log(disLikeReaction)
-    }, [disLikeReaction])
 
     const onClick = async (e: any) => {
         const buttonType = e.currentTarget.getAttribute('data-type');
@@ -148,16 +147,16 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 setDislikeCount((dislikeCount) => dislikeCount - 1);
             }
             const fetchStatus = await updateCommentReaction(commentData, "like")
-            if (fetchStatus == 201) {
+            if (fetchStatus.status == 201) {
                 setLikeReaction((prev) => {
 
                     return [...prev, {
                         page_url: commentData.pageUrl,
                         user_email: getUserEmailForIf,
-
+                        username: (userData?.username) ? userData?.username : "-",
                         ip_address: commentData.userIp,
                         real_user_name: (userData?.real_user_name) ? userData.real_user_name : "-",
-                        user_image: (userData?.user_image?.url) ? userData.user_image?.url : NEXT_USER_DEFAULT_URL,
+                        user_image: (fetchStatus?.data.user.user_image) ? fetchStatus?.data.user.user_image : NEXT_USER_DEFAULT_URL,
                         comment_id: commentData.comentID,
                         action: "like"
                     }
@@ -167,7 +166,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                     return prev.filter(element => element.ip_address !== commentData.userIp || element.user_email !== getUserEmailForIf)
 
                 })
-            } else if (fetchStatus == 200) {
+            } else if (fetchStatus.status == 200) {
                 setLikeReaction((prev) => {
 
                     return prev.filter(element => element.ip_address !== commentData.userIp || element.user_email !== getUserEmailForIf)
@@ -181,7 +180,7 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                 setLikeCount((likeCount) => likeCount - 1);
             }
             const fetchStatus = await updateCommentReaction(commentData, "dislike")
-            if (fetchStatus == 201) {
+            if (fetchStatus.status == 201) {
                 setDisLikeReaction((prev) => {
                     return [...prev, {
                         action: "dislike",
@@ -190,14 +189,15 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                         ip_address: commentData.userIp,
                         user_email: getUserEmailForIf,
                         real_user_name: (userData?.real_user_name) ? userData.real_user_name : "-",
-                        user_image: (userData?.user_image?.url) ? userData.user_image?.url : NEXT_USER_DEFAULT_URL,
+                        username: (userData?.username) ? userData.username : "-",
+                        user_image: (fetchStatus?.data.user.user_image) ? fetchStatus?.data.user.user_image : NEXT_USER_DEFAULT_URL,
                     }]
                 })
                 setLikeReaction((prev) => {
                     return prev.filter(element => element.ip_address !== commentData.userIp || element.user_email !== getUserEmailForIf)
 
                 })
-            } else if (fetchStatus == 200) {
+            } else if (fetchStatus.status == 200) {
                 setDisLikeReaction((prev) => {
                     return prev.filter(element => {
                         return element.ip_address !== commentData.userIp || element.user_email !== getUserEmailForIf
@@ -230,7 +230,10 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                             <li  itemProp="author" itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL + reaction.user_image})` }}>
                                                 </div>
-                                                <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
+                                                <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${reaction?.username}`} />
+                                                <Link href={`/user/${reaction?.username}`}>
+                                                    <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
+                                                </Link>
                                             </li>
                                         )
                                     }
@@ -273,7 +276,10 @@ const CommentReactions = ({ comment, commentData, reactions = [], globalUserIp =
                                             <li itemProp="author"  itemScope itemType="https://schema.org/Person" key={index} className="comment-footer_menu_reaction_user " data-action="profile" data-username="disqus_tQqF4HKdSD">
                                                 <div className="comment-footer_menu_reaction_img " style={{ backgroundImage: `url(${NEXT_STRAPI_BASED_URL}${reaction.user_image})` }}>
                                                 </div>
-                                                <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
+                                                <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${reaction?.username}`} />
+                                                <Link href={`/user/${reaction?.username}`}>
+                                                    <h3 itemProp="name" className="comment-footer_menu_reaction_user_name">{shortText(reaction.real_user_name)}</h3>
+                                                </Link>
                                             </li>
                                         )
                                     }

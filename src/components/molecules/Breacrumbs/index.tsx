@@ -34,7 +34,6 @@ const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
         </li>
         {crumbs.length ? (
           crumbs.map((crumb, postion) => {
-            console.log(crumb)
             return (
               <li itemProp="itemListElement" key={crumb.id} itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item" style={{ color: 'white' }}>
                 <Link itemProp="item" href={crumb.url}>

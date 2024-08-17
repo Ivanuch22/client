@@ -21,8 +21,8 @@ export default (data: any, pubDate: string, locale: string, slug: string) => {
         "datePublished": pubDate,
         "author": [{
             "@type": "Person",
-            "name": author,
-            "url": `${NEXT_FRONT_URL}${$(locale === 'ru' ? '' : "/"+locale)}${slug}`
+            "name": author?.data?.attributes.real_user_name ? author?.data?.attributes.real_user_name : 'Author',
+            "url": author?.data?.attributes.username ? `${NEXT_FRONT_URL}/user/${author?.data?.attributes.username}` : `${NEXT_FRONT_URL}`
           }]
 
     } as any
