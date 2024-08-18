@@ -859,7 +859,7 @@ const Page = ({
                       {!notFoundMessage && (
                         <>
                           <article itemProp="blogPosts" itemScope itemType="https://schema.org/BlogPosting">
-                            {articleStrapi && (
+                            {/* {articleStrapi && (
                               <div
                                 className='notShowOnPage'
                               >
@@ -873,7 +873,7 @@ const Page = ({
                                 <div itemProp="headline">{seo_title}</div>
                                 <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>
-                            )}
+                            )} */}
                             <header>
                               <div className="row">
                                 <dl className='row gap-sm-2 align-items-center mb-2 ps-0'>
