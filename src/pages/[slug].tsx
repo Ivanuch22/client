@@ -371,7 +371,6 @@ export async function getServerSideProps({
   const listPagesData = []
   
   if (getPageListUrl) collectChildren(menu.filter(element => element.attributes.url === getPageListUrl)[0], listPagesData)
-    console.log('getMenuUrlArray', listPagesData.length)
 
   const strapiMenu = await server.get(getMenu('main'));
 

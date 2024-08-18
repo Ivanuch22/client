@@ -50,7 +50,6 @@ export default function Home({
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const getPath = useRouter()
-  console.log(getPath,"sdl;fj")
   const { query } = router;
   const { perPage } = query;
 

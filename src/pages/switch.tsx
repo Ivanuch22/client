@@ -54,7 +54,6 @@ const Switch = () => {
 
   useEffect(() => {
     handlePosition(router.locale);
-    console.log(pathWithoutFragment,router.locale,"sdfsdfsd")
     if (isPageWithLocaleExists(pathWithoutFragment, router.locale)) {
       if (setErrorMessage && setErrorCode) {
         setErrorMessage('');

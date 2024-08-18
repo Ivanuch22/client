@@ -108,7 +108,6 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
         }, 300);
     }
     function replaceText(text) {
-        // Перевірка, чи містить текст слово "count"
         if (text.includes("count")) {
             const newText = text.replace("count", (commentCoutn - showedComent))
 
@@ -121,9 +120,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
     function sanitizeImageUrl(url) {
         return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
     }
-
     const nowDate = new Date().toDateString()
-
     return (
         <>
             <section>
@@ -163,9 +160,8 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                 )}
                 
                 {articleStrapi?.images.data.map((image) => {
-                    console.log(sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url), "sdlfk;j")
                     return (
-                        <Image  className="notShowOnPage" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
+                        <Image className="notShowOnPage" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
                     )
                 })}
                 <h3 itemProp="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
@@ -178,13 +174,11 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             itemProp="author" itemType="https://schema.org/Person" itemScope>
                             <span itemProp="name">{articleStrapi?.author?.data?.attributes?.real_user_name}</span>
                             {articleStrapi?.images.data.map((image) => {
-                                // console.log(sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url), "sdlfk;j")
                                 return (
-                                    <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
+                                    <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
                                 )
                             })}
-                            <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author.data.attributes.username}`} />
-
+                            <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`} />
                         </div>
 
                     </>
@@ -245,7 +239,6 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             itemScope
                             itemType="https://schema.org/Comment"
                         >
-
                             <link itemProp="url" href={`#comment-id-${commentId}`} />
                             <div className="post-content">
                                 <div data-action="profile" className="user avatar">
@@ -257,7 +250,6 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                         height="35"
                                     />
                                 </div>
-
                                 <div className="post-body">
                                     <header className="comment__header">
                                         <span
@@ -275,9 +267,10 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                                             style={{ color: "#494e58", fontSize: 12 }}
                                                             className="parent-link-container"
                                                         >
-                                                            <img
+                                                            <Image
                                                                 style={{ margin: "0 12px 0 10px" }}
                                                                 width={15}
+                                                                height={15}
                                                                 src="https://cdn-icons-png.flaticon.com/512/591/591866.png"
                                                                 alt="User icon"
                                                             />
@@ -357,7 +350,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                     <footer className="comment__footer">
                                         <nav className="comment-footer__menu">
                                             <CommentReactions
-                                                comment={comment}
+                                                comments={comment}
                                                 commentData={commentData}
                                                 globalUserIp={globalUserIp}
                                                 reactions={comment.reactions}

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect} from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import parse from 'html-react-parser';
@@ -7,19 +7,16 @@ import Head from 'next/head';
 import Link from 'next/link';
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
-
 import $t from '@/locale/global';
 import { server, NEXT_STRAPI_API_URL, serverForPlugins } from '@/http/index';
 import { errorText, message404 } from '../switch';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
-
 import { $ } from '@/utils/utils';
 import genRatingData from '@/utils/generators/genRatingData';
 import genFaqData from '@/utils/generators/genFaqData';
 import genArticleData from '@/utils/generators/genArticleData';
 import getHowToData from '@/utils/generators/getHowToData';
 import { getMenu, getBlogPage } from '@/utils/queries';
-import genListItemData from '@/utils/generators/genListItemData';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 import getRandomBanner from '@/utils/getRandomBanner';
@@ -27,7 +24,6 @@ import getRandomPopularNews from '@/utils/getRandomPopularNews';
 import formatDateTime from '@/utils/formateDateTime';
 import MailModal from '@/components/organisms/ModalMail';
 import getPagesIdWithSameUrl from "@/utils/getPagesIdWithSameUrl"
-
 import DefaultLayout from '@/components/layouts/default';
 import { Crumb } from '@/components/molecules/Breacrumbs';
 import Sidebar from '@/components/organisms/Sidebar';
@@ -56,9 +52,6 @@ const fieldsToPopulate = ["seo_title",
 ];
 
 const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('&');
-
-
-
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -159,7 +152,7 @@ const Page = ({
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const [isShowNotFoutMessage, setIsShowNotFoutMessage] = useState(false)
   const [isShowMessageModal, setShowtMessageModal] = useState(false)
-  const { NEXT_FRONT_URL, NEXT_MAILER ,NEXT_STRAPI_BASED_URL} = publicRuntimeConfig;
+  const { NEXT_FRONT_URL, NEXT_MAILER, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
   const router = useRouter();
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
   const [isShowConfirmModal, setShowConfirmModal] = useState(false)
@@ -173,7 +166,6 @@ const Page = ({
     const getUserIpFunc = async () => {
       const getUserIps = await getUserIp()
       setGlobalUserIp(getUserIps)
-      console.log('getUserIps', getUserIps)
 
     }
     getUserIpFunc()
@@ -317,7 +309,6 @@ const Page = ({
     let getUserCookies = Cookies.get('user');
     const user = JSON.parse(getUserCookies);
     if (!draftText) {
-
       return console.log('Comment cannot be empty');
     }
 
@@ -519,8 +510,6 @@ const Page = ({
 
     textAreaElement.value = '';
 
-    const blogUrl = pageRes[0].attributes.url;
-
     if (!user.confirmed) {
       return setShowtMessageModal(true);
     }
@@ -571,23 +560,17 @@ const Page = ({
       }
       console.error('Error updating comment:', error);
     }
-
   };
 
 
   const saveChanginDraftComment = async (draftText, commentId) => {
     const userToken = Cookies.get('userToken');
-
     if (!userToken) {
       return
     }
-
     if (!draftText) {
       return console.log('Comment cannot be empty');
     }
-    console.log("saving cancel")
-
-
     const userIp = await getUserIp()
     const currentTime = getCurrentFormattedTime()
     const commentType = "edit"
@@ -658,19 +641,12 @@ const Page = ({
 
     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
     setUserComments(comments);
-
   }
-  function sanitizeImageUrl(url) {
-    return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
-  }
-
-
-  console.log(pageImage, "pageImage")
   const asPath = router.asPath
   const generateHrefLangTags = () => {
     const locales = ['ru', 'en', 'ua'];
     const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
+      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
     });
 
@@ -807,16 +783,9 @@ const Page = ({
                         <h1 className="display-5 text-white animated slideInLeft">
                           {page_title}
                         </h1>
-                        {/* <h1 className="d-none text-white ">
-                          {page_title}
-                        </h1>
-                        <h1 className="display-5 text-white ">
-                          {page_title}
-                        </h1> */}
 
 
                         <nav aria-label="breadcrumb">
-                          {/* <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start "> */}
                           <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className=" text-white" href="/">
@@ -892,15 +861,15 @@ const Page = ({
                           <article itemProp="blogPosts" itemScope itemType="https://schema.org/BlogPosting">
                             {articleStrapi && (
                               <div
-                               className='notShowOnPage'
+                                className='notShowOnPage'
                               >
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
-                                  <link itemProp="url" href={NEXT_FRONT_URL + url} />
-                                  <span itemProp="name" href={NEXT_FRONT_URL + url} >
+                                  <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`}/>
+                                  <span itemProp="name" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`} >
                                     {articleStrapi?.author.data.attributes.real_user_name}
                                   </span>
                                 </span>
-                                <Image width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL+pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText} key={pageImage.data.id} />
+                                <Image width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText||"alt text"} key={pageImage.data.id} />
                                 <div itemProp="headline">{seo_title}</div>
                                 <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>
@@ -943,16 +912,14 @@ const Page = ({
                                       <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
                                       {views}</div>
                                   </dd>
-
-
                                 </dl>
                               </div>
                             </header>
-                            <div  dangerouslySetInnerHTML={{ __html: body }}></div>
+                            <div dangerouslySetInnerHTML={{ __html: body }}></div>
                             <div id="comment"></div>
                             <Comments
-                            blogImage={pageImage}
-                            articleStrapi={articleStrapi}
+                              blogImage={pageImage}
+                              articleStrapi={articleStrapi}
                               seo_title={seo_title}
                               admin_date={admin_date}
                               pageUrl={url}
@@ -968,7 +935,6 @@ const Page = ({
                               data={usersComments}
                               sendMessage={sendMessage} />
                           </article>
-
                         </>
                       )}
                     </main>
@@ -1003,11 +969,9 @@ export async function getServerSideProps({
   const randomBanner = await getRandomBanner(Locale);
   let mostPopular = await getRandomPopularNews(Locale);
 
-
   if (mostPopular.length === 0) {
     mostPopular = await getRandomPopularNews("ru");
   }
-
 
   try {
     const getHeadings = await server.get(`/headings?locale=${Locale}`);

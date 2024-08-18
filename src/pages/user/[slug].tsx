@@ -10,15 +10,10 @@ import $t from '@/locale/global';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { useAuth } from '@/contexts/AuthContext';
-import { Tab, Tabs, TabPanel } from 'react-tabs';
+import { Tabs, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import Link from 'next/link';
-import Cookies from 'js-cookie';
-import ConfirmModal from '@/components/organisms/ModalConfirm'
-import MailModal from '@/components/organisms/ModalMail';
-import ImgEditor from '@/components/organisms/ImgEditor';
 import getConfig from 'next/config';
-import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
 
 export default function User({
   menu,
@@ -29,18 +24,11 @@ export default function User({
   dataUser,
 }) {
   const { publicRuntimeConfig } = getConfig();
-  const { NEXT_STRAPI_BASED_URL, NEXT_STRAPI_IMG_DEFAULT } = publicRuntimeConfig;
+  const { NEXT_STRAPI_BASED_URL, NEXT_USER_DEFAULT_URL } = publicRuntimeConfig;
 
-  const noImgUrl = `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`;
-
-  const [login, setLogin] = useState(false);
-  const [user, setUser] = useState({});
-
-  const [avatarUrl, setAvatarUrl] = useState(noImgUrl);
+  const [avatarUrl, setAvatarUrl] = useState(NEXT_USER_DEFAULT_URL);
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
-  const { isLogin, logout, updateUser } = useAuth();
-  const [defaultBirthday, setDefaultBirthday] = useState('2000-01-01')
 
   const asPath = router.asPath
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
@@ -51,29 +39,17 @@ export default function User({
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
     });
 
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
     const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
     hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
     return hrefLangTags;
   };
 
-  useEffect(() => {
-    setLogin(isLogin);
-  }, [isLogin]);
 
   useEffect(() => {
-    setDefaultBirthday(dataUser[0].birthday)
     if (dataUser[0].user_image?.url) {
       setAvatarUrl(NEXT_STRAPI_BASED_URL +dataUser[0].user_image?.url);
-    } else {
-      setAvatarUrl(noImgUrl)
     }
   }, [])
-
-
-  const getPath = useRouter()
-
 
 
   return (
@@ -124,12 +100,11 @@ export default function User({
                               </Link>
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href={getPath.asPath}>
+                              <Link itemProp="item" className="text-white" href={asPath}>
                                 <span style={{ color: "white" }} itemProp="name">
                                 {dataUser[0]?.real_user_name}
                                 </span>
                                 <meta itemProp="position" content="2" />
-
                               </Link>
                             </li>
                           </ol>
@@ -142,7 +117,7 @@ export default function User({
 
               <div
                 className="container"
-                style={login ? { display: 'block' } : { display: 'none' }}
+                style={ { display: 'block' } }
               >
                 <Tabs>
                   <TabPanel>
@@ -163,21 +138,11 @@ export default function User({
                           <div className="flex-grow-1 ms-3">
                             <h5>{dataUser[0]?.real_user_name}</h5>
                           </div>
-
                         </div>
                       </div>
                     </div>
                   </TabPanel>
                 </Tabs>
-              </div>
-
-              <div
-                className="container"
-                style={login ? { display: 'none' } : { display: 'block' }}
-              >
-                <Link className="btn btn-primary" href="/login">
-                  {$t[locale].auth.header_button_name}
-                </Link>
               </div>
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
@@ -187,7 +152,6 @@ export default function User({
   );
 }
 export async function getServerSideProps({ query, locale }: Query) {
-  const { q } = query;
   
   try {
     const userData = await server.get(`/users`, { params: { filters: { username: { $eq: query.slug } }, populate: '*' }})
@@ -213,7 +177,6 @@ export async function getServerSideProps({ query, locale }: Query) {
       },
     };
   } catch (error) {
-    console.log(error);
     return {
       props: {
         notFound: true,

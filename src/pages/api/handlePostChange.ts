@@ -158,7 +158,6 @@ export default async function handler(
         encoding: 'utf-8',
       });
 
-      console.log('success');
       // res.status(200).json({ success: true, message: 'File saved successfully' });
     } catch (error) {
       console.error('Error saving file:', error);

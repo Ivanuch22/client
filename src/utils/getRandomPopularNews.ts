@@ -1,10 +1,5 @@
 import { server } from '@/http';
 
-// const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('&');
-
-// console.log(populateParams,"some params")
-
-
 const fieldsToPopulate = [
   "seo_title",
   "page_title",

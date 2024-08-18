@@ -275,13 +275,11 @@ export default function Profile({
   async function deleteOldAvatar(avatarId) {
     try {
       if (NEXT_STRAPI_IMG_DEFAULT !== avatarId) {
-        console.log("success start")
         await server.delete(`/upload/files/${avatarId}`, {
           headers: {
             Authorization: `Bearer ${Cookies.get('userToken')}`,
           },
         });
-        console.log("success deleted")
       }
 
     } catch (error) {

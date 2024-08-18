@@ -93,14 +93,12 @@ export default function Forgot({
             await server.post("/auth/forgot-password", {
                 email: email
             })
-            console.log("повідомлення відправлено")
             if (form) {
                 form.reset();
             }
         }
     }
     const asPath = router.asPath
-    console.log(asPath)
     const { publicRuntimeConfig } = getConfig();
     const { NEXT_FRONT_URL } = publicRuntimeConfig;
     const generateHrefLangTags = () => {

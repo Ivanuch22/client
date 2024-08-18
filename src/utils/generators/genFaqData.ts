@@ -5,7 +5,6 @@ interface IQA {
 
 export default (data: any) => {
     if(!data){ return null; }
-    console.log(data)
     const qa = data.attributes.items.reduce((acc: any, {question, answer}: IQA) => {
         acc.push({
             "@type": "Question",

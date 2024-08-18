@@ -12,7 +12,6 @@ interface SubmenuState {
 
 function Menu({ data, show, onTog, allPages }) {
   const [openSubmenu, setOpenSubmenu] = useState<SubmenuState>({});
-  console.log(data, allPages, "header props")
 
   const SERVICES_ID = 904765767;
   const router = useRouter();

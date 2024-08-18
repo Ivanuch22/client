@@ -204,7 +204,6 @@ export default function Home({
                         {pages.map((page, index) => {
                           const { page_title, admin_date, url, heading, comments, views, article,seo_title } = page.attributes;
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
-                          console.log(comments)
                           return (
                             <article itemProp="blogPosts" itemScope itemType="http://schema.org/BlogPosting" className="row row-line" key={index}>
                               <meta itemProp="headline" content={seo_title} />
