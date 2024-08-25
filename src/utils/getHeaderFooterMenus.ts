@@ -1,7 +1,4 @@
-//@ts-nocheck
-import { NavigationData } from '@/components/organisms/footer';
 import { server } from '@/http';
-import qs from 'qs';
 import fetchUrls from './fetchUrls';
 
 export default async function getHeaderFooterMenus(strapiLocale: string) {
@@ -17,10 +14,10 @@ export default async function getHeaderFooterMenus(strapiLocale: string) {
     ...(await fetchUrls('blogs', ['url', 'locale'])),
   ];
 
-  const servicesRes = await server.get<NavigationData>(
+  const servicesRes = await server.get(
     '/menus?nested&filters[slug][$eq]=footerServices&populate=*'
   );
-  const aboutRes = await server.get<NavigationData>(
+  const aboutRes = await server.get(
     '/menus?nested&filters[slug][$eq]=footerAbout&populate=*'
   );
   const contactsRes = await server.get(`/contact?locale=${strapiLocale}`);

@@ -1,8 +1,5 @@
 import qs from 'qs';
 
-import { $ } from './utils';
-
-
 export const getPageSeo = (slug: string, locale: string) => {
     return `/page-seos?${qs.stringify({
         locale: locale,

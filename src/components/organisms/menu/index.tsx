@@ -11,6 +11,7 @@ interface SubmenuState {
 }
 
 function Menu({ data, show, onTog, allPages }) {
+
   const [openSubmenu, setOpenSubmenu] = useState<SubmenuState>({});
 
   const SERVICES_ID = 904765767;

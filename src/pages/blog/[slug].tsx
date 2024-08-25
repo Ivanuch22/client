@@ -644,7 +644,7 @@ const Page = ({
   }
   const asPath = router.asPath
   const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'ua'];
+    const locales = ['ru', 'en', 'uk'];
     const hrefLangTags = locales.map((lang) => {
       const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
@@ -869,7 +869,7 @@ const Page = ({
                                     {articleStrapi?.author.data.attributes.real_user_name}
                                   </span>
                                 </span>
-                                <Image width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText||"alt text"} key={pageImage.data.id} />
+                                <Image loading="lazy"  width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText||"alt text"} key={pageImage.data.id} />
                                 <div itemProp="headline">{seo_title}</div>
                                 <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>

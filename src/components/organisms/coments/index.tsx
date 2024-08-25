@@ -161,7 +161,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                 
                 {articleStrapi?.images.data.map((image) => {
                     return (
-                        <Image className="notShowOnPage" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
+                        <Image loading="lazy"  className="notShowOnPage" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
                     )
                 })}
                 <h3 itemProp="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
@@ -175,7 +175,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             <span itemProp="name">{articleStrapi?.author?.data?.attributes?.real_user_name}</span>
                             {articleStrapi?.images.data.map((image) => {
                                 return (
-                                    <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
+                                    <Image loading="lazy"  width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
                                 )
                             })}
                             <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`} />
@@ -242,7 +242,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             <link itemProp="url" href={`#comment-id-${commentId}`} />
                             <div className="post-content">
                                 <div data-action="profile" className="user avatar">
-                                    <Image
+                                    <Image loading="lazy" 
                                         src={`${NEXT_STRAPI_BASED_URL}${url}`}
                                         alt={`Аватар ${real_user_name}`}
                                         className="image-refresh"
@@ -267,7 +267,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                                             style={{ color: "#494e58", fontSize: 12 }}
                                                             className="parent-link-container"
                                                         >
-                                                            <Image
+                                                            <Image loading="lazy" 
                                                                 style={{ margin: "0 12px 0 10px" }}
                                                                 width={15}
                                                                 height={15}

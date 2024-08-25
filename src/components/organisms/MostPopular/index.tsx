@@ -35,6 +35,7 @@ const MostPopular = ({ data, title }: MostPopular) => {
                             <div className="mostpopular__img-block"
                             >
                                 <Image
+                                loading="lazy" 
                                     src={NEXT_STRAPI_BASED_URL + image.data?.attributes.url}
                                     width={500}
                                     height={500}

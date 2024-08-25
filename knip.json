@@ -1,0 +1,10 @@
+{
+  "entry": [
+    "./src/pages/index.tsx"
+  ],
+  "project": [
+    "next.config.js",
+    "tsconfig.json",
+    "**/*.{js,tsx,ts,jsx}"
+  ]
+}

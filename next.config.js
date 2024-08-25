@@ -15,6 +15,9 @@ const nextConfig = {
   compress: true,
   reactStrictMode: true,
   swcMinify: true,
+  experimental: {
+    nextScriptWorkers: true,
+  },
   i18n: {
     locales: ['ru', 'en', 'ua'],
     localeDetection: false,

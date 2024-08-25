@@ -2,16 +2,14 @@
 //@ts-nocheck
 import Head from 'next/head';
 import DefaultLayout from '@/components/layouts/default';
-import Script from 'next/script';
 import { useRouter } from 'next/router';
 import { server } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, Suspense } from 'react';
 import Cookies from 'js-cookie';
 import getConfig from 'next/config';
-
 
 export default function Home({
   html,
@@ -25,15 +23,19 @@ export default function Home({
   socialData,
 }) {
   const router = useRouter();
-  const locale = router.locale === 'ua' ? 'uk' : router.locale;
-  const [user, setUser] = useState({});
-  
-  const asPath = router.asPath
+  const locale = useMemo(() => (router.locale === 'ua' ? 'uk' : router.locale), [router.locale]);
+  const asPath = router.asPath;
+
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
 
-  const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'ua'];
+  const [user, setUser] = useState(() => {
+    const getUserCookies = Cookies.get('user');
+    return getUserCookies ? JSON.parse(getUserCookies) : {};
+  });
+
+  const generateHrefLangTags = useMemo(() => {
+    const locales = ['ru', 'en', 'uk'];
     const hrefLangTags = locales.map((lang) => {
       const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
@@ -44,25 +46,24 @@ export default function Home({
     hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
 
     return hrefLangTags;
-  };
+  }, [NEXT_FRONT_URL, asPath]);
   
 
-  useEffect(() => {
-    const getUserCookies = Cookies.get('user');
-    if (!getUserCookies) return;
-    const userCookies = JSON.parse(getUserCookies);
-    let userFromBd = userCookies;
+  // useEffect(() => {
+  //   if (!user.id) return;
 
-    async function getUser() {
-      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`);
-      Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
-      setUser(strapiRes.data);
-    }
+  //   const fetchUser = async () => {
+  //     try {
+  //       const { data } = await server.get(`/users/${user.id}?populate=*`);
+  //       Cookies.set('user', JSON.stringify(data), { expires: 7 });
+  //       setUser(data);
+  //     } catch (error) {
+  //       console.error('Failed to fetch user data:', error);
+  //     }
+  //   };
 
-    getUser();
-    setUser(userFromBd);
-  }, []);
-
+  //   fetchUser();
+  // }, [user.id]);
 
   return (
     <>
@@ -72,12 +73,8 @@ export default function Home({
         <meta name="keywords" content={keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        {generateHrefLangTags()}
+        {generateHrefLangTags}
       </Head>
-      <Script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
-        defer
-      ></Script>
 
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
@@ -91,7 +88,9 @@ export default function Home({
             }}
           >
             <DefaultLayout>
-              <div dangerouslySetInnerHTML={{ __html: html }} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <div dangerouslySetInnerHTML={{ __html: html }} />
+              </Suspense>
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>
@@ -100,41 +99,40 @@ export default function Home({
   );
 }
 
-
-export async function getServerSideProps({ query, locale }) {
+export async function getServerSideProps({ locale ,resolvedUrl}) {
+  console.log(resolvedUrl, "resolvedUrl")
   try {
     const strapiLocale = locale === 'ua' ? 'uk' : locale;
-    const res = await server.get(`/code?locale=${$(strapiLocale)}`);
+    const { data } = await server.get(`/code?locale=${$(strapiLocale)}`);
 
     const {
       index = '',
-      index_seo_description,
-      index_title,
-      index_keywords,
-    } = res.data.data.attributes;
+      index_seo_description: description,
+      index_title: title,
+      index_keywords: keywords,
+    } = data.data.attributes;
 
     const { menu, allPages, footerMenus, footerGeneral } =
       await getHeaderFooterMenus(strapiLocale);
 
     const socialRes = await server.get('/social');
-    const socialData = socialRes.data.data.attributes;
-
-
+    const socialData = socialRes.data.data.attributes ?? {};
 
     return {
       props: {
         html: index,
-        description: index_seo_description,
-        title: index_title,
-        keywords: index_keywords,
+        description,
+        title,
+        keywords,
         menu,
         allPages,
         footerMenus,
         footerGeneral,
-        socialData: socialData ?? null,
+        socialData,
       },
     };
   } catch (error) {
+    console.error('Failed to fetch server-side props:', error);
     return {
       props: {
         html: null,

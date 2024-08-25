@@ -1,22 +1,19 @@
 // @ts-nocheck
+import {  useState } from 'react';
 import { server } from '@/http/index';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import DefaultLayout from '@/components/layouts/default';
+import Sidebar from '@/components/organisms/Sidebar';
+import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import Hero from '@/components/organisms/hero';
 import { Crumb } from '@/components/molecules/Breacrumbs';
-import { useRouter } from 'next/router';
-
 import genRatingData from '@/utils/generators/genRatingData';
 import genFaqData from '@/utils/generators/genFaqData';
 import genArticleData from '@/utils/generators/genArticleData';
-
 import getHowToData from '@/utils/generators/getHowToData';
 import { getMenu, getPage } from '@/utils/queries';
 import { $ } from '@/utils/utils';
-import genListItemData from '@/utils/generators/genListItemData';
-import { useEffect, useState } from 'react';
-import Sidebar from '@/components/organisms/Sidebar';
-import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { errorText, message404 } from './switch';
 import getRandomBanner from '@/utils/getRandomBanner';
@@ -171,7 +168,7 @@ const Page = ({
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
   const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'ua'];
+    const locales = ['ru', 'en', 'uk'];
     const hrefLangTags = locales.map((lang) => {
       const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;

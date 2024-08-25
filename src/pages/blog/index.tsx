@@ -87,7 +87,7 @@ export default function Home({
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
   const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'ua'];
+    const locales = ['ru', 'en', 'uk'];
     const hrefLangTags = locales.map((lang) => {
       const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
@@ -215,7 +215,7 @@ export default function Home({
                                     href={`${sanitizeImageUrl(url)}`}
                                     className="thumb-responsive lazy-load a-not-img lazy-loaded mostpopularImgBlock"
                                   >
-                                    <Image itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
+                                    <Image loading="lazy"  itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
                                   </Link>
                                 </div>
                               </div>
@@ -266,7 +266,7 @@ export default function Home({
                                   </span>
                                   {article?.images.data.map((image)=>{
                                     return (
-                                      <Image width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL+image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
+                                      <Image loading="lazy"  width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL+image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
                                     )
                                   })}
                                 </div>

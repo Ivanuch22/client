@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import '@/styles/animate.min.css';
+import '@/styles/bootstrap.min.css';
 import "@/styles/auth.css";
 import '@/styles/owl.carousel.min.css';
 import '@/styles/dropdown.css';
@@ -20,22 +21,22 @@ import { AuthProvider } from '@/contexts/AuthContext';
 const montserrat = localFont({
   src: [
     {
-      path: '../../public/fonts/Montserrat/Montserrat-Regular.ttf',
+      path: '../../public/fonts/Montserrat/Montserrat-Regular.woff2',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/Montserrat/Montserrat-Medium.ttf',
+      path: '../../public/fonts/Montserrat/Montserrat-Medium.woff2',
       weight: '500',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/Montserrat/Montserrat-SemiBold.ttf',
+      path: '../../public/fonts/Montserrat/Montserrat-SemiBold.woff2',
       weight: '600',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/Montserrat/Montserrat-Bold.ttf',
+      path: '../../public/fonts/Montserrat/Montserrat-Bold.woff2',
       weight: '700',
       style: 'normal',
     },
@@ -47,22 +48,22 @@ const montserrat = localFont({
 const opensans = localFont({
   src: [
     {
-      path: '../../public/fonts/OpenSans/OpenSans-Regular.ttf',
+      path: '../../public/fonts/OpenSans/OpenSans-Regular.woff2',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/OpenSans/OpenSans-Medium.ttf',
+      path: '../../public/fonts/OpenSans/OpenSans-Medium.woff2',
       weight: '500',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/OpenSans/OpenSans-SemiBold.ttf',
+      path: '../../public/fonts/OpenSans/OpenSans-SemiBold.woff2',
       weight: '600',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/OpenSans/OpenSans-Bold.ttf',
+      path: '../../public/fonts/OpenSans/OpenSans-Bold.woff2',
       weight: '700',
       style: 'normal',
     },
@@ -107,28 +108,30 @@ export default function App({ Component, pageProps }: AppProps) {
           import('@/scripts/owl.carousel.min.js'),
           import('@/scripts/easing.min.js'),
         ]).then(([waypoints, owlCarousel, easing]) => {
-          $('.testimonial-carousel').owlCarousel({
-            autoplay: true,
-            smartSpeed: 1000,
-            margin: 25,
-            dots: true,
-            loop: true,
-            center: true,
-            responsive: {
-              0: {
-                items: 1,
+          if (typeof window !== "undefined" && typeof $.fn.owlCarousel === 'function') {
+            $('.testimonial-carousel').owlCarousel({
+              autoplay: true,
+              smartSpeed: 1000,
+              margin: 25,
+              dots: true,
+              loop: true,
+              center: true,
+              responsive: {
+                0: {
+                  items: 1,
+                },
+                576: {
+                  items: 1,
+                },
+                768: {
+                  items: 2,
+                },
+                992: {
+                  items: 3,
+                },
               },
-              576: {
-                items: 1,
-              },
-              768: {
-                items: 2,
-              },
-              992: {
-                items: 3,
-              },
-            },
-          });
+            });
+          }
         });
       }
     });

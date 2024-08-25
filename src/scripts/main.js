@@ -5,7 +5,7 @@
       if (document.querySelector('#spinner').length > 0) {
         document.querySelector('#spinner').classList.remove('show');
       }
-    }, 1);
+    }, 10);
   };
   spinner();
 

@@ -13,7 +13,6 @@ import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import React, { useEffect, useState, useRef } from 'react';
 import { useWindowSize } from "@uidotdev/usehooks";
-import axios from "axios";
 import getConfig from "next/config";
 
 export default function Forgot({
@@ -35,7 +34,7 @@ export default function Forgot({
     const { publicRuntimeConfig } = getConfig();
     const { NEXT_FRONT_URL } = publicRuntimeConfig;
     const generateHrefLangTags = () => {
-      const locales = ['ru', 'en', 'ua'];
+      const locales = ['ru', 'en', 'uk'];
       const hrefLangTags = locales.map((lang) => {
         const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
         return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;

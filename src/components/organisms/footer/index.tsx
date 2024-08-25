@@ -35,21 +35,7 @@ export interface NavItem {
   attributes: NavItemAttributes;
 }
 
-export interface NavigationData {
-  data: {
-    id: number;
-    attributes: {
-      title: string;
-      slug: string;
-      createdAt: string;
-      updatedAt: string;
-      items: {
-        data: NavItem[];
-      };
-    };
-  };
-  meta: {};
-}
+
 
 
 const Footer = () => {
@@ -70,10 +56,10 @@ const Footer = () => {
         <div className="row gy-5 gx-4 pt-5">
           <nav className="col-lg-5 col-md-12">
             <div className="row gy-5 g-4">
-              <ul style={{listStyleType: "none"}} className="col-md-6 pt-2">
-                <h5 className="fw-bold text-white mb-4">
-                  {$t[locale].footer.about.title}
-                </h5>
+              <h5 className="fw-bold text-white mb-4">
+                {$t[locale].footer.about.title}
+              </h5>
+              <ul style={{ listStyleType: "none", marginTop: 0, paddingTop:0 }} className="col-md-6 pt-2">
                 {footerMenus?.about?.items?.map(item => {
                   return (
                     <li key={item.id}>
@@ -91,10 +77,10 @@ const Footer = () => {
                   );
                 })}
               </ul>
-              <ul  style={{listStyleType: "none"}} className="col-md-6 pt-2">
-                <h5 className="fw-bold text-white mb-4">
-                  {$t[locale].footer.services.title}
-                </h5>
+              <h5 className="fw-bold text-white mb-4">
+                {$t[locale].footer.services.title}
+              </h5>
+              <ul style={{ listStyleType: "none", marginTop: 0, paddingTop:0 }} className="col-md-6 pt-2">
                 {footerMenus?.services?.items?.map(item => {
                   return (
                     <li key={item.id}>
@@ -143,6 +129,7 @@ const Footer = () => {
             <div className="d-flex pt-2">
               <a
                 className="btn btn-outline-light btn-social"
+                aria-label="twitter_url"
                 href={footerGeneral.twitter_url}
                 target="_blank"
                 rel="nofollow"
@@ -151,6 +138,7 @@ const Footer = () => {
               </a>
               <a
                 className="btn btn-outline-light btn-social"
+                aria-label="facebook_url"
                 href={footerGeneral.facebook_url}
                 target="_blank"
                 rel="nofollow"
@@ -159,6 +147,7 @@ const Footer = () => {
               </a>
               <a
                 className="btn btn-outline-light btn-social"
+                aria-label="youtube_url"
                 href={footerGeneral.youtube_url}
                 target="_blank"
                 rel="nofollow"
@@ -167,6 +156,7 @@ const Footer = () => {
               </a>
               <a
                 className="btn btn-outline-light btn-social"
+                aria-label="linkedin_url"
                 href={footerGeneral.linkedin_url}
                 target="_blank"
                 rel="nofollow"

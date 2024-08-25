@@ -17,20 +17,20 @@ export default function Document({ locale }: { locale: string }) {
           rel="stylesheet"
         />
 
-         <link
+        <link
           href="/styles/bootstrap.min.css"
           rel="stylesheet"
         />
-        
+
         <meta name="google-site-verification" content="9lr6DIPqtr69JsGgRDzM6cqqxqA0oIMSSY41ScS2sAs" />
-        <Script src="/scripts/jquery.min.js"></Script>
-        <Script src="/scripts/bootstrap.bundle.min.js"></Script>
-        <Script src="/scripts/owl.carousel.min.js"></Script>
-        <Script src="/scripts/easing.min.js"></Script>
-        <Script src="/scripts/wow.min.js"></Script>
-        <Script src="/scripts/waypoints.min.js"></Script>
-        <Script src="/scripts/counterup.min.js"></Script>
-        <Script src="/scripts/main.js"></Script>
+        <Script src="/scripts/jquery.min.js" strategy="beforeInteractive" />
+        {/* <Script src="/scripts/bootstrap.bundle.min.js" strategy="afterInteractive" /> */}
+        {/* <Script src="/scripts/easing.min.js" strategy="worker"></Script> */}
+        <Script src="/scripts/wow.min.js" strategy="worker"></Script>
+        {/* <Script src="/scripts/waypoints.min.js" strategy="worker"></Script> */}
+        <Script src="/scripts/counterup.min.js" strategy="worker"></Script>
+        <Script src="/scripts/owl.carousel.min.js" strategy="worker"></Script>
+        <Script src="/scripts/main.js" strategy="worker"></Script>
       </Head>
       <body>
         <Main />
@@ -47,3 +47,7 @@ export function getInitialProps({ locale }: { locale: string }) {
     locale: _locale,
   };
 }
+
+
+
+

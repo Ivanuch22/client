@@ -14,15 +14,9 @@ import getHowToData from '@/utils/generators/getHowToData';
 import {
   getAccordion,
   getMenu,
-  getPage,
-  getUploadByName,
 } from '@/utils/queries';
-import ExtraLinks from '@/components/organisms/ExtraLinks';
 import { $ } from '@/utils/utils';
-import genListItemData from '@/utils/generators/genListItemData';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useState } from 'react';
 import getConfig from 'next/config';
 import AccordionMenu from '@/components/molecules/Accordion';
 import Sidebar from '@/components/organisms/Sidebar';
@@ -31,10 +25,8 @@ import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import { errorText, message404 } from '../switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
-const { publicRuntimeConfig } = getConfig();
 import parse from 'html-react-parser';
 
-const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 export interface PageAttibutes {
   seo_title: string;
   createdAt: string;
@@ -181,13 +173,12 @@ const Page = ({
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
   const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'ua'];
+    const locales = ['ru', 'en', 'uk'];
     const hrefLangTags = locales.map((lang) => {
       const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
     });
 
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
     const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
     hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
 
@@ -304,7 +295,6 @@ const Page = ({
                         ></AccordionMenu>
                       </ul>
                     </div>
-                    
                   </Sidebar>
                   </aside>
                 </div>
