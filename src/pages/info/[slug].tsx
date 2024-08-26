@@ -106,7 +106,7 @@ const Page = ({
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
-  const findAncestors = (obj: any[], url: string) => {
+  const findAncestorsForInfoPage = (obj: any[], url: string) => {
     const ancestors = [] as Crumb[];
     for (const item of obj) {
       if (item.attributes.url === url) {
@@ -122,7 +122,7 @@ const Page = ({
       }
 
       if (item.attributes.children.data.length > 0) {
-        const childAncestors = findAncestors(
+        const childAncestors = findAncestorsForInfoPage(
           item.attributes.children.data,
           url
         );
@@ -135,7 +135,7 @@ const Page = ({
             url: item.attributes.url,
             children: item.attributes.children.data,
           });
-          ancestors.push(...childAncestors);
+          ancestors.push(...childAncestors.filter(element=>element?.children?.length===0));
           return ancestors;
         }
       }
@@ -173,7 +173,7 @@ const Page = ({
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
   const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'uk'];
+    const locales = ['ru', 'en', 'ua'];
     const hrefLangTags = locales.map((lang) => {
       const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
@@ -241,7 +241,7 @@ const Page = ({
                 title={page_title}
                 crumbs={
                   seo_title
-                    ? findAncestors(crumbs, `${slug}`)
+                    ? findAncestorsForInfoPage(crumbs, `${router.asPath}`)
                     : [
                         {
                           title: '404',
@@ -295,6 +295,7 @@ const Page = ({
                         ></AccordionMenu>
                       </ul>
                     </div>
+                    
                   </Sidebar>
                   </aside>
                 </div>

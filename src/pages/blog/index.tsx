@@ -111,11 +111,12 @@ export default function Home({
         <meta name="keywords" content={$t[locale].blog.keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Script
+        {/* <Script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
         defer
-      ></Script>
+      ></Script> */}
+      </Head>
+      
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
@@ -138,7 +139,7 @@ export default function Home({
                       >
                         <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
                           <nav >
-                            <ul itemScope itemType="http://schema.org/BreadcrumbList" style={{ paddingLeft: 0, listStyleType: "none", display: "flex" }} >
+                            <ul itemScope itemType="http://schema.org/BreadcrumbList" className="text-white animated d-flex align-items-center flex-wrap slideInLeft"  style={{ paddingLeft: 0, listStyleType: "none", display: "flex" }} >
                               <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className='d-flex gap-2 align-items-center '>
                                 <Link href={`/blog`} itemProp="item" className="d-inline text-white heading_title" >
                                   <span itemProp="name">
@@ -215,7 +216,7 @@ export default function Home({
                                     href={`${sanitizeImageUrl(url)}`}
                                     className="thumb-responsive lazy-load a-not-img lazy-loaded mostpopularImgBlock"
                                   >
-                                    <Image loading="lazy"  itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
+                                    <Image loading={index===0?"eager":"lazy"}   itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
                                   </Link>
                                 </div>
                               </div>

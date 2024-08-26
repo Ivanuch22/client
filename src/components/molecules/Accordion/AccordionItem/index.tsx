@@ -27,7 +27,7 @@ export default function AccordionMenuItem({
   function renderAccordionMenuItem(menuItem: any, locale: string) {
     const hasChildren: boolean = menuItem.attributes.children.data.length > 0;
     return hasChildren ? (
-      <React.Fragment>
+      <React.Fragment key={menuItem.id}>
         <button
           className={`button ${
             openedItems.includes(menuItem.id) ? 'button--opened' : ''

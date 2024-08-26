@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import '@/styles/animate.min.css';
-import '@/styles/bootstrap.min.css';
+
 import "@/styles/auth.css";
 import '@/styles/owl.carousel.min.css';
 import '@/styles/dropdown.css';

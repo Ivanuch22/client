@@ -33,7 +33,7 @@ export default function Home({
     const getUserCookies = Cookies.get('user');
     return getUserCookies ? JSON.parse(getUserCookies) : {};
   });
-
+  console.log("sdflsdfj")
   const generateHrefLangTags = useMemo(() => {
     const locales = ['ru', 'en', 'uk'];
     const hrefLangTags = locales.map((lang) => {

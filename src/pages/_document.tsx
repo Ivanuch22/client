@@ -1,36 +1,38 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
-// Это так же вспомогательный файл от next js сюда вы можете импортировтаь скрипты
-// как этто сделано ниже
+
 
 export default function Document({ locale }: { locale: string }) {
 
   return (
     <Html>
       <Head>
+        {/* Підключення всіх стилів через preload */}
         <link
+          rel="stylesheet"
           href="/styles/all.min.css"
-          rel="stylesheet"
-        />
-        <link
-          href="/styles/bootstrap-icons.css"
-          rel="stylesheet"
+          media="all"
+          
         />
 
         <link
-          href="/styles/bootstrap.min.css"
           rel="stylesheet"
+          href="/styles/bootstrap-icons.css"
+          media="all"
+        />
+
+        <link
+          rel="stylesheet"
+          href="/styles/bootstrap.min.css"
+          media="all"
         />
 
         <meta name="google-site-verification" content="9lr6DIPqtr69JsGgRDzM6cqqxqA0oIMSSY41ScS2sAs" />
-        <Script src="/scripts/jquery.min.js" strategy="beforeInteractive" />
-        {/* <Script src="/scripts/bootstrap.bundle.min.js" strategy="afterInteractive" /> */}
-        {/* <Script src="/scripts/easing.min.js" strategy="worker"></Script> */}
-        <Script src="/scripts/wow.min.js" strategy="worker"></Script>
-        {/* <Script src="/scripts/waypoints.min.js" strategy="worker"></Script> */}
-        <Script src="/scripts/counterup.min.js" strategy="worker"></Script>
-        <Script src="/scripts/owl.carousel.min.js" strategy="worker"></Script>
-        <Script src="/scripts/main.js" strategy="worker"></Script>
+        <Script  src="/scripts/jquery.min.js" strategy="worker" />
+        <Script  src="/scripts/wow.min.js" strategy="worker"></Script>
+        <Script  src="/scripts/counterup.min.js" strategy="worker"></Script>
+        <Script  src="/scripts/owl.carousel.min.js" strategy="worker"></Script>
+        <Script  src="/scripts/main.js" strategy="worker"></Script>
       </Head>
       <body>
         <Main />
@@ -47,7 +49,3 @@ export function getInitialProps({ locale }: { locale: string }) {
     locale: _locale,
   };
 }
-
-
-
-
