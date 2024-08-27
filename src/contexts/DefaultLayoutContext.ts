@@ -22,9 +22,9 @@ const DefaultLayoutContext = createContext<DefaultLayoutContextParams>({
   allPages: [],
   menu: [],
   errorMessage: '',
-  setErrorMessage: () => {},
+  setErrorMessage: () => { },
   errorCode: null,
-  setErrorCode: () => {},
+  setErrorCode: () => { },
   socialData: null,
 });
 

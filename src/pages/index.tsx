@@ -7,9 +7,10 @@ import { server } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
-import { useEffect, useState, useMemo, Suspense } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Cookies from 'js-cookie';
 import getConfig from 'next/config';
+import Image from 'next/image';
 
 export default function Home({
   html,
@@ -33,11 +34,10 @@ export default function Home({
     const getUserCookies = Cookies.get('user');
     return getUserCookies ? JSON.parse(getUserCookies) : {};
   });
-  console.log("sdflsdfj")
   const generateHrefLangTags = useMemo(() => {
     const locales = ['ru', 'en', 'uk'];
     const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
+      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
       return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
     });
 
@@ -47,23 +47,23 @@ export default function Home({
 
     return hrefLangTags;
   }, [NEXT_FRONT_URL, asPath]);
-  
 
-  // useEffect(() => {
-  //   if (!user.id) return;
 
-  //   const fetchUser = async () => {
-  //     try {
-  //       const { data } = await server.get(`/users/${user.id}?populate=*`);
-  //       Cookies.set('user', JSON.stringify(data), { expires: 7 });
-  //       setUser(data);
-  //     } catch (error) {
-  //       console.error('Failed to fetch user data:', error);
-  //     }
-  //   };
+  useEffect(() => {
+    if (!user.id) return;
 
-  //   fetchUser();
-  // }, [user.id]);
+    const fetchUser = async () => {
+      try {
+        const { data } = await server.get(`/users/${user.id}?populate=*`);
+        Cookies.set('user', JSON.stringify(data), { expires: 7 });
+        setUser(data);
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+
+    fetchUser();
+  }, [user.id]);
 
   return (
     <>
@@ -74,6 +74,7 @@ export default function Home({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         {generateHrefLangTags}
+
       </Head>
 
       <div className="container-xxl bg-white p-0">
@@ -88,9 +89,7 @@ export default function Home({
             }}
           >
             <DefaultLayout>
-              <Suspense fallback={<div>Loading...</div>}>
                 <div dangerouslySetInnerHTML={{ __html: html }} />
-              </Suspense>
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>
@@ -99,8 +98,7 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps({ locale ,resolvedUrl}) {
-  console.log(resolvedUrl, "resolvedUrl")
+export async function getServerSideProps({ locale, resolvedUrl }) {
   try {
     const strapiLocale = locale === 'ua' ? 'uk' : locale;
     const { data } = await server.get(`/code?locale=${$(strapiLocale)}`);

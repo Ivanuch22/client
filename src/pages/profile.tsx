@@ -398,29 +398,7 @@ export default function Profile({
               >
                 {$t[locale].auth.success.change_message}
               </div>
-              <NotConfirmedModal
-                message={$t[locale].auth.notConfirmedMessage}
-                isVisible={isShowMessageModal}
-                sendMessage={sendActivationMessage}
-                onClose={() => {
-                  setShowtMessageModal(false)
-                }}
-              />
-              <MailModal
-                message={$t[locale].auth.successConfirmationMessage}
-                isVisible={modalActivationIsVisible}
-                onClose={() => {
-                  setActivationModalVisible(false)
-                }}
-              />
-              <ConfirmModal
-                message={$t[locale].auth.confirm_text}
-                isVisible={modalIsVisible}
-                onClose={() => {
-                  setModalVisible(false)
-                }}
-                onSubmit={changeData}
-              />
+
               <div
                 className="alert alert-danger"
                 role="alert"
@@ -752,6 +730,29 @@ export default function Profile({
                 </Link>
               </div>
               <ImgEditor onClose={() => { setAvatarModalVisible(false) }} isShow={avatarModalVisible} handleUpload={handleUpload} />
+              <NotConfirmedModal
+                message={$t[locale].auth.notConfirmedMessage}
+                isVisible={isShowMessageModal}
+                sendMessage={sendActivationMessage}
+                onClose={() => {
+                  setShowtMessageModal(false)
+                }}
+              />
+              <MailModal
+                message={$t[locale].auth.successConfirmationMessage}
+                isVisible={modalActivationIsVisible}
+                onClose={() => {
+                  setActivationModalVisible(false)
+                }}
+              />
+              <ConfirmModal
+                message={$t[locale].auth.confirm_text}
+                isVisible={modalIsVisible}
+                onClose={() => {
+                  setModalVisible(false)
+                }}
+                onSubmit={changeData}
+              />
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </main>

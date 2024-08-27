@@ -124,19 +124,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
     return (
         <>
             <section>
-                <aside>
-                    <ModalConfirm
-                        message={$t[locale].auth.confirm_text}
-                        isVisible={isShowConfirmModal}
-                        onClose={() => {
-                            setShowConfirmModal(false)
-                        }}
-                        onSubmit={() => {
-                            onUpdate(form, editingCommentId)
-                            setShowConfirmModal(false)
-                        }}
-                    />
-                </aside>
+
 
                 <div className="comments-tree">
                     <header className="comments-header">
@@ -150,6 +138,19 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                     </section>
 
                 </div>
+                <aside>
+                    <ModalConfirm
+                        message={$t[locale].auth.confirm_text}
+                        isVisible={isShowConfirmModal}
+                        onClose={() => {
+                            setShowConfirmModal(false)
+                        }}
+                        onSubmit={() => {
+                            onUpdate(form, editingCommentId)
+                            setShowConfirmModal(false)
+                        }}
+                    />
+                </aside>
             </section >
 
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">

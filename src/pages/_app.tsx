@@ -16,6 +16,7 @@ import type { AppProps } from 'next/app';
 
 import localFont from 'next/font/local';
 import { AuthProvider } from '@/contexts/AuthContext';
+import Head from 'next/head';
 
 // Define local fonts with optimization
 const montserrat = localFont({

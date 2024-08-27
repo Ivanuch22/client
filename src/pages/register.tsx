@@ -260,20 +260,7 @@ export default function Home({
                   ''
                 )}
               </div>
-              <ModalRegConfirm
-                message={$t[locale].auth.success.reg_message}
-                dangerMessage={$t[locale].auth.success.reg_messageDanger}
-                isVisible={modalIsVisible}
-                onSubmit={()=>{
-                  router.push("/profile");
-                  setModalVisible(false);
-                }}
-                onClose={() => {
-                  router.push("/profile");
 
-                  setModalVisible(false);
-                }}
-              />
               <div className="limiter">
                 <div
                   className="alert alert-success"
@@ -399,6 +386,20 @@ export default function Home({
               </div>
 
               <div id="dropDownSelect1"></div>
+              <ModalRegConfirm
+                message={$t[locale].auth.success.reg_message}
+                dangerMessage={$t[locale].auth.success.reg_messageDanger}
+                isVisible={modalIsVisible}
+                onSubmit={()=>{
+                  router.push("/profile");
+                  setModalVisible(false);
+                }}
+                onClose={() => {
+                  router.push("/profile");
+
+                  setModalVisible(false);
+                }}
+              />
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>

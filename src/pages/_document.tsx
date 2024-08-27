@@ -11,28 +11,28 @@ export default function Document({ locale }: { locale: string }) {
         <link
           rel="stylesheet"
           href="/styles/all.min.css"
-          media="all"
+          // media="all"
           
         />
 
         <link
           rel="stylesheet"
           href="/styles/bootstrap-icons.css"
-          media="all"
+          // media="all"
         />
 
         <link
           rel="stylesheet"
           href="/styles/bootstrap.min.css"
-          media="all"
+          // media="all"
         />
 
-        <meta name="google-site-verification" content="9lr6DIPqtr69JsGgRDzM6cqqxqA0oIMSSY41ScS2sAs" />
-        <Script  src="/scripts/jquery.min.js" strategy="worker" />
-        <Script  src="/scripts/wow.min.js" strategy="worker"></Script>
-        <Script  src="/scripts/counterup.min.js" strategy="worker"></Script>
-        <Script  src="/scripts/owl.carousel.min.js" strategy="worker"></Script>
-        <Script  src="/scripts/main.js" strategy="worker"></Script>
+        {/* <meta name="google-site-verification" content="9lr6DIPqtr69JsGgRDzM6cqqxqA0oIMSSY41ScS2sAs" /> */}
+        <Script  src="/scripts/jquery.min.js"  />
+        <Script  src="/scripts/wow.min.js" ></Script>
+        <Script  src="/scripts/counterup.min.js" ></Script>
+        <Script  src="/scripts/owl.carousel.min.js" ></Script>
+        <Script  src="/scripts/main.js" ></Script>
       </Head>
       <body>
         <Main />

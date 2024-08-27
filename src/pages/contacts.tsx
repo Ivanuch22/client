@@ -202,12 +202,7 @@ export default function Home({
       ></Script>
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
-          <MailModal
-            isVisible={modalIsVisible}
-            onClose={() => {
-              setModalIsVisible(false);
-            }}
-          />
+
           <DefaultLayoutContext.Provider
             value={{
               footerMenus,
@@ -234,6 +229,12 @@ export default function Home({
               <div dangerouslySetInnerHTML={{ __html: html }} />
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
+          <MailModal
+            isVisible={modalIsVisible}
+            onClose={() => {
+              setModalIsVisible(false);
+            }}
+          />
         </div>
       </div>
     </>

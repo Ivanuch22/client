@@ -211,11 +211,11 @@ const Page = ({
                     />
                 )}
 
-<>{parse(chunksHead)}</>
+                <>{parse(chunksHead)}</>
 
             </Head>
-<>{parse(chunksBodyTop)}</>
-            
+            <>{parse(chunksBodyTop)}</>
+
             <div className="container-xxl bg-white p-0">
                 <div className="container-xxl positi  on-relative p-0">
                     <DefaultLayoutContext.Provider

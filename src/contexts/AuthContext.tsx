@@ -1,13 +1,12 @@
-// src/contexts/AuthContext.tsx
 
-import React, {createContext, useContext, useState, ReactNode, FunctionComponent} from 'react';
+import React, { createContext, useContext, useState, ReactNode, FunctionComponent } from 'react';
 import Cookies from "js-cookie";
 interface AuthContextType {
     isLogin: boolean;
     userData: any;
-    updateUser: ()=>void;
+    updateUser: () => void;
     logout: () => void;
-    login:()=>void;
+    login: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,10 +17,10 @@ interface AuthProviderProps {
 
 export const AuthProvider: FunctionComponent<AuthProviderProps> = ({ children }) => {
     const [isLogin, setIsLogin] = useState<boolean>(!!Cookies.get('userToken'));
-    const [userData, setUserData]= useState(Cookies.get("user"));
+    const [userData, setUserData] = useState(Cookies.get("user"));
 
 
-    function logout () {
+    function logout() {
         Cookies.remove('userName');
         Cookies.remove('userToken');
         Cookies.remove('user');
@@ -29,20 +28,20 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({ children })
         setIsLogin(false);
     };
 
-    function login(){
+    function login() {
         setIsLogin(true);
     }
 
-    function updateUser(){
+    function updateUser() {
         setUserData(Cookies.get("user"))
     }
 
 
     return (
-        <AuthContext.Provider value={{ isLogin, userData, logout, login,updateUser }}>
-    {children}
-    </AuthContext.Provider>
-);
+        <AuthContext.Provider value={{ isLogin, userData, logout, login, updateUser }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export const useAuth = (): AuthContextType => {

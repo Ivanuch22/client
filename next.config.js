@@ -16,22 +16,6 @@ const nextConfig = {
   compress: true,
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    nextScriptWorkers: true,
-  },
-  compiler:{
-    // removeConsole: true,
-    styledComponents: {
-      displayName: true,
-      ssr: true,
-      fileName: true,
-      meaninglessFileNames: ["index"],
-      minify: true,
-      transpileTemplateLiterals: true,
-      pure: true,
-      cssProp: true,
-    },
-  },
   i18n: {
     locales: ['ru', 'en', 'ua'],
     localeDetection: false,

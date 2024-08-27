@@ -245,21 +245,7 @@ export default function Home({
                   ''
                 )}
               </div>
-              <MailModal
-                message={$t[locale].auth.successConfirmationMessage}
-                isVisible={modalActivationIsVisible}
-                onClose={() => {
-                  setActivationModalVisible(false)
-                }}
-              />
-              <NotConfirmedModal
-                message={$t[locale].auth.notConfirmedMessage}
-                isVisible={isShowConfirmModal}
-                sendMessage={sendActivationMessage}
-                onClose={() => {
-                  setShowConfirmModal(false)
-                }}
-              />
+
               <div className="limiter">
                 <div
                   className="alert alert-success"
@@ -361,6 +347,21 @@ export default function Home({
               </div>
 
               <div id="dropDownSelect1"></div>
+              <MailModal
+                message={$t[locale].auth.successConfirmationMessage}
+                isVisible={modalActivationIsVisible}
+                onClose={() => {
+                  setActivationModalVisible(false)
+                }}
+              />
+              <NotConfirmedModal
+                message={$t[locale].auth.notConfirmedMessage}
+                isVisible={isShowConfirmModal}
+                sendMessage={sendActivationMessage}
+                onClose={() => {
+                  setShowConfirmModal(false)
+                }}
+              />
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>

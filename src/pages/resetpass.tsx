@@ -151,13 +151,7 @@ export default function Forgot({
 
                                 </div> : ""}
                             </div>
-                            <MailModal
-                                isVisible={modalIsVisible}
-                                onClose={() => {
-                                    setModalVisible(false);
-                                }}
-                                message={$t[locale].auth.success.pass_message}
-                            />
+
                             <div className="limiter">
                                 <div className="container-login100">
                                     <div className="wrap-login100 p-t-85 p-b-20">
@@ -199,6 +193,13 @@ export default function Forgot({
                                 </div>
                             </div>
                             <div id="dropDownSelect1"></div>
+                            <MailModal
+                                isVisible={modalIsVisible}
+                                onClose={() => {
+                                    setModalVisible(false);
+                                }}
+                                message={$t[locale].auth.success.pass_message}
+                            />
                         </DefaultLayout>
                     </DefaultLayoutContext.Provider>
                 </div>
