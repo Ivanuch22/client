@@ -26,6 +26,7 @@ import { errorText, message404 } from '../switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 import parse from 'html-react-parser';
+import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 
 export interface PageAttibutes {
   seo_title: string;
@@ -135,13 +136,23 @@ const Page = ({
             url: item.attributes.url,
             children: item.attributes.children.data,
           });
-          ancestors.push(...childAncestors.filter(element=>element?.children?.length===0));
+          ancestors.push(...childAncestors);
           return ancestors;
         }
       }
     }
     return ancestors;
   };
+  const ancestors = findAncestorsForInfoPage(crumbs, `${router.asPath}`);
+  const newArray = ancestors.length>2?[
+    ancestors[0],
+    ancestors[1],
+    ancestors[ancestors.length - 1]
+  ]: [
+    ancestors[0],
+    ancestors[1],
+  ];
+  console.log(findAncestorsForInfoPage(crumbs, `${router.asPath}`))
 
   const chunksHead = code.reduce((acc, item) => {
     if (item.position === 'head') {
@@ -172,22 +183,14 @@ const Page = ({
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'ua'];
-    const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
-      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
-    });
+  const hrefLangTags = generateHrefLangTags(asPath);
 
-    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
-    return hrefLangTags;
-  };
   return (
     <>
       <Head>
-        {generateHrefLangTags()}
+        {hrefLangTags.map((tag) => (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+        ))}
         <title>{seo_title}</title>
         <meta name="description" content={seo_description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -217,10 +220,10 @@ const Page = ({
           />
         )}
 
-<>{parse(chunksHead)}</>
+        <>{parse(chunksHead)}</>
 
       </Head>
-<>{parse(chunksBodyTop)}</>
+      <>{parse(chunksBodyTop)}</>
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
@@ -241,16 +244,16 @@ const Page = ({
                 title={page_title}
                 crumbs={
                   seo_title
-                    ? findAncestorsForInfoPage(crumbs, `${router.asPath}`)
+                    ? newArray
                     : [
-                        {
-                          title: '404',
-                          title_uk: '404',
-                          title_en: '404',
-                          url: '',
-                          id: 404,
-                        },
-                      ]
+                      {
+                        title: '404',
+                        title_uk: '404',
+                        title_en: '404',
+                        url: '',
+                        id: 404,
+                      },
+                    ]
                 }
               />
               <div className="container-xxl">
@@ -265,13 +268,12 @@ const Page = ({
                         <div className="error-message">
                           <h3>
                             {errorCode != null
-                              ? `${
-                                  errorText[
-                                    Object.keys(message404).find(
-                                      key => message404[key] === errorMessage
-                                    )
-                                  ]
-                                } ${errorCode}`
+                              ? `${errorText[
+                              Object.keys(message404).find(
+                                key => message404[key] === errorMessage
+                              )
+                              ]
+                              } ${errorCode}`
                               : errorMessage}
                           </h3>
                           {errorCode != null && (
@@ -284,19 +286,19 @@ const Page = ({
                     </div>
                   </div>
                   <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
-                  
-                  <Sidebar randomBanner={randomBanner}>
-                    <div className="sidebar-section">
-                      <ul className="menu">
-                        {/* code related to accordions */}
-                        <AccordionMenu
-                          accordion={accordion}
-                          locale={locale}
-                        ></AccordionMenu>
-                      </ul>
-                    </div>
-                    
-                  </Sidebar>
+
+                    <Sidebar randomBanner={randomBanner}>
+                      <div className="sidebar-section">
+                        <ul className="menu">
+                          {/* code related to accordions */}
+                          <AccordionMenu
+                            accordion={accordion}
+                            locale={locale}
+                          ></AccordionMenu>
+                        </ul>
+                      </div>
+
+                    </Sidebar>
                   </aside>
                 </div>
               </div>
@@ -324,7 +326,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
 
   const crumbs = strapiMenu.data.data[0].attributes.items.data;
 
-  if(!isPageWithLocaleExists(resolvedUrl, locale, allPages)) {
+  if (!isPageWithLocaleExists(resolvedUrl, locale, allPages)) {
     res.statusCode = 404
   }
 
@@ -348,11 +350,6 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
 
     // replace port in images
-    const regex = /src="https:\/\/t-h-logistics\.com:17818\/uploads\//g;
-    const replacedImagesSrcBody = body.replace(
-      regex,
-      'src="https://t-h-logistics.com/uploads/'
-    );
 
     function getCurrentUrlItem(
       crumbs: Crumb[],
@@ -400,7 +397,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
         seo_description,
         page_title,
         url,
-        body: replacedImagesSrcBody,
+        body,
         crumbs,
         slug,
         keywords,

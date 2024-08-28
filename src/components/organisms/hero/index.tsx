@@ -15,7 +15,7 @@ const Hero = ({ title, crumbs }: HeroProps) => {
 
   return (
     <div className="container-xxl py-5 bg-primary hero-header mb-5">
-      <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
+      <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
         <div className="row g-5 pt-1">
           <div
             className="col-12 text-center text-md-start"

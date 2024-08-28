@@ -64,7 +64,7 @@ const messageFunc = (link: string, locale: string) => {
     const newLocal = locale as Locale; // Explicitly cast `locale` to `Locale`
     const message: Messages = {
         RU: {
-            title: "Вы получили ответ на Ваш комментарий на сайте t-h-logistics.com",
+            title: `Вы получили ответ на Ваш комментарий на сайте ${process.env.NEXT_FRONT_HOST}`,
             body: `
             Приветствуем Вас,
 
@@ -83,7 +83,7 @@ const messageFunc = (link: string, locale: string) => {
             `
         },
         UK: {
-            title: `Ви отримали відповідь на свій коментар на t-h-logistics.com`,
+            title: `Ви отримали відповідь на свій коментар на ${process.env.NEXT_FRONT_HOST}`,
             body: `
             Вітаємо Вас,
 
@@ -101,7 +101,7 @@ const messageFunc = (link: string, locale: string) => {
             `
         },
         EN: {
-            title: "You have received a reply to your comment on t-h-logistics.com",
+            title: `You have received a reply to your comment on ${process.env.NEXT_FRONT_HOST}`,
             body: `
             Greetings,
 

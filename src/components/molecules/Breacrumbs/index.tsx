@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import $t from '@/locale/global';
 import Link from 'next/link';
+import { Locale } from '@/components/organisms/MostPopular';
 
 export interface BreadcrumbsProps {
   crumbs: Crumb[];
@@ -18,7 +19,7 @@ export interface Crumb {
 
 const Breadcrumbs = ({ crumbs, pageTitle }: BreadcrumbsProps) => {
   const router = useRouter();
-  const locale = router.locale === 'ua' ? 'uk' : router.locale;
+  const locale: Locale = (router.locale === 'ua' ? 'uk' : router.locale) as Locale 
 
   return (
     <nav aria-label="breadcrumb">

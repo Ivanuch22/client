@@ -56,48 +56,52 @@ const Footer = () => {
         <div className="row gy-5 gx-4 pt-5">
           <nav className="col-lg-5 col-md-12">
             <div className="row gy-5 g-4">
-              <h5 className="fw-bold text-white mb-4">
-                {$t[locale].footer.about.title}
-              </h5>
-              <ul style={{ listStyleType: "none", marginTop: 0, paddingTop:0 }} className="col-md-6 pt-2">
-                {footerMenus?.about?.items?.map(item => {
-                  return (
-                    <li key={item.id}>
-                      <Link
-                        key={item.id}
-                        className="btn btn-link"
-                        href={item.attributes.url}
-                      >
-                        {locale === 'ru'
-                          ? item.attributes.title
-                          : item.attributes[`title_${locale}`]}
-                      </Link>
-                    </li>
+              <div className='col-md-6'>
+                <h5 className="fw-bold text-white mb-4">
+                  {$t[locale].footer.about.title}
+                </h5>
+                <ul style={{ listStyleType: "none", marginTop: 0, paddingTop: 0, paddingLeft: 0 }}>
+                  {footerMenus?.about?.items?.map(item => {
+                    return (
+                      <li key={item.id}>
+                        <Link
+                          key={item.id}
+                          className="btn btn-link"
+                          href={item.attributes.url}
+                        >
+                          {locale === 'ru'
+                            ? item.attributes.title
+                            : item.attributes[`title_${locale}`]}
+                        </Link>
+                      </li>
 
-                  );
-                })}
-              </ul>
-              <h5 className="fw-bold text-white mb-4">
-                {$t[locale].footer.services.title}
-              </h5>
-              <ul style={{ listStyleType: "none", marginTop: 0, paddingTop:0 }} className="col-md-6 pt-2">
-                {footerMenus?.services?.items?.map(item => {
-                  return (
-                    <li key={item.id}>
-                      <Link
-                        key={item.id}
-                        className="btn btn-link"
-                        href={item.attributes.url}
-                      >
-                        {locale === 'ru'
-                          ? item.attributes.title
-                          : item.attributes[`title_${locale}`]}
-                      </Link>
-                    </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className='col-md-6'>
+                <h5 className="fw-bold text-white mb-4">
+                  {$t[locale].footer.services.title}
+                </h5>
+                <ul style={{ listStyleType: "none", marginTop: 0, paddingTop: 0, paddingLeft: 0 }}>
+                  {footerMenus?.services?.items?.map(item => {
+                    return (
+                      <li key={item.id}>
+                        <Link
+                          key={item.id}
+                          className="btn btn-link"
+                          href={item.attributes.url}
+                        >
+                          {locale === 'ru'
+                            ? item.attributes.title
+                            : item.attributes[`title_${locale}`]}
+                        </Link>
+                      </li>
 
-                  );
-                })}
-              </ul>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           </nav>
           <div className="col-md-6 pt-2 col-lg-3">

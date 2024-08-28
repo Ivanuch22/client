@@ -22,6 +22,7 @@ import { useWindowSize } from '@uidotdev/usehooks';
 import ModalRegConfirm from '@/components/organisms/ModalRegConfirm';
 import getConfig from 'next/config';
 import getUserFingerPrint from "@/utils/getUserFingerPrint"
+import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 
 
 export default function Home({
@@ -213,33 +214,20 @@ export default function Home({
   }
   const asPath = router.asPath
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'uk'];
-    const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
-      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
-    });
-
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
-    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
-    return hrefLangTags;
-  };
+const hrefLangTags = generateHrefLangTags(asPath);
   return (
     <>
       <Head>
-        {generateHrefLangTags()}
+        {hrefLangTags.map((tag) => (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+        ))}
         <title>Register</title>
         <meta name="description" content="register" />
         <meta name="keywords" content="register noindex, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
-        defer
-      ></Script>
+
 
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">

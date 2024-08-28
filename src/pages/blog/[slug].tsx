@@ -36,6 +36,7 @@ import getCurrentFormattedTime from "@/utils/getCurrentFormattedTime"
 import getUserIp from "@/utils/getUserIp"
 import { useAuth } from '@/contexts/AuthContext';
 import Image from 'next/image';
+import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 
 
 
@@ -643,24 +644,14 @@ const Page = ({
     setUserComments(comments);
   }
   const asPath = router.asPath
-  const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'uk'];
-    const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
-      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
-    });
-
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
-    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
-    return hrefLangTags;
-  };
+  const hrefLangTags =generateHrefLangTags(asPath)
 
   return (
     <>
       <Head>
-        {generateHrefLangTags()}
+        {hrefLangTags.map((tag) => (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+        ))}
         <title>{seo_title}</title>
         <meta name="description" content={seo_description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -746,7 +737,7 @@ const Page = ({
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
                   {/* <div className="container-xxl py-5 bg-primary  mb-5"> */}
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
+                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
                     <header className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -1027,14 +1018,6 @@ export async function getServerSideProps({
       const findComentReaction = commentsReactionsByPageUrl.filter(reaction => reaction.comment_id === comment.id)
       return { ...comment, reactions: findComentReaction }
     })
-
-
-    const regex = /src="https:\/\/t-h-logistics\.com:17818\/uploads\//g;
-    const replacedImagesSrcBody = body.replace(
-      regex,
-      'src="https://t-h-logistics.com/uploads/'
-    );
-
     const shortenedTitle = () => {
       return page_title.length > 65
         ? `${page_title.slice(0, 65)}...`
@@ -1052,7 +1035,7 @@ export async function getServerSideProps({
         page_title: shortenedTitle(),
         url,
         pageRes: pageRes.data.data,
-        body: replacedImagesSrcBody,
+        body,
         crumbs,
         notFoundMessage,
         slug,

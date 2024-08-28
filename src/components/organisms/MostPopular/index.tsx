@@ -9,7 +9,7 @@ interface MostPopular {
     data: any[];
     title: string
 }
-type Locale = 'uk' | 'ru' | 'en';
+export type Locale = 'uk' | 'ru' | 'en';
 
 const { publicRuntimeConfig } = getConfig();
 const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;

@@ -1,16 +1,16 @@
-// @ts-nocheck
+
 
 import $t from '@/locale/global';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
-export default function SearchModal({onClose, show}) {
+import { Locale } from '../MostPopular';
+export default function SearchModal({onClose, show}:{onClose: any, show: boolean}) {
   const [val, setVal] = useState('');
   const router = useRouter();
-  const locale = router.locale === 'ua' ? 'uk' : router.locale;
+  const locale: Locale = (router.locale === 'ua' ? 'uk' : router.locale) as Locale 
+
   const $ref = useRef(null)
-
-
-  const submit = (e) => {
+  const submit = (e:any) => {
     e.preventDefault();
     if(val.length > 0){
       onClose()

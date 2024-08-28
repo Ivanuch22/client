@@ -12,6 +12,7 @@ const nextConfig = {
     NEXT_FRONT_URL: process.env.NEXT_FRONT_URL,
     NEXT_STRAPI_IMG_DEFAULT: process.env.NEXT_STRAPI_IMG_DEFAULT,
     NEXT_USER_DEFAULT_URL: process.env.NEXT_USER_DEFAULT_URL,
+    NEXT_FRONT_HOST: process.env.NEXT_FRONT_HOST
   },
   compress: true,
   reactStrictMode: true,
@@ -39,7 +40,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**t-h-logistics.com',
+        hostname: `**${process.env.NEXT_FRONT_HOST}`,
         port: '17818',
         pathname: '/**',
       },

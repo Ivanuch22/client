@@ -39,7 +39,7 @@ const PasswordModal: React.FC<ConfirmModalProps> = ({
                         </div>
                     </div>
                     <div className='modal-body d-flex justify-content-between'>
-                        <button className="btn btn-success" data-dismiss="modal" onClick={()=>onSubmit(password)} style={{ width: '48%' }}>OK</button>
+                        <button className="btn btn-success" data-dismiss="modal" onClick={() => onSubmit(password)} style={{ width: '48%' }}>OK</button>
                         <button className="btn-danger" data-dismiss="modal" onClick={onClose} style={{ width: '48%' }}>Cancel</button>
                     </div>
                 </div>

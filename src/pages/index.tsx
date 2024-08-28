@@ -10,7 +10,8 @@ import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { useEffect, useState, useMemo } from 'react';
 import Cookies from 'js-cookie';
 import getConfig from 'next/config';
-import Image from 'next/image';
+import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
+
 
 export default function Home({
   html,
@@ -34,19 +35,7 @@ export default function Home({
     const getUserCookies = Cookies.get('user');
     return getUserCookies ? JSON.parse(getUserCookies) : {};
   });
-  const generateHrefLangTags = useMemo(() => {
-    const locales = ['ru', 'en', 'uk'];
-    const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
-      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
-    });
-
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
-    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
-    return hrefLangTags;
-  }, [NEXT_FRONT_URL, asPath]);
+  const hrefLangTags = generateHrefLangTags(asPath);
 
 
   useEffect(() => {
@@ -73,8 +62,9 @@ export default function Home({
         <meta name="keywords" content={keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        {generateHrefLangTags}
-
+        {hrefLangTags.map((tag) => (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+        ))}
       </Head>
 
       <div className="container-xxl bg-white p-0">
@@ -89,7 +79,7 @@ export default function Home({
             }}
           >
             <DefaultLayout>
-                <div dangerouslySetInnerHTML={{ __html: html }} />
+              <div dangerouslySetInnerHTML={{ __html: html }} />
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
         </div>

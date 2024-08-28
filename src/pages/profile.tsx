@@ -19,6 +19,7 @@ import MailModal from '@/components/organisms/ModalMail';
 import ImgEditor from '@/components/organisms/ImgEditor';
 import getConfig from 'next/config';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
+import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 
 export default function Profile({
   menu,
@@ -52,19 +53,7 @@ export default function Profile({
 
   const asPath = router.asPath
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'uk'];
-    const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
-      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
-    });
-
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
-    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
-    return hrefLangTags;
-  };
+const hrefLangTags = generateHrefLangTags(asPath);
 
   useEffect(() => {
     setLogin(isLogin);
@@ -330,12 +319,11 @@ export default function Profile({
         <meta name="keywords" content="Profile" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        {generateHrefLangTags()}
+        {hrefLangTags.map((tag) => (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+        ))}
       </Head>
-      <Script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
-        defer
-      ></Script>
+
       <div className="container-xxl bg-white p-0">
         <main className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
@@ -350,7 +338,7 @@ export default function Profile({
             <DefaultLayout>
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
+                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
                     <div className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"

@@ -326,20 +326,13 @@ export async function getServerSideProps({
             howto,
         }: PageAttibutes = pageRes.data?.data[0]?.attributes;
 
-        // replace port in images
-        const regex = /src="https:\/\/t-h-logistics\.com:17818\/uploads\//g;
-        const replacedImagesSrcBody = body.replace(
-            regex,
-            'src="https://t-h-logistics.com/uploads/'
-        );
-
         return {
             props: {
                 seo_title,
                 seo_description,
                 page_title,
                 url,
-                body: replacedImagesSrcBody,
+                body,
                 crumbs,
                 slug,
                 keywords,

@@ -1,19 +1,30 @@
-import getConfig from "next/config";
+// utils/generators/generateHrefLangTags.ts
 
-const { publicRuntimeConfig } = getConfig();
-const { NEXT_FRONT_URL } = publicRuntimeConfig;
+import getConfig from 'next/config';
 
-const serverGenerateHrefLangTags = (asPath:string) => {
-  const locales = ['ru', 'en', 'ua'];
-  let hrefLangTags = locales.reduce((lang) => {
+export const generateHrefLangTags = (asPath: string) => {
+  const { publicRuntimeConfig } = getConfig();
+  const { NEXT_FRONT_URL } = publicRuntimeConfig;
+
+  const locales = ['ru', 'en', 'uk'];
+  const hrefLangTags = locales.map((lang) => {
     const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
-    return `<link key=${lang} rel="alternate" hrefLang=${lang} href=${href}> `;
-  },"");
+    return {
+      key: lang,
+      rel: 'alternate',
+      hrefLang: lang,
+      href,
+    };
+  });
+
   // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
   const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-  hrefLangTags +=(`<link key="x-default" rel="alternate" hrefLang="x-default" href=${defaultHref} >`);
+  hrefLangTags.push({
+    key: 'x-default',
+    rel: 'alternate',
+    hrefLang: 'x-default',
+    href: defaultHref,
+  });
 
   return hrefLangTags;
-}
-
-export default serverGenerateHrefLangTags
+};

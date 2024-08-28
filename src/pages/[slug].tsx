@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {  useState } from 'react';
+import { useState } from 'react';
 import { server } from '@/http/index';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -22,6 +22,7 @@ import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 import parse from 'html-react-parser';
 import getConfig from 'next/config';
 import Link from 'next/link';
+import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 export interface PageAttibutes {
   seo_title: string;
   createdAt: string;
@@ -164,22 +165,11 @@ const Page = ({
 
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [errorCode, setErrorCode] = useState<number | null>(null);
-  const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'uk'];
-    const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
-      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
-    });
-
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
-    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
-    return hrefLangTags;
-  };
+  
+  const asPath = router.asPath
+  const hrefLangTags = generateHrefLangTags(asPath);
   return (
     <>
       <Head>
@@ -187,7 +177,9 @@ const Page = ({
         <meta name="description" content={seo_description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="keyword" content={keywords} />
-        {generateHrefLangTags()}
+        {hrefLangTags.map((tag) => (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+        ))}
         {faq && (
           <script
             type="application/ld+json"
@@ -276,12 +268,12 @@ const Page = ({
                         </div>
                       )}
                       {/* Displaying rich text */}
-                      {listPagesData.length>0 && (
+                      {listPagesData.length > 0 && (
                         listPagesData.map((page, index) => (
                           <div style={{ marginLeft: page.childrenStatus ? '30px' : '0' }} key={index}>
                             <h4 class="mb-1">
                               <Link href={page.url}>
-                              {locale === 'ru'
+                                {locale === 'ru'
                                   ? page.title
                                   : page[`title_${locale}`]}
                               </Link>
@@ -292,8 +284,8 @@ const Page = ({
 
                         ))
                       )}
-                      {listPagesData.length<=0&& (
-                      <div dangerouslySetInnerHTML={{ __html: body }}></div>
+                      {listPagesData.length <= 0 && (
+                        <div dangerouslySetInnerHTML={{ __html: body }}></div>
                       )}
                     </div>
                   </div>
@@ -315,7 +307,9 @@ export async function getServerSideProps({
   res,
   resolvedUrl,
 }: Query) {
+
   const randomBanner = await getRandomBanner(locale);
+
 
   const slug = `/${query?.slug}` || '';
 
@@ -326,7 +320,7 @@ export async function getServerSideProps({
   const { menu, allPages, footerMenus, footerGeneral } =
     await getHeaderFooterMenus(strapiLocale);
 
-  
+
   function collectChildren(data, array) {
     let results = [];
     function traverse(children, bool) {
@@ -345,28 +339,28 @@ export async function getServerSideProps({
     let result = [];
 
     function search(item) {
-        if (typeof item === 'object' && item !== null) {
-            for (let key in item) {
-                if (item[key] === targetUrl && item.children) {
-                    item.children.data.map(el => result.push(el.attributes))
-                    return;
-                }
-                if (typeof item[key] === 'object') {
-                    search(item[key]);
-                }
-            }
+      if (typeof item === 'object' && item !== null) {
+        for (let key in item) {
+          if (item[key] === targetUrl && item.children) {
+            item.children.data.map(el => result.push(el.attributes))
+            return;
+          }
+          if (typeof item[key] === 'object') {
+            search(item[key]);
+          }
         }
+      }
     }
 
     search(obj);
     return result;
-}
+  }
 
   const getMenuUrlArray = menu.map((element) => element.attributes.url)
-  const getMenuUrlArray2 =  findChildrenByUrl(menu, resolvedUrl)
+  const getMenuUrlArray2 = findChildrenByUrl(menu, resolvedUrl)
   const getPageListUrl = getMenuUrlArray.filter((url) => url === resolvedUrl)[0]
   const listPagesData = []
-  
+
   if (getPageListUrl) collectChildren(menu.filter(element => element.attributes.url === getPageListUrl)[0], listPagesData)
 
   const strapiMenu = await server.get(getMenu('main'));
@@ -396,20 +390,13 @@ export async function getServerSideProps({
       howto,
     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
 
-    // replace port in images
-    const regex = /src="https:\/\/t-h-logistics\.com:17818\/uploads\//g;
-    const replacedImagesSrcBody = body.replace(
-      regex,
-      'src="https://t-h-logistics.com/uploads/'
-    );
-
     return {
       props: {
         seo_title,
         seo_description,
         page_title,
         url,
-        body: replacedImagesSrcBody,
+        body,
         crumbs,
         slug,
         keywords,

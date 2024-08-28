@@ -25,6 +25,7 @@ import { errorText, message404 } from '../switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 import Link from 'next/link';
+import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 const { publicRuntimeConfig } = getConfig();
 const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 export interface PageAttibutes {
@@ -179,19 +180,7 @@ const Page = ({
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const generateHrefLangTags = () => {
-    const locales = ['ru', 'en', 'uk'];
-    const hrefLangTags = locales.map((lang) => {
-      const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/"+lang}${asPath}`;
-      return <link key={lang} rel="alternate" hrefLang={lang} href={href} />;
-    });
-
-    // Додавання x-default, який зазвичай вказує на основну або міжнародну версію сайту
-    const defaultHref = `${NEXT_FRONT_URL}${asPath}`;
-    hrefLangTags.push(<link key="x-default" rel="alternate" hrefLang="x-default" href={defaultHref} />);
-
-    return hrefLangTags;
-  };
+const hrefLangTags = generateHrefLangTags(asPath);
   return (
     <>
       {/* 
@@ -203,7 +192,9 @@ const Page = ({
         <meta name="description" content={seo_description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="keyword" content={keywords} />
-        {generateHrefLangTags()}
+        {hrefLangTags.map((tag) => (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+        ))}
         {faq && (
           <script
             type="application/ld+json"
@@ -251,7 +242,7 @@ const Page = ({
               {/* В компонент hero передаем заголовок страницы и данные которые там будут преобразованы в breadcrumb */}
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5">
+                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
                     <div className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -385,20 +376,13 @@ export async function getServerSideProps({
       howto,
     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
 
-    // replace port in images
-    const regex = /src="https:\/\/t-h-logistics\.com:17818\/uploads\//g;
-    const replacedImagesSrcBody = body.replace(
-      regex,
-      'src="https://t-h-logistics.com/uploads/'
-    );
-
     return {
       props: {
         seo_title,
         seo_description,
         page_title,
         url,
-        body: replacedImagesSrcBody,
+        body,
         crumbs,
         slug,
         keywords,
