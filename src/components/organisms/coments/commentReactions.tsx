@@ -103,7 +103,7 @@ const CommentReactions = ({ comments, commentData, reactions = [], globalUserIp 
         try {
             const userToken = Cookies.get('userToken');
             if (userToken) {
-                let updateComment = await axios.post(`${NEXT_STRAPI_API_URL.replace("/api", "")}/custom-comment-fields/comment-actions`, {
+                let updateComment = await axios.post(`${NEXT_STRAPI_BASED_URL}/custom-comment-fields/comment-actions`, {
                     page_url: commentData.pageUrl,
                     ip_address: commentData.userIp,
                     comment_id: commentData.comentID,
@@ -117,7 +117,7 @@ const CommentReactions = ({ comments, commentData, reactions = [], globalUserIp 
                 })
                 return updateComment
             } else {
-                let updateComment = await axios.post(`${NEXT_STRAPI_API_URL.replace("/api", "")}/custom-comment-fields/comment-actions`, {
+                let updateComment = await axios.post(`${NEXT_STRAPI_BASED_URL}/custom-comment-fields/comment-actions`, {
                     page_url: commentData.pageUrl,
                     ip_address: commentData.userIp,
                     comment_id: commentData.comentID,

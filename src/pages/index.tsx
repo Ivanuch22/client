@@ -24,8 +24,8 @@ export default function Home({
   footerGeneral,
   socialData,
 }) {
+  console.log(footerGeneral)
   const router = useRouter();
-  const locale = useMemo(() => (router.locale === 'ua' ? 'uk' : router.locale), [router.locale]);
   const asPath = router.asPath;
 
   const { publicRuntimeConfig } = getConfig();

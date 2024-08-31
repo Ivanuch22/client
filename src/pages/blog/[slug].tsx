@@ -355,7 +355,7 @@ const Page = ({
       }
     }
   }
-
+console.log(user)
   const sendMessage = async (e, fatherId) => {
     e.preventDefault();
 
@@ -393,12 +393,11 @@ const Page = ({
         type: commentType
       }
     ]
-
-
     try {
       let payload;
       fatherId ? payload = {
         data: {
+          CustomUserSelector:user,
           user: { connect: [{ id: user.id }] },
           blog: { connect: [{ id: pageRes[0]?.id }] },
           father: { connect: [{ id: fatherId }] },
@@ -411,6 +410,7 @@ const Page = ({
 
       } : payload = {
         data: {
+          CustomUserSelector:user,
           user: { connect: [{ id: user.id }] },
           blog: { connect: [{ id: pageRes[0]?.id }] },
           Text: commentText,
@@ -989,7 +989,7 @@ export async function getServerSideProps({
 
   const socialRes = await server.get('/social');
   const socialData = socialRes.data.data.attributes;
-
+  const { NEXT_FRONT_URL, NEXT_MAILER, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
   if (pageRes.data?.data[0]?.attributes) {
     const {
       seo_title,
@@ -1013,7 +1013,7 @@ export async function getServerSideProps({
 
     const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
-    let commentsReactionsByPageUrl = await fetch(`${NEXT_STRAPI_API_URL.replace("/api", "")}/custom-comment-fields/reactionsByPage?page_url=${url}`).then(data => data.json())
+    let commentsReactionsByPageUrl = await fetch(`${NEXT_STRAPI_BASED_URL}/custom-comment-fields/reactionsByPage?page_url=${url}`).then(data => data.json())
     const commentsWithReaction = comments.map((comment: any) => {
       const findComentReaction = commentsReactionsByPageUrl.filter(reaction => reaction.comment_id === comment.id)
       return { ...comment, reactions: findComentReaction }

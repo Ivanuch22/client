@@ -7,7 +7,6 @@ const nextConfig = {
   publicRuntimeConfig: {
     NEXT_MAILER: process.env.NEXT_MAILER,
     NEXT_STRAPI_API_URL: process.env.NEXT_STRAPI_API_URL,
-    NEXT_HOST: process.env.NEXT_HOST,
     NEXT_STRAPI_BASED_URL: process.env.NEXT_STRAPI_BASED_URL,
     NEXT_FRONT_URL: process.env.NEXT_FRONT_URL,
     NEXT_STRAPI_IMG_DEFAULT: process.env.NEXT_STRAPI_IMG_DEFAULT,
