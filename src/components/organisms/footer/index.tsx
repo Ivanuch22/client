@@ -124,7 +124,7 @@ const Footer = () => {
             <p className="mb-2">
               <i className="fa fa-envelope me-3" />
               <a
-                href={`mailto:${replaceGAVWithAt(footerMenus.contacts?.email)}`}
+                href={`mailto:${replaceGAVWithAt(footerMenus?.contacts?.email)}`}
                 style={{ color: '#fff' }}
               >
                 {footerMenus.contacts?.email}

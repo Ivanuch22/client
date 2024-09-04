@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import Footer from '../organisms/footer';
 import Header from '../organisms/header';
 import Call from '../molecules/Call';
-import Link from 'next/link';
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);

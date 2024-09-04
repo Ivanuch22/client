@@ -190,7 +190,6 @@ const hrefLangTags = generateHrefLangTags(asPath);
 
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
-
           <DefaultLayoutContext.Provider
             value={{
               footerMenus,

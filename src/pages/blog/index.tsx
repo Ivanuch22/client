@@ -69,7 +69,7 @@ export default function Home({
 
   const windowWidth = useWindowWidth();
 
-   function sanitizeImageUrl(url) {
+  function sanitizeImageUrl(url) {
     return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
   }
 
@@ -87,7 +87,7 @@ export default function Home({
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-const hrefLangTags = generateHrefLangTags(asPath);
+  const hrefLangTags = generateHrefLangTags(asPath);
   return (
     <>
       <Head>
@@ -104,7 +104,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
         <link rel="icon" href="/favicon.ico" />
 
       </Head>
-      
+
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
@@ -119,7 +119,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
             <DefaultLayout>
               <main className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
+                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{ marginLeft: 0 }}>
                     <div className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -127,13 +127,13 @@ const hrefLangTags = generateHrefLangTags(asPath);
                       >
                         <h1 className="text-white animated d-flex align-items-center flex-wrap slideInLeft">
                           <nav >
-                            <ul itemScope itemType="http://schema.org/BreadcrumbList" className="text-white animated d-flex align-items-center flex-wrap slideInLeft"  style={{ paddingLeft: 0, listStyleType: "none", display: "flex" }} >
+                            <ul itemScope itemType="http://schema.org/BreadcrumbList" className="text-white animated d-flex align-items-center flex-wrap slideInLeft" style={{ paddingLeft: 0, listStyleType: "none", display: "flex" }} >
                               <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className='d-flex gap-2 align-items-center '>
                                 <Link href={`/blog`} itemProp="item" className="d-inline text-white heading_title" >
                                   <span itemProp="name">
                                     {$t[locale].blog.all}
                                   </span>
-                                <meta itemProp="position" content="1" />
+                                  <meta itemProp="position" content="1" />
                                 </Link>
                                 <span className="d-inline heading_title text-white"> | </span>
                               </li>
@@ -191,7 +191,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
                       <section itemScope itemType="http://schema.org/Blog" className=' col article-col gap-5  d-flex flex-column col  '>
 
                         {pages.map((page, index) => {
-                          const { page_title, admin_date, url, heading, comments, views, article,seo_title } = page.attributes;
+                          const { page_title, admin_date, url, heading, comments, views, article, seo_title } = page.attributes;
                           const imageUrl = (page.attributes.image.data) ? page.attributes.image.data.attributes.url : "";
                           return (
                             <article itemProp="blogPosts" itemScope itemType="http://schema.org/BlogPosting" className="row row-line" key={index}>
@@ -204,7 +204,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
                                     href={`${sanitizeImageUrl(url)}`}
                                     className="thumb-responsive lazy-load a-not-img lazy-loaded mostpopularImgBlock"
                                   >
-                                    <Image loading={index===0?"eager":"lazy"}   itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
+                                    <Image loading={index === 0 ? "eager" : "lazy"} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + imageUrl)}`} width={260} height={100} alt='img' />
                                   </Link>
                                 </div>
                               </div>
@@ -225,15 +225,24 @@ const hrefLangTags = generateHrefLangTags(asPath);
                                       </span>
                                       <span className="comments part" >
                                         <Link itemProp="discussionUrl" href={`${url}#comment`} className="align-items-center d-flex">
-                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M16.8951 4H7.10486C5.95297 4 5.36572 4.1134 4.7545 4.44028C4.19025 4.74205 3.74205 5.19025 3.44028 5.7545C3.1134 6.36572 3 6.95297 3 8.10486V13.8951C3 15.047 3.1134 15.6343 3.44028 16.2455C3.74205 16.8097 4.19025 17.258 4.7545 17.5597L4.8954 17.6314C5.4124 17.8807 5.94467 17.9827 6.84879 17.9979L7.1 18V20.2149C7.1 20.6467 7.2693 21.0614 7.57155 21.3698L7.68817 21.478C8.33091 22.0196 9.29233 21.9937 9.90488 21.3933L13.366 18H16.8951C18.047 18 18.6343 17.8866 19.2455 17.5597C19.8097 17.258 20.258 16.8097 20.5597 16.2455C20.8866 15.6343 21 15.047 21 13.8951V8.10486C21 6.95297 20.8866 6.36572 20.5597 5.7545C20.258 5.19025 19.8097 4.74205 19.2455 4.44028C18.6343 4.1134 18.047 4 16.8951 4ZM6.91166 5.80107L16.8951 5.8C17.7753 5.8 18.0818 5.85919 18.3966 6.02755C18.6472 6.16155 18.8384 6.35282 18.9725 6.60338C19.1408 6.91818 19.2 7.2247 19.2 8.10486V13.8951L19.1956 14.2628C19.1792 14.8698 19.1149 15.1303 18.9725 15.3966C18.8384 15.6472 18.6472 15.8384 18.3966 15.9725C18.0818 16.1408 17.7753 16.2 16.8951 16.2H13L12.8832 16.2076C12.6907 16.2328 12.5103 16.3198 12.3701 16.4572L8.9 19.857V17.1C8.9 16.6029 8.49706 16.2 8 16.2H7.10486L6.73724 16.1956C6.13019 16.1792 5.86975 16.1149 5.60338 15.9725C5.35282 15.8384 5.16155 15.6472 5.02755 15.3966C4.85919 15.0818 4.8 14.7753 4.8 13.8951V8.10486L4.80439 7.73724C4.8208 7.13019 4.88509 6.86975 5.02755 6.60338C5.16155 6.35282 5.35282 6.16155 5.60338 6.02755C5.89396 5.87214 6.1775 5.80975 6.91166 5.80107Z" fill="#D3DCE2" />
-                                          </svg>                                     <span className="disqus-comment-count"  >{comments.data.length}</span>
+                                          <div style={{ height: "24px", width: "20px"  }}>
+
+                                            <picture>
+                                              <Image src={"/img/commentSvgIcon.svg"} width="24" height="24" alt="comment icon"></Image>
+                                            </picture>
+                                          </div>
+                                          <span className="disqus-comment-count"  >{comments.data.length}</span>
                                         </Link>
                                       </span>
                                       <div className='view part' itemProp="interactionStatistic" itemScope itemType="http://schema.org/InteractionCounter">
                                         <meta itemProp="interactionType" content="http://schema.org/ViewAction" />
                                         <div className='w-auto align-items-center d-flex'>
-                                          <svg style={{ marginRight: 7 }} height="24" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#c7c7c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+                                          <div style={{ height: "24px", width: "20px", marginRight: 7 }}>
+                                            <picture >
+                                              <Image src={"/img/viewSvgIcon.svg"} height="24" width="20" alt='views'></Image>
+                                            </picture>
+                                          </div>
+
                                           <meta itemProp="userInteractionCount" content={views} />
                                           {views}</div>
 
@@ -253,9 +262,9 @@ const hrefLangTags = generateHrefLangTags(asPath);
                                       {article?.author.data.attributes.real_user_name}
                                     </span>
                                   </span>
-                                  {article?.images.data.map((image)=>{
+                                  {article?.images.data.map((image) => {
                                     return (
-                                      <Image loading="lazy"  width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL+image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
+                                      <Image loading="lazy" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
                                     )
                                   })}
                                 </div>
