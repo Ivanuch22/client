@@ -45,7 +45,7 @@ const Footer = () => {
   const { footerMenus, footerGeneral } = useDefaultLayoutContext();
   function replaceGAVWithAt(str) {
     const regex = /\[[^\]]*\]/g;
-    return str.replace(regex, '@');
+    return str?.replace(regex, '@');
   }
   return (
     <footer
@@ -67,7 +67,7 @@ const Footer = () => {
                         <Link
                           key={item.id}
                           className="btn btn-link"
-                          href={item.attributes.url}
+                          href={item?.attributes?.url||"/"}
                         >
                           {locale === 'ru'
                             ? item.attributes.title
@@ -90,7 +90,7 @@ const Footer = () => {
                         <Link
                           key={item.id}
                           className="btn btn-link"
-                          href={item.attributes.url}
+                          href={item?.attributes?.url||"/"}
                         >
                           {locale === 'ru'
                             ? item.attributes.title

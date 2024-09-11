@@ -130,3 +130,42 @@
 .post-button-edit{background-image:url(../img/pencil.png);background-size:contain;width:25px;height:25px;background-repeat:no-repeat;position:absolute;right:70px;bottom:0}
 .post-button-delete{background-image:url(../img/trash.png);background-size:contain;width:25px;height:25px;background-repeat:no-repeat;position:absolute;right:40px;bottom:0}
 .__next{overflow:hidden}
+.mostpopular__ul{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 25px;
+padding-left: 0;
+list-style-type: none;
+}
+@media (max-width:1024px){
+.mostpopular__ul{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.mostpopular__ul .mostpopular__row:nth-child(3){
+  grid-column: 1 / -1;
+  justify-self: center; 
+  width: 50%; 
+  
+}
+
+}
+
+@media (max-width:630px){
+
+  .mostpopular__ul{
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .mostpopular__ul .mostpopular__row:nth-child(3){
+    grid-column: 1 / -1;
+    justify-self: center; 
+    width: 100%; 
+  }
+  }
+@media (max-width:500px){
+  .mostpopular{
+    padding: 0 20px !important;
+  }
+}
