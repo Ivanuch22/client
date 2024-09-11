@@ -47,7 +47,7 @@ export default function Home({
 
 // Lazy load MostPopularRow
 const MostPopularRow = dynamic(() => import('@/components/organisms/MostPopularRow'), {
-  ssr: false,
+  ssr: true,
   loading: () => <p>Loading...</p>, // Можна додати спінер або індикатор завантаження
 });
   useEffect(() => {
@@ -93,7 +93,7 @@ const MostPopularRow = dynamic(() => import('@/components/organisms/MostPopularR
             <DefaultLayout>
               <div dangerouslySetInnerHTML={{ __html: html }} />
               <MostPopularRow title={$t[locale].blog.mostpopular} data={mostPopular} />
-
+              
               <div dangerouslySetInnerHTML={{ __html: index_bottom }}></div>
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
