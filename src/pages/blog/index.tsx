@@ -107,7 +107,7 @@ export default function Home({
           name="description"
           content={activeHeading?.attributes?.blog_descriptions? activeHeading?.attributes?.blog_descriptions:  $t[locale].blog.description}
         />
-        <meta name="keywords" content={$t[locale].blog.keywords} />
+        <meta name="keywords" content={activeHeading?.attributes?.keywords? activeHeading?.attributes?.keywords: $t[locale].blog.keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
 
