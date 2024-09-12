@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { server } from '@/http';
 import Script from 'next/script';
 import $t from '@/locale/global';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 import formatDateTime from '@/utils/formateDateTime';
@@ -37,11 +37,13 @@ export default function Home({
   socialData,
 }) {
   const router = useRouter();
-
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const { query } = router;
   const { perPage } = query;
   const [paginationPage, setPaginationPage] = useState(pagination.page);
+  
+
+  const activeHeading = useMemo(()=>headings.find((element)=> element?.attributes?.Name === query?.heading && locale == element?.attributes?.locale), [query ]);
 
   function useWindowWidth() {
     const [windowWidth, setWindowWidth] = useState(0);
@@ -66,7 +68,6 @@ export default function Home({
 
     return windowWidth;
   }
-
   const windowWidth = useWindowWidth();
 
   function sanitizeImageUrl(url) {
@@ -88,16 +89,23 @@ export default function Home({
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
   const hrefLangTags = generateHrefLangTags(asPath);
+
+  useEffect(()=>{
+    console.log(headings)
+  // const activeHeading = useMemo(()=>headings.find((element)=> element?.attributes?.Name === query?.heading && locale == element?.attributes?.locale), [query ]);
+     
+  }, [locale])
+
   return (
     <>
       <Head>
-        <title>{$t[locale].blog.title}</title>
+        <title>{activeHeading?.attributes?.blog_title? activeHeading?.attributes?.blog_title:  $t[locale].blog.title}</title>
         {hrefLangTags.map((tag) => (
           <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
         ))}
         <meta
           name="description"
-          content={$t[locale].blog.description}
+          content={activeHeading?.attributes?.blog_descriptions? activeHeading?.attributes?.blog_descriptions:  $t[locale].blog.description}
         />
         <meta name="keywords" content={$t[locale].blog.keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -264,7 +272,7 @@ export default function Home({
                                   </span>
                                   {article?.images.data.map((image) => {
                                     return (
-                                      <Image loading="lazy" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText} key={image.id} />
+                                      <Image loading="lazy" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText || "img"} key={image.id} />
                                     )
                                   })}
                                 </div>

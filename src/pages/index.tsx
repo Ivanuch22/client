@@ -133,7 +133,6 @@ export async function getStaticProps({ locale, resolvedUrl }) {
         mostPopular
       },
       revalidate: 60,
-      
     };
   } catch (error) {
     console.error('Failed to fetch server-side props:', error);
