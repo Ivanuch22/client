@@ -58,13 +58,12 @@ export default function Home({
 
   const goToPage = n =>
     router.push(`/services?page=${n}&perPage=${perPage ? perPage : ''}`);
-
-
+  
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-const hrefLangTags = generateHrefLangTags(asPath);
-  
+  const hrefLangTags = generateHrefLangTags(asPath);
+
   return (
     <>
       <Head>
@@ -94,7 +93,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
             <DefaultLayout>
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
+                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{ marginLeft: 0 }}>
                     <div className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -170,7 +169,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
     </>
   );
 }
-export async function getStaticProps({ query, locale }: Query) {
+export async function getServerSideProps({ query, locale }: Query) {
   const { page = 1, perPage = 100 } = query;
 
   try {
@@ -205,7 +204,6 @@ export async function getStaticProps({ query, locale }: Query) {
         footerGeneral,
         socialData: socialData ?? null,
       },
-      revalidate: 60,
     };
   } catch (error) {
     return {
