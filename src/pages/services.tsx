@@ -170,7 +170,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
     </>
   );
 }
-export async function getServerSideProps({ query, locale }: Query) {
+export async function getStaticProps({ query, locale }: Query) {
   const { page = 1, perPage = 100 } = query;
 
   try {
@@ -205,6 +205,7 @@ export async function getServerSideProps({ query, locale }: Query) {
         footerGeneral,
         socialData: socialData ?? null,
       },
+      revalidate: 60,
     };
   } catch (error) {
     return {

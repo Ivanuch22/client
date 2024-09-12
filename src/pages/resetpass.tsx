@@ -201,7 +201,7 @@ export default function Forgot({
 }
 
 
-export async function getServerSideProps({ query, locale }) {
+export async function getStaticProps({ query, locale }) {
     try {
         const strapiLocale = locale === 'ua' ? 'uk' : locale;
         const res = await server.get(`/code?locale=${$(strapiLocale)}`);
@@ -231,6 +231,7 @@ export async function getServerSideProps({ query, locale }) {
                 footerGeneral,
                 socialData: socialData ?? null,
             },
+            revalidate: 60,
         };
     } catch (error) {
         return {

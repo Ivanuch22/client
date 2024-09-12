@@ -109,7 +109,7 @@ export async function getStaticProps({ locale, resolvedUrl }) {
     const [dataResponse, socialResponse, mostPopularResponse] = await Promise.all([
       server.get(`/code?locale=${$(strapiLocale)}`),
       server.get('/social'),
-      getRandomPopularNews(strapiLocale, 3)
+      getRandomPopularNews(strapiLocale, 4)
     ]);
 
     const { index = '', index_bottom = "", index_seo_description: description, index_title: title, index_keywords: keywords } = dataResponse.data.data.attributes;
@@ -132,6 +132,8 @@ export async function getStaticProps({ locale, resolvedUrl }) {
         socialData,
         mostPopular
       },
+      revalidate: 60,
+      
     };
   } catch (error) {
     console.error('Failed to fetch server-side props:', error);

@@ -123,7 +123,7 @@ function SiteMap() {
   // getServerSideProps will do the heavy lifting
 }
 
-export async function getServerSideProps({ res }) {
+export async function getStaticProps({ res }) {
   // fetching all urls to put it into sitemap
   async function fetchUrls(apiRoute: 'pages' | 'page-seos' | 'accordions' | "blogs") {
     let array = [];
@@ -178,11 +178,13 @@ export async function getServerSideProps({ res }) {
 
     return {
       props: {},
+      revalidate: 60,
     };
   } catch (error) {
     console.log(error);
     return {
       props: {},
+      revalidate: 60,
     };
   }
 }

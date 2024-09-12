@@ -282,7 +282,7 @@ const Page = ({
     );
 };
 
-export async function getServerSideProps({
+export async function getStaticProps({
     query,
     locale,
     res,
@@ -348,6 +348,7 @@ export async function getServerSideProps({
                 footerGeneral,
                 socialData: socialData ?? null,
             },
+            revalidate: 60,
         };
     }
 
