@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import parse from 'html-react-parser';
@@ -355,7 +355,7 @@ const Page = ({
       }
     }
   }
-console.log(user)
+  console.log(user)
   const sendMessage = async (e, fatherId) => {
     e.preventDefault();
 
@@ -397,7 +397,7 @@ console.log(user)
       let payload;
       fatherId ? payload = {
         data: {
-          CustomUserSelector:user,
+          CustomUserSelector: user,
           user: { connect: [{ id: user.id }] },
           blog: { connect: [{ id: pageRes[0]?.id }] },
           father: { connect: [{ id: fatherId }] },
@@ -410,7 +410,7 @@ console.log(user)
 
       } : payload = {
         data: {
-          CustomUserSelector:user,
+          CustomUserSelector: user,
           user: { connect: [{ id: user.id }] },
           blog: { connect: [{ id: pageRes[0]?.id }] },
           Text: commentText,
@@ -644,7 +644,7 @@ console.log(user)
     setUserComments(comments);
   }
   const asPath = router.asPath
-  const hrefLangTags =generateHrefLangTags(asPath)
+  const hrefLangTags = generateHrefLangTags(asPath)
 
   return (
     <>
@@ -737,7 +737,7 @@ console.log(user)
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
                   {/* <div className="container-xxl py-5 bg-primary  mb-5"> */}
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
+                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{ marginLeft: 0 }}>
                     <header className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -855,12 +855,12 @@ console.log(user)
                                 className='notShowOnPage'
                               >
                                 <span itemProp="author" itemScope itemType="https://schema.org/Person">
-                                  <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`}/>
+                                  <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`} />
                                   <span itemProp="name" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`} >
                                     {articleStrapi?.author.data.attributes.real_user_name}
                                   </span>
                                 </span>
-                                <Image loading="lazy"  width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText||"alt text"} key={pageImage.data.id} />
+                                <Image loading="lazy" width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText || "alt text"} key={pageImage.data.id} />
                                 <div itemProp="headline">{seo_title}</div>
                                 <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>
@@ -888,9 +888,9 @@ console.log(user)
                                   <dd >
                                     <div className="w-auto comments part" >
                                       <Link href={`${url}#comment`} className="">
-                                      <picture>
-                                                    <Image src={"/img/commentSvgIcon.svg"} width="24" height="24" alt="comment icon"></Image>
-                                                </picture>
+                                        <picture>
+                                          <Image src={"/img/commentSvgIcon.svg"} width="24" height="24" alt="comment icon"></Image>
+                                        </picture>
                                         <span className="disqus-comment-count" >{usersComments.length}</span>
                                       </Link>
                                     </div>
@@ -901,7 +901,7 @@ console.log(user)
                                   <dd>
                                     <div className='w-auto part'>
                                       <picture style={{ marginRight: 7 }}>
-                                        <Image src={"/img/viewSvgIcon.svg"}  height="24" width="20"  alt='views'></Image>
+                                        <Image src={"/img/viewSvgIcon.svg"} height="24" width="20" alt='views'></Image>
                                       </picture>
 
                                       {views}</div>
@@ -947,163 +947,249 @@ console.log(user)
   );
 };
 
-export async function getServerSideProps({
-  query,
-  locale,
-  res,
-  resolvedUrl,
-}: Query) {
-  let headings;
+export async function getServerSideProps({ query, locale, res, resolvedUrl }: Query) {
   let comments = [];
   let pageIds;
-
   const slug = `/blog/${query?.slug}` || '';
   const Locale = locale === 'ua' ? 'uk' : locale;
-  let notFoundMessage = false
-  const randomBanner = await getRandomBanner(Locale);
-  let mostPopular = await getRandomPopularNews(Locale);
+  let notFoundMessage = false;
+  const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
-  if (mostPopular.length === 0) {
-    mostPopular = await getRandomPopularNews("ru");
+  // Паралельне виконання основних запитів
+  const [randomBanner, mostPopularNews, headingsRes, pageRes, strapiMenu, headerFooterData, socialRes] = await Promise.all([
+    getRandomBanner(Locale),
+    getRandomPopularNews(Locale),
+    server.get(`/headings?locale=${Locale}`).catch(() => ({ data: { data: [] } })), // Обробка помилок для headings
+    server.get(getBlogPage(slug, Locale)),
+    server.get(getMenu('main')),
+    getHeaderFooterMenus(Locale),
+    server.get('/social')
+  ]);
+
+  // Обробка результатів
+  let headings = headingsRes?.data?.data || [];
+  let pageData = pageRes?.data?.data || [];
+  let menuData = headerFooterData || {};
+  let socialData = socialRes?.data?.data?.attributes || null;
+  let mostPopular = mostPopularNews.length > 0 ? mostPopularNews : await getRandomPopularNews("ru");
+
+  // Якщо не знайшли сторінку, шукаємо в російській версії
+  if (pageData.length === 0) {
+    notFoundMessage = true;
+    pageData = pageRes?.data?.data || [];
   }
 
-  try {
-    const getHeadings = await server.get(`/headings?locale=${Locale}`);
-    headings = getHeadings.data.data;
-  } catch (e) {
-    console.error("Error fetching headings data", e);
-    headings = [];
-  }
-
-  let pageRes = await server.get(getBlogPage(slug, $(Locale)));
-  if (pageRes.data.data.length === 0) {
-    notFoundMessage = true
-    pageRes = await server.get(getBlogPage(slug, "ru"));
-  }
-  const strapiMenu = await server.get(getMenu('main'));
-
-  const { menu, allPages, footerMenus, footerGeneral } = await getHeaderFooterMenus(Locale);
-
-  const crumbs = strapiMenu.data.data[0].attributes.items.data;
-
-  if (!isPageWithLocaleExists(resolvedUrl, Locale, allPages)) {
+  const crumbs = strapiMenu?.data?.data[0]?.attributes?.items?.data || [];
+  if (!isPageWithLocaleExists(resolvedUrl, Locale, menuData.allPages)) {
     res.statusCode = 404;
   }
 
-  const socialRes = await server.get('/social');
-  const socialData = socialRes.data.data.attributes;
-  const { NEXT_FRONT_URL, NEXT_MAILER, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
-  if (pageRes.data?.data[0]?.attributes) {
+  // Отримання коментарів і реакцій
+  const pageUrl = pageData[0]?.attributes?.url || '';
+  const getBlogComments = await server.get(`/comments1?filters[blog][url]=${pageUrl}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
+  comments = getBlogComments?.data?.data?.filter(comment => comment.attributes.admin_date) || [];
+
+  let commentsReactionsByPageUrl = await fetch(`${NEXT_STRAPI_BASED_URL}/custom-comment-fields/reactionsByPage?page_url=${pageUrl}`)
+    .then(response => response.json())
+    .catch(() => []);
+
+  const commentsWithReaction = comments.map(comment => ({
+    ...comment,
+    reactions: commentsReactionsByPageUrl.filter(reaction => reaction.comment_id === comment.id)
+  }));
+
+  if (pageData[0]?.attributes) {
     const {
-      seo_title,
-      seo_description,
-      page_title,
-      url,
-      body,
-      keywords,
-      faq,
-      heading,
-      rating,
-      code,
-      article,
-      views,
-      publishedAt,
-      admin_date,
-      howto,
-      image: pageImage,
-    }: PageAttibutes = pageRes.data?.data[0]?.attributes;
-    await getPagesIdWithSameUrl(url).then(data => pageIds = data)
+      seo_title, seo_description, page_title, url, body, keywords, faq, heading,
+      rating, code, article, views, admin_date, howto, image: pageImage
+    } = pageData[0]?.attributes;
 
-    const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
-    comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
-    let commentsReactionsByPageUrl = await fetch(`${NEXT_STRAPI_BASED_URL}/custom-comment-fields/reactionsByPage?page_url=${url}`).then(data => data.json())
-    const commentsWithReaction = comments.map((comment: any) => {
-      const findComentReaction = commentsReactionsByPageUrl.filter(reaction => reaction.comment_id === comment.id)
-      return { ...comment, reactions: findComentReaction }
-    })
-    const shortenedTitle = () => {
-      return page_title.length > 65
-        ? `${page_title.slice(0, 65)}...`
-        : page_title;
-    };
+    await getPagesIdWithSameUrl(url).then(data => pageIds = data);
 
+    const shortenedTitle = page_title.length > 65 ? `${page_title.slice(0, 65)}...` : page_title;
 
     return {
       props: {
-        pageImage,
-        admin_date,
-        seo_title,
-        pageIds,
-        seo_description,
-        page_title: shortenedTitle(),
-        url,
-        pageRes: pageRes.data.data,
-        body,
-        crumbs,
-        notFoundMessage,
-        slug,
-        keywords,
-        comments: commentsWithReaction,
-        heading,
-        code,
-        views,
-        rating: genRatingData(rating.data),
-        faq: genFaqData(faq.data),
-        article: genArticleData(article, admin_date, Locale, slug),
-        howto: getHowToData(howto),
-        randomBanner,
-        mostPopular,
-        menu,
-        allPages,
-        footerMenus,
-        footerGeneral,
-        headings,
-        socialData: socialData ?? null,
-        commentsReactionsByPageUrl,
-        articleStrapi: article,
-      },
+        pageImage, admin_date, seo_title, seo_description, page_title: shortenedTitle, url, pageRes: pageData,
+        body, crumbs, notFoundMessage, slug, keywords, comments: commentsWithReaction, heading, code,
+        views, rating: genRatingData(rating?.data), faq: genFaqData(faq?.data), article: genArticleData(article, admin_date, Locale, slug),
+        howto: getHowToData(howto), randomBanner, mostPopular, menu: menuData.menu, allPages: menuData.allPages,
+        footerMenus: menuData.footerMenus, footerGeneral: menuData.footerGeneral, headings, socialData,
+        commentsReactionsByPageUrl, articleStrapi: article,
+      }
     };
   }
+
   return {
     props: {
-      pageImage: null,
-      headings,
-      admin_date: "",
-      seo_title: '',
-      seo_description: '',
-      page_title: '',
-      url: '',
-      body: '',
-      comments: [],
-      mostPopular,
-      pageRes: [],
-      crumbs: '',
-      slug: '',
-      keywords: '',
-      rating: null,
-      views: 0,
-      pageIds: [],
-      heading: "",
-      article: null,
-      faq: [],
-      notFoundMessage: true,
-      code: [],
-      howto: null,
-      randomBanner,
-      menu: menu ?? [],
-      allPages: allPages ?? [],
-      footerMenus: footerMenus ?? {
-        about: { title: '', items: [] },
-        services: { title: '', items: [] },
-        contacts: {},
-      },
-      footerGeneral: footerGeneral ?? {},
-      socialData: socialData ?? null,
-      commentsReactionsByPageUrl: [],
-      articleStrapi: null
+      pageImage: null, headings, admin_date: "", seo_title: '', seo_description: '', page_title: '', url: '',
+      body: '', comments: [], mostPopular, pageRes: [], crumbs: '', slug: '', keywords: '', rating: null,
+      views: 0, pageIds: [], heading: "", article: null, faq: [], notFoundMessage: true, code: [],
+      howto: null, randomBanner, menu: menuData.menu || [], allPages: menuData.allPages || [],
+      footerMenus: menuData.footerMenus || { about: { title: '', items: [] }, services: { title: '', items: [] }, contacts: {} },
+      footerGeneral: menuData.footerGeneral || {}, socialData, commentsReactionsByPageUrl: [], articleStrapi: null
     },
   };
 }
+
+
+// export async function getServerSideProps({
+//   query,
+//   locale,
+//   res,
+//   resolvedUrl,
+// }: Query) {
+//   let headings;
+//   let comments = [];
+//   let pageIds;
+
+//   const slug = `/blog/${query?.slug}` || '';
+//   const Locale = locale === 'ua' ? 'uk' : locale;
+//   let notFoundMessage = false
+//   const randomBanner = await getRandomBanner(Locale);
+//   let mostPopular = await getRandomPopularNews(Locale);
+
+//   if (mostPopular.length === 0) {
+//     mostPopular = await getRandomPopularNews("ru");
+//   }
+
+//   try {
+//     const getHeadings = await server.get(`/headings?locale=${Locale}`);
+//     headings = getHeadings.data.data;
+//   } catch (e) {
+//     console.error("Error fetching headings data", e);
+//     headings = [];
+//   }
+
+//   let pageRes = await server.get(getBlogPage(slug, $(Locale)));
+//   if (pageRes.data.data.length === 0) {
+//     notFoundMessage = true
+//     pageRes = await server.get(getBlogPage(slug, "ru"));
+//   }
+//   const strapiMenu = await server.get(getMenu('main'));
+
+//   const { menu, allPages, footerMenus, footerGeneral } = await getHeaderFooterMenus(Locale);
+
+//   const crumbs = strapiMenu.data.data[0].attributes.items.data;
+
+//   if (!isPageWithLocaleExists(resolvedUrl, Locale, allPages)) {
+//     res.statusCode = 404;
+//   }
+
+//   const socialRes = await server.get('/social');
+//   const socialData = socialRes.data.data.attributes;
+//   const { NEXT_FRONT_URL, NEXT_MAILER, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
+//   if (pageRes.data?.data[0]?.attributes) {
+//     const {
+//       seo_title,
+//       seo_description,
+//       page_title,
+//       url,
+//       body,
+//       keywords,
+//       faq,
+//       heading,
+//       rating,
+//       code,
+//       article,
+//       views,
+//       publishedAt,
+//       admin_date,
+//       howto,
+//       image: pageImage,
+//     }: PageAttibutes = pageRes.data?.data[0]?.attributes;
+//     await getPagesIdWithSameUrl(url).then(data => pageIds = data)
+
+//     const getBlogComments = await server.get(`/comments1?filters[blog][url]=${url}&${populateParams}&sort[0]=admin_date&pagination[limit]=100`);
+//     comments = getBlogComments.data.data.filter(comment => comment.attributes.admin_date);
+//     let commentsReactionsByPageUrl = await fetch(`${NEXT_STRAPI_BASED_URL}/custom-comment-fields/reactionsByPage?page_url=${url}`).then(data => data.json())
+//     const commentsWithReaction = comments.map((comment: any) => {
+//       const findComentReaction = commentsReactionsByPageUrl.filter(reaction => reaction.comment_id === comment.id)
+//       return { ...comment, reactions: findComentReaction }
+//     })
+//     const shortenedTitle = () => {
+//       return page_title.length > 65
+//         ? `${page_title.slice(0, 65)}...`
+//         : page_title;
+//     };
+
+
+//     return {
+//       props: {
+//         pageImage,
+//         admin_date,
+//         seo_title,
+//         pageIds,
+//         seo_description,
+//         page_title: shortenedTitle(),
+//         url,
+//         pageRes: pageRes.data.data,
+//         body,
+//         crumbs,
+//         notFoundMessage,
+//         slug,
+//         keywords,
+//         comments: commentsWithReaction,
+//         heading,
+//         code,
+//         views,
+//         rating: genRatingData(rating.data),
+//         faq: genFaqData(faq.data),
+//         article: genArticleData(article, admin_date, Locale, slug),
+//         howto: getHowToData(howto),
+//         randomBanner,
+//         mostPopular,
+//         menu,
+//         allPages,
+//         footerMenus,
+//         footerGeneral,
+//         headings,
+//         socialData: socialData ?? null,
+//         commentsReactionsByPageUrl,
+//         articleStrapi: article,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       pageImage: null,
+//       headings,
+//       admin_date: "",
+//       seo_title: '',
+//       seo_description: '',
+//       page_title: '',
+//       url: '',
+//       body: '',
+//       comments: [],
+//       mostPopular,
+//       pageRes: [],
+//       crumbs: '',
+//       slug: '',
+//       keywords: '',
+//       rating: null,
+//       views: 0,
+//       pageIds: [],
+//       heading: "",
+//       article: null,
+//       faq: [],
+//       notFoundMessage: true,
+//       code: [],
+//       howto: null,
+//       randomBanner,
+//       menu: menu ?? [],
+//       allPages: allPages ?? [],
+//       footerMenus: footerMenus ?? {
+//         about: { title: '', items: [] },
+//         services: { title: '', items: [] },
+//         contacts: {},
+//       },
+//       footerGeneral: footerGeneral ?? {},
+//       socialData: socialData ?? null,
+//       commentsReactionsByPageUrl: [],
+//       articleStrapi: null
+//     },
+//   };
+// }
 
 
 

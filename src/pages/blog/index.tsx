@@ -313,88 +313,38 @@ export default function Home({
 }
 export async function getServerSideProps({ query, locale }) {
   const { page = 1, perPage = 15, heading = '' } = query;
-  let pages, pagination, headings;
-
   const Locale = locale === 'ua' ? 'uk' : locale;
   const filter = heading ? `&filters[heading][Name]=${heading}` : '';
 
+  // Паралельне виконання запитів
+  const [randomBanner, mostPopular, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+    getRandomBanner(locale),
+    getRandomPopularNews(locale),
+    server.get('/social'),
+    server.get(`/headings?locale=${Locale}`).catch(() => ({ data: { data: [] } })), // Обробка помилок
+    server.get(`/blogs?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`),
+    getHeaderFooterMenus(Locale),
+  ]);
 
-  const randomBanner = await getRandomBanner(locale);
-  const mostPopular = await getRandomPopularNews(locale);
+  const headings = headingsRes?.data?.data || [];
+  const pages = getPagesRes?.data?.data || [];
+  const pagination = getPagesRes?.data?.meta?.pagination || {};
 
-  try {
-    const getHeadings = await server.get(`/headings?locale=${Locale}`);
-    headings = getHeadings.data.data
-  } catch (e) {
-    console.error("Error fetching headings data", e);
-    headings = [];
-  }
+  const { menu, allPages, footerMenus, footerGeneral } = headerFooterData || {};
+  const socialData = socialRes?.data?.data?.attributes || null;
 
-
-
-  try {
-    const fieldsToPopulate = [
-      "seo_title",
-      "page_title",
-      "seo_description",
-      "url",
-      "keywords",
-      "faq",
-      "code",
-      "rating",
-      "article.images", // Змінено тут для включення поля images у article
-      "howto",
-      "image",
-      "admin_date",
-      "heading",
-      "is_popular",
-      "views",
-      "comments",
-    ];// Додайте всі необхідні поля, окрім 'body'
-
-    const populateParams = fieldsToPopulate.map(field => `populate=${field}`).join('&');
-    const getPages = await server.get(`/blogs?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`);
-    pages = getPages.data.data;
-    pagination = getPages.data.meta.pagination;
-  } catch (e) {
-    console.error("Error fetching data", e);
-  }
-
-
-  try {
-    const { menu, allPages, footerMenus, footerGeneral } = await getHeaderFooterMenus(Locale);
-    const socialRes = await server.get('/social');
-    const socialData = socialRes.data.data.attributes;
-
-    return {
-      props: {
-        randomBanner,
-        pages: removeBodyField(pages),
-        headings,
-        mostPopular: removeBodyField(mostPopular),
-        pagination,
-        menu,
-        allPages,
-        footerMenus,
-        footerGeneral,
-        socialData: socialData ?? null,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching header/footer data", error);
-
-    return {
-      props: {
-        randomBanner,
-        pages,
-        pagination,
-        menu: [],
-        allPages: [],
-        footerMenus: { about: {}, services: {}, contacts: {} },
-        footerGeneral: {},
-        socialData: null,
-      },
-    };
-  }
+  return {
+    props: {
+      randomBanner,
+      pages: removeBodyField(pages),
+      headings,
+      mostPopular: removeBodyField(mostPopular),
+      pagination,
+      menu: menu || [],
+      allPages: allPages || [],
+      footerMenus: footerMenus || { about: {}, services: {}, contacts: {} },
+      footerGeneral: footerGeneral || {},
+      socialData,
+    },
+  };
 }
-
