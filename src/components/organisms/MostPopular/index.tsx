@@ -7,7 +7,8 @@ import { useRouter } from "next/router";
 
 interface MostPopular {
     data: any[];
-    title: string
+    title: string,
+    showImg: boolean,
 }
 export type Locale = 'uk' | 'ru' | 'en';
 
@@ -32,17 +33,17 @@ const MostPopular = ({ data, title }: MostPopular) => {
                     const { page_title, image, admin_date, url, comments } = page.attributes;
                     return (
                         <li className="mostpopular__row mb-3" key={page.id}>
-                            <div className="mostpopular__img-block"
-                            >
-                                <Image
-                                    loading="lazy"
-                                    src={NEXT_STRAPI_BASED_URL + image.data?.attributes.url}
-                                    width={500}
-                                    height={500}
-                                    alt={image.data?.attributes?.alternativeText || "Picture of the author"}
-                                    style={{ width: "100%", aspectRatio: "1 / 0.6" }}
-                                />
-                            </div>
+                            {image.data?.attributes?.url &&
+                                <div className="mostpopular__img-block">
+                                    <Image
+                                        loading="lazy"
+                                        src={NEXT_STRAPI_BASED_URL + image.data?.attributes?.url}
+                                        width={500}
+                                        height={500}
+                                        alt={image.data?.attributes?.alternativeText || "Picture of the author"}
+                                        style={{ width: "100%", aspectRatio: "1 / 0.6" }}
+                                    />
+                                </div>}
                             <div className="mostpopular__text-block">
                                 <h3 className="mostpopular__text-title">
                                     <Link href={url} className="mostpopular__text-title">{truncateWithEllipsis(page_title)}</Link>

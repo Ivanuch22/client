@@ -100,9 +100,9 @@ function Menu({ data, show, onTog, allPages }) {
     <div className={`collapse navbar-collapse navpart ${show ? 'show' : ''}`} id="navbarCollapse">
       {data && (
         <div className="navbar-nav ms-auto py-0" style={{ alignItems: 'center' }}>
-          <Link href="/" className="nav-item nav-link navpart">
+          {/* <Link href="/" className="nav-item nav-link navpart">
             {$t[locale].menu.main}
-          </Link>
+          </Link> */}
 
           {data.map(item => renderMenuItem(item, null))}
 
@@ -110,6 +110,9 @@ function Menu({ data, show, onTog, allPages }) {
             {$t[locale].blog.titleName}
           </Link>
 
+          <Link href="/news" className="nav-item nav-link navpart">
+            {$t[locale].news.titleName}
+          </Link>
           <Link href="/contacts" className="nav-item nav-link navpart">
             {$t[locale].menu.contacts}
           </Link>

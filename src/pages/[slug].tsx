@@ -101,6 +101,7 @@ const Page = ({
   footerGeneral,
   socialData,
   listPagesData,
+  mostPopularNews,
   mostPopular
 }: PageAttibutes) => {
   const router = useRouter();
@@ -170,7 +171,7 @@ const Page = ({
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  
+
   const asPath = router.asPath
   const hrefLangTags = generateHrefLangTags(asPath);
   return (
@@ -293,7 +294,8 @@ const Page = ({
                     </div>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
-                  <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
+                    <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
+                    <MostPopular title={$t[locale].blog.mostpopular} data={mostPopularNews} />
 
                   </Sidebar>
                 </div>
@@ -381,6 +383,7 @@ export async function getServerSideProps({
   const socialData = socialRes.data.data.attributes;
 
   let mostPopular = await getRandomPopularNews(strapiLocale);
+  let mostPopularNews = await getRandomPopularNews(strapiLocale, 5, "newss")
 
   if (mostPopular.length === 0) {
     mostPopular = await getRandomPopularNews("ru");
@@ -427,12 +430,14 @@ export async function getServerSideProps({
         socialData: socialData ?? null,
         listPagesData: listPagesData.length > 0 ? listPagesData : getMenuUrlArray2,
         mostPopular,
+        mostPopularNews,
       },
     };
   }
 
   return {
     props: {
+      mostPopularNews,
       mostPopular,
       seo_title: '',
       seo_description: '',

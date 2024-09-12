@@ -23,10 +23,8 @@ const fieldsToPopulate = [
 const fieldsQuery = fieldsToPopulate.filter(field => !["image", "comments"].includes(field)).map(field => `fields=${field}`).join('&');
 const populateQuery = "populate=image&populate=comments";
 
-
-export default async function getRandomPopularNews(locale: string, count= 5) {
-  // const getPage = await server.get(`/blogs?populate=image&populate=comments&locale=${locale === 'ua' ? 'uk' : locale}&pagination[page]=1&pagination[pageSize]=${50}&filters[is_popular][$eq]=true`);
-  const getPage = await server.get(`/blogs?${fieldsQuery}&${populateQuery}&locale=${locale === 'ua' ? 'uk' : locale}&pagination[page]=1&pagination[pageSize]=50&filters[is_popular][$eq]=true`);
+export default async function getRandomPopularNews(locale: string, count= 5, collectionType = "blogs") {
+  const getPage = await server.get(`/${collectionType}?${fieldsQuery}&${populateQuery}&locale=${locale === 'ua' ? 'uk' : locale}&pagination[page]=1&pagination[pageSize]=50&filters[is_popular][$eq]=true`);
 
   function getRandomSample(arr:any[]) {
     const shuffled = arr.sort(() => Math.random() - 0.5);

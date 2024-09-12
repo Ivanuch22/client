@@ -2,7 +2,7 @@ import { server } from '@/http';
 import qs from 'qs';
 
 export default async function fetchUrls(
-  apiRoute: 'pages' | 'page-seos' | 'accordions'|"blogs",
+  apiRoute: 'pages' | 'page-seos' | 'accordions'|"blogs"|"newss",
   fields: string[]
 ) {
   let array = [];

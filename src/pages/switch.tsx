@@ -82,6 +82,7 @@ const Switch = () => {
       router.pathname != '/[slug]' &&
       router.pathname != '/info/[slug]' &&
       router.pathname != '/blog/[slug]' &&
+      router.pathname != '/news/[slug]' &&
       router.pathname != '/usefull'
     ) {
       return true;
@@ -102,6 +103,7 @@ const Switch = () => {
       router.pathname != '/[slug]' &&
       router.pathname != '/info/[slug]' &&
       router.pathname != '/blog/[slug]' &&
+      router.pathname != '/news/[slug]' &&
       router.pathname != '/service/[slug]'
     ) {
       return true;

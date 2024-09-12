@@ -297,7 +297,6 @@ const Page = ({
                           ></AccordionMenu>
                         </ul>
                       </div>
-
                     </Sidebar>
                   </aside>
                 </div>

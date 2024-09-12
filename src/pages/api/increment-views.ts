@@ -4,6 +4,7 @@ import { server } from '@/http';
 interface IncrementViewsRequest extends NextApiRequest {
   body: {
     id: string;
+    colectionType: string
   };
 }
 
@@ -18,16 +19,17 @@ const incrementViews = async (
   res: NextApiResponse<IncrementViewsResponse>
 ) => {
   if (req.method === 'POST') {
-    const { id } = req.body;
+    const { id, colectionType = "blogs" } = req.body;
 
     try {
-      const getPage = await server.get(`/blogs/${id}`);
-      const pageViews= getPage.data.data.attributes.views
+      const getPage = await server.get(`/${colectionType}/${id}`);
+      console.log(getPage, 'getpage')
+      const pageViews = getPage.data.data.attributes.views
       await server.put(
-        `/blogs/${id}`,
-        { data: { views: +pageViews+1 } }
-      );      
-
+        `/${colectionType}/${id}`,
+        { data: { views: +pageViews + 1 } }
+      );
+      
       res.status(200).json({ success: true, message: 'Views incremented successfully' });
     } catch (error) {
       console.error('Error updating views:', error);

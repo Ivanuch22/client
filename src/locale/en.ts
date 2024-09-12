@@ -252,6 +252,17 @@ export default {
       new_pass: "New password"
     }
   },
+  news:{
+    showMore: "Load count more",
+    titleName: "News",
+    title: "News, delivery and customs clearance of goods.",
+    description: "News about procurement, logistics and customs clearance of cargo. Expert opinion for your business.",
+    keywords: "logistics, News, import, export, china, goods, customs, foreign exchange",
+    mostpopular:"Most popular news",
+    all: 'All heading',
+    pageNotFoud: "There is no English version of this page on the site",
+    blog_guests: "Guest Voices"
+  },
   blog:{
     showMore: "Load count more",
     titleName: "Blog",
@@ -262,7 +273,6 @@ export default {
     all: 'All heading',
     pageNotFoud: "There is no English version of this page on the site",
     blog_guests: "Guest Voices"
-
   },
   comment: {
     comments: "comments",

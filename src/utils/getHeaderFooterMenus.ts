@@ -12,6 +12,7 @@ export default async function getHeaderFooterMenus(strapiLocale: string) {
     ...(await fetchUrls('page-seos', ['url', 'locale'])),
     ...(await fetchUrls('accordions', ['url', 'locale'])),
     ...(await fetchUrls('blogs', ['url', 'locale'])),
+    ...(await fetchUrls('newss', ['url', 'locale'])),
   ];
 
   const servicesRes = await server.get(

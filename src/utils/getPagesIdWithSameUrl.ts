@@ -1,11 +1,11 @@
 import { server } from '@/http/index';
 
-export default  async (blogUrl:string) => {
+export default  async (blogUrl:string, colectionType = "blogs") => {
     try {
       const locales = ["uk", "ru", "en"];
       const pagesByLocale = await Promise.all(
         locales.map(async (locale) => {
-          const response = await server.get(`/blogs?filters[url]=${blogUrl}&locale=${locale}`);
+          const response = await server.get(`/${colectionType}?filters[url]=${blogUrl}&locale=${locale}`);
           return response.data.data;
         })
       );
