@@ -26,6 +26,8 @@ import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 import Link from 'next/link';
 import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
+import getRandomPopularNews from '@/utils/getRandomPopularNews';
+import MostPopular from '@/components/organisms/MostPopular';
 const { publicRuntimeConfig } = getConfig();
 const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 export interface PageAttibutes {
@@ -101,6 +103,7 @@ const Page = ({
   footerMenus,
   footerGeneral,
   socialData,
+  mostPopular
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -180,7 +183,7 @@ const Page = ({
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-const hrefLangTags = generateHrefLangTags(asPath);
+  const hrefLangTags = generateHrefLangTags(asPath);
   return (
     <>
       {/* 
@@ -242,7 +245,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
               {/* В компонент hero передаем заголовок страницы и данные которые там будут преобразованы в breadcrumb */}
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
+                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{ marginLeft: 0 }}>
                     <div className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -270,7 +273,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
                               </Link>
                             </li>
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href={"/service"+url}>
+                              <Link itemProp="item" className="text-white" href={"/service" + url}>
                                 <span itemProp="name">
                                   {seo_title ? shortenedTitle : '404'}
                                 </span>
@@ -320,7 +323,9 @@ const hrefLangTags = generateHrefLangTags(asPath);
                   </div>
                   <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
 
-                    <Sidebar randomBanner={randomBanner}></Sidebar>
+                    <Sidebar randomBanner={randomBanner}>
+                      <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
+                    </Sidebar>
                   </aside>
                 </div>
               </div>
@@ -357,6 +362,12 @@ export async function getServerSideProps({
     res.statusCode = 404;
   }
 
+  let mostPopular = await getRandomPopularNews(strapiLocale);
+
+  if (mostPopular.length === 0) {
+    mostPopular = await getRandomPopularNews("ru");
+  }
+
   const socialRes = await server.get('/social');
   const socialData = socialRes.data.data.attributes;
 
@@ -378,6 +389,7 @@ export async function getServerSideProps({
 
     return {
       props: {
+        mostPopular,
         seo_title,
         seo_description,
         page_title,
@@ -403,6 +415,7 @@ export async function getServerSideProps({
 
   return {
     props: {
+      mostPopular,
       seo_title: '',
       seo_description: '',
       page_title: '',

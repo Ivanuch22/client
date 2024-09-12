@@ -18,11 +18,13 @@ import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { errorText, message404 } from './switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
-
+import $t from '@/locale/global';
 import parse from 'html-react-parser';
 import getConfig from 'next/config';
 import Link from 'next/link';
 import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
+import MostPopular from '@/components/organisms/MostPopular';
+import getRandomPopularNews from '@/utils/getRandomPopularNews';
 export interface PageAttibutes {
   seo_title: string;
   createdAt: string;
@@ -98,7 +100,8 @@ const Page = ({
   footerMenus,
   footerGeneral,
   socialData,
-  listPagesData
+  listPagesData,
+  mostPopular
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -289,7 +292,10 @@ const Page = ({
                       )}
                     </div>
                   </div>
-                  <Sidebar randomBanner={randomBanner}></Sidebar>
+                  <Sidebar randomBanner={randomBanner}>
+                  <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
+
+                  </Sidebar>
                 </div>
               </div>
             </DefaultLayout>
@@ -374,6 +380,14 @@ export async function getServerSideProps({
   const socialRes = await server.get('/social');
   const socialData = socialRes.data.data.attributes;
 
+  let mostPopular = await getRandomPopularNews(strapiLocale);
+
+  if (mostPopular.length === 0) {
+    mostPopular = await getRandomPopularNews("ru");
+  }
+
+
+
   if (pageRes.data?.data[0]?.attributes) {
     const {
       seo_title,
@@ -412,12 +426,14 @@ export async function getServerSideProps({
         footerGeneral,
         socialData: socialData ?? null,
         listPagesData: listPagesData.length > 0 ? listPagesData : getMenuUrlArray2,
+        mostPopular,
       },
     };
   }
 
   return {
     props: {
+      mostPopular,
       seo_title: '',
       seo_description: '',
       page_title: '',

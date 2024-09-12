@@ -6,6 +6,7 @@ import DefaultLayout from '@/components/layouts/default';
 import Hero from '@/components/organisms/hero';
 import { Crumb } from '@/components/molecules/Breacrumbs';
 import { useRouter } from 'next/router';
+import $t from '@/locale/global';
 
 import genRatingData from '@/utils/generators/genRatingData';
 import genFaqData from '@/utils/generators/genFaqData';
@@ -22,6 +23,8 @@ import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
 import { errorText, message404 } from './switch';
 import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
+import MostPopular from '@/components/organisms/MostPopular';
+import getRandomPopularNews from '@/utils/getRandomPopularNews';
 
 export interface PageAttibutes {
     seo_title: string;
@@ -98,6 +101,7 @@ const Page = ({
     footerMenus,
     footerGeneral,
     socialData,
+    mostPopular
 }: PageAttibutes) => {
     const router = useRouter();
     const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -268,7 +272,10 @@ const Page = ({
                                         </div>
                                     </div>
                                     <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
-                                        <Sidebar randomBanner={randomBanner}></Sidebar>
+                                    <Sidebar randomBanner={randomBanner}>
+                  <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
+
+                  </Sidebar>
                                     </aside>
 
                                 </div>
@@ -290,11 +297,18 @@ export async function getServerSideProps({
 }: Query) {
     const randomBanner = await getRandomBanner(locale);
 
-    const slug = `/${query?.slug}` || '';
-
     const pageRes = await server.get(getPage(slug, $(locale)));
 
+    const slug = `/${query?.slug}` || '';
+
+
     const strapiLocale = locale === 'ua' ? 'uk' : locale;
+
+    let mostPopular = await getRandomPopularNews(strapiLocale);
+
+    if (mostPopular.length === 0) {
+      mostPopular = await getRandomPopularNews("ru");
+    }
 
     const { menu, allPages, footerMenus, footerGeneral } =
         await getHeaderFooterMenus(strapiLocale);
@@ -309,6 +323,8 @@ export async function getServerSideProps({
 
     const socialRes = await server.get('/social');
     const socialData = socialRes.data.data.attributes;
+
+    
 
     if (pageRes.data?.data[0]?.attributes) {
         const {
