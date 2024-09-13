@@ -279,8 +279,8 @@ export default function Home({
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
+                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
-                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews}/>
                   </Sidebar>
                 </div>
               </div>
@@ -311,7 +311,7 @@ export async function getServerSideProps({ query, locale }) {
   const Locale = locale === 'ua' ? 'uk' : locale;
   const filter = heading ? `&filters[heading][Name]=${heading}` : '';
   // Паралельне виконання запитів
-  const [randomBanner, mostPopular,mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+  const [randomBanner, mostPopular, mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
     getRandomBanner(locale),
     getRandomPopularNews(locale, 4, "blogs"),
     getRandomPopularNews(locale, 4, "newss"),
