@@ -12,6 +12,7 @@ export default (data: any, pubDate: string, locale: string, slug: string) => {
         author
     } = data;
 
+    console.log(data, "sdlfkj")
     const microdata = {
         "@context": "https://schema.org",
         "@type": "Article",

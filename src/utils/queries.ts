@@ -3,7 +3,7 @@ import qs from 'qs';
 export const getPageSeo = (slug: string, locale: string) => {
     return `/page-seos?${qs.stringify({
         locale: locale,
-        populate: ['faq.items', 'extraLinks', 'code', 'rating', 'article.images', 'howto.steps.image'],
+        populate: ['faq.items', 'extraLinks', 'code', 'rating', 'article.images','article.author', 'howto.steps.image'],
         filters: {
           url: {
             $eq: slug,
@@ -81,7 +81,7 @@ export const getPage = (slug: string, locale: string) => {
 
 export const getAccordion = (slug: string, locale: string) => {
   return `/accordions?${qs.stringify({
-      populate: ['faq.items', 'extraLinks', 'code', 'rating', 'article.images', 'howto.steps.image'],
+      populate: ['faq.items', 'extraLinks', 'code', 'rating', 'article.images',"article.author", 'howto.steps.image'],
       locale: locale,
       filters: {
         url: {
