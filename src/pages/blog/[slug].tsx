@@ -861,7 +861,9 @@ const Page = ({
                                     {articleStrapi?.author.data.attributes.real_user_name}
                                   </span>
                                 </span>
-                                <Image loading="lazy" width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText || "alt text"} key={pageImage.data.id} />
+                                {articleStrapi?.images?.data.map(element => {
+                                  return <Image loading="lazy" width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + element?.attributes?.url}`} alt={element?.attributes?.alternativeText || "alt text"} key={element?.id} />
+                                })}
                                 <div itemProp="headline">{seo_title}</div>
                                 <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>

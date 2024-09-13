@@ -594,7 +594,7 @@ const Page = ({
       console.error('Error updating comment:', error);
     }
   }
-
+  console.log(articleStrapi)
 
   const deleteComment = async (commentId, userId) => {
     const userToken = Cookies.get('userToken'); // Retrieve user token from cookies
@@ -854,7 +854,11 @@ const Page = ({
                                     {articleStrapi?.author.data.attributes.real_user_name}
                                   </span>
                                 </span>
-                                <Image loading="lazy" width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + pageImage?.data?.attributes?.url}`} alt={pageImage?.data?.attributes?.alternativeText || "alt text"} key={pageImage.data.id} />
+
+                                {articleStrapi?.images?.data.map(element => {
+                                  return <Image loading="lazy" width={10} height={10} itemProp="image" src={`${NEXT_STRAPI_BASED_URL + element?.attributes?.url}`} alt={element?.attributes?.alternativeText || "alt text"} key={element?.id} />
+                                })}
+                                
                                 <div itemProp="headline">{seo_title}</div>
                                 <div itemProp="articleBody">{articleStrapi.body}</div>
                               </div>
@@ -928,7 +932,7 @@ const Page = ({
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
-                                        <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
+                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
                   </Sidebar>
                 </div>
@@ -998,6 +1002,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
       seo_title, seo_description, page_title, url, body, keywords, faq, heading,
       rating, code, article, views, admin_date, howto, image: pageImage
     } = pageData[0]?.attributes;
+
 
     await getPagesIdWithSameUrl(url, "newss").then(data => pageIds = data);
 
