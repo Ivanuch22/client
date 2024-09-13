@@ -22,7 +22,7 @@ import Image from 'next/image';
 import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 
 const { publicRuntimeConfig } = getConfig();
-const { NEXT_STRAPI_BASED_URL, NEXT_FRONT_URL } = publicRuntimeConfig;
+const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
 export default function Home({
   pages,
@@ -35,6 +35,7 @@ export default function Home({
   footerGeneral,
   mostPopular,
   socialData,
+  mostPopularNews
 }) {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -184,17 +185,14 @@ export default function Home({
               <div className="container-xxl">
                 <div className="row">
                   <div className="col article-col pe-md-2">
-
                     <main
                       className="cont-body"
                       style={{ maxWidth: '90%', margin: '0 auto' }}
                     >
                       <section itemScope itemType="http://schema.org/Blog" className=' col article-col gap-5  d-flex flex-column col  '>
-
                         {pages.map((page, index) => {
                           const { page_title, admin_date, url, heading, comments, views, article, seo_title } = page.attributes;
                           const imageUrl = page?.attributes?.image?.data ? page?.attributes?.image?.data?.attributes?.url : undefined;
-                          console.log(imageUrl, "sdfsdf123")
                           return (
                             <article itemProp="blogPosts" itemScope itemType="http://schema.org/BlogPosting" className="row row-line" key={index}>
                               <meta itemProp="headline" content={seo_title} />
@@ -211,8 +209,8 @@ export default function Home({
                                     </Link>
                                   </div>
                                 </div>
-                                }
-                              <div className="col-sm-9 col-txt d-flex flex-column justify-content-between blog_text_block  " style={{ paddingRight: 0 }}>
+                              }
+                              <div className="col-sm-9 col-txt d-flex flex-column justify-content-between blog_text_block  " style={{ paddingRight: 0, width: "100%" }}>
                                 <h2 className="entry-title text-uppercase">
                                   <Link itemProp="mainEntityOfPage" className="entry-title text-uppercase h4" href={url}>{hyphenateText(page_title)}</Link>
                                 </h2>
@@ -281,7 +279,8 @@ export default function Home({
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
-                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopular} showImg = {false} />
+                    <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
+                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews}/>
                   </Sidebar>
                 </div>
               </div>
@@ -311,16 +310,17 @@ export async function getServerSideProps({ query, locale }) {
   const { page = 1, perPage = 15, heading = '' } = query;
   const Locale = locale === 'ua' ? 'uk' : locale;
   const filter = heading ? `&filters[heading][Name]=${heading}` : '';
-
   // Паралельне виконання запитів
-  const [randomBanner, mostPopular, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+  const [randomBanner, mostPopular,mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
     getRandomBanner(locale),
-    getRandomPopularNews(locale, 5, "newss"),
+    getRandomPopularNews(locale, 4, "blogs"),
+    getRandomPopularNews(locale, 4, "newss"),
     server.get('/social'),
     server.get(`/headings-news?locale=${Locale}`).catch(() => ({ data: { data: [] } })), // Обробка помилок
     server.get(`/newss?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`),
     getHeaderFooterMenus(Locale),
   ]);
+  console.log(`/newss?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`, "sdfsdf")
 
   const headings = headingsRes?.data?.data || [];
   const pages = getPagesRes?.data?.data || [];
@@ -331,6 +331,7 @@ export async function getServerSideProps({ query, locale }) {
 
   return {
     props: {
+      mostPopularNews,
       randomBanner,
       pages: removeBodyField(pages),
       headings,

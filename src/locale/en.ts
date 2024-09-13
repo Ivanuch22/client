@@ -258,7 +258,7 @@ export default {
     title: "News, delivery and customs clearance of goods.",
     description: "News about procurement, logistics and customs clearance of cargo. Expert opinion for your business.",
     keywords: "logistics, News, import, export, china, goods, customs, foreign exchange",
-    mostpopular:"Most popular news",
+    mostpopular:"News, the most recent",
     all: 'All heading',
     pageNotFoud: "There is no English version of this page on the site",
     blog_guests: "Guest Voices"

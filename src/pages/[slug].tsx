@@ -294,8 +294,8 @@ const Page = ({
                     </div>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
+                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
-                    <MostPopular title={$t[locale].blog.mostpopular} data={mostPopularNews} />
 
                   </Sidebar>
                 </div>

@@ -32,17 +32,17 @@ const MostPopularRow = ({ data, title }: MostPopularRow) => {
                     const { page_title, image, admin_date, url, comments } = page.attributes;
                     return (
                         <li className="mostpopular__row mb-3" key={page.id}>
-                            <div className="mostpopular__img-block"  style={{width: "40%"}}
+                            {image.data?.attributes?.url&&<div className="mostpopular__img-block"  style={{width: "40%"}}
                             >
                                 <Image
                                     loading="lazy"
-                                    src={NEXT_STRAPI_BASED_URL + image.data?.attributes.url}
+                                    src={NEXT_STRAPI_BASED_URL + image.data?.attributes?.url}
                                     width={500}
                                     height={500}
                                     alt={image.data?.attributes?.alternativeText || "Picture of the author"}
                                     style={{ width: "100%", aspectRatio: "1 / 0.6" }}
                                 />
-                            </div>
+                            </div>}
                             <div className="mostpopular__text-block">
                                 <h3 className="mostpopular__text-title">
                                     <Link href={url} className="mostpopular__text-title">{truncateWithEllipsis(page_title)}</Link>

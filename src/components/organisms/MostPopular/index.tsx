@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 interface MostPopular {
     data: any[];
     title: string,
-    showImg: boolean,
 }
 export type Locale = 'uk' | 'ru' | 'en';
 

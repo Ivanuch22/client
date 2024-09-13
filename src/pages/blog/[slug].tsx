@@ -145,7 +145,8 @@ const Page = ({
   comments,
   pageImage,
   socialData,
-  articleStrapi
+  articleStrapi,
+  mostPopularNews,
 }: PageAttibutes) => {
 
   const [usersComments, setUserComments] = useState([]);
@@ -934,6 +935,7 @@ const Page = ({
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
+                                        <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
                   </Sidebar>
                 </div>
@@ -956,9 +958,10 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
   const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
   // Паралельне виконання основних запитів
-  const [randomBanner, mostPopularNews, headingsRes, pageRes, strapiMenu, headerFooterData, socialRes] = await Promise.all([
+  const [randomBanner, mostPopularBlog,mostPopularNewsResponse, headingsRes, pageRes, strapiMenu, headerFooterData, socialRes] = await Promise.all([
     getRandomBanner(Locale),
     getRandomPopularNews(Locale),
+    getRandomPopularNews(Locale,4,"newss"),
     server.get(`/headings?locale=${Locale}`).catch(() => ({ data: { data: [] } })), // Обробка помилок для headings
     server.get(getBlogPage(slug, Locale)),
     server.get(getMenu('main')),
@@ -971,7 +974,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
   let pageData = pageRes?.data?.data || [];
   let menuData = headerFooterData || {};
   let socialData = socialRes?.data?.data?.attributes || null;
-  let mostPopular = mostPopularNews.length > 0 ? mostPopularNews : await getRandomPopularNews("ru");
+  let mostPopular = mostPopularBlog.length > 0 ? mostPopularBlog : await getRandomPopularNews("ru");
 
   // Якщо не знайшли сторінку, шукаємо в російській версії
   if (pageData.length === 0) {
@@ -1010,6 +1013,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
 
     return {
       props: {
+        mostPopularNews:mostPopularNewsResponse,
         pageImage, admin_date, seo_title, seo_description, page_title: shortenedTitle, url, pageRes: pageData,
         body, crumbs, notFoundMessage, slug, keywords, comments: commentsWithReaction, heading, code,
         views, rating: genRatingData(rating?.data), faq: genFaqData(faq?.data), article: genArticleData(article, admin_date, Locale, slug),
@@ -1022,6 +1026,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
 
   return {
     props: {
+      mostPopularNews:[],
       pageImage: null, headings, admin_date: "", seo_title: '', seo_description: '', page_title: '', url: '',
       body: '', comments: [], mostPopular, pageRes: [], crumbs: '', slug: '', keywords: '', rating: null,
       views: 0, pageIds: [], heading: "", article: null, faq: [], notFoundMessage: true, code: [],

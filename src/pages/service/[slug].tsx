@@ -103,7 +103,9 @@ const Page = ({
   footerMenus,
   footerGeneral,
   socialData,
-  mostPopular
+  mostPopular,
+  mostPopularNews,
+
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -324,6 +326,7 @@ const Page = ({
                   <aside className=' col-md-auto col-sm-12 d-flex flex-wrap flex-column align-items-center align-items-sm-start justify-content-sm-start justify-content-md-start flex-md-column col-md-auto  mx-360'>
 
                     <Sidebar randomBanner={randomBanner}>
+                      <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
                       <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
                     </Sidebar>
                   </aside>
@@ -347,28 +350,24 @@ export async function getServerSideProps({
   const randomBanner = await getRandomBanner(locale);
 
   const slug = `/${query?.slug}` || '';
-
-
-  const pageRes = await server.get(getPageSeo(slug, $(locale)));
-  const strapiMenu = await server.get(getMenu('main'));
-
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
-  const { menu, allPages, footerMenus, footerGeneral } =
-    await getHeaderFooterMenus(strapiLocale);
+
+  const [pageRes, strapiMenu, headerFooterMenusResponce, mostPopular, mostPopularNews, socialRes] = await Promise.all([
+    server.get(getPageSeo(slug, $(locale))),
+    server.get(getMenu('main')),
+    getHeaderFooterMenus(strapiLocale),
+    getRandomPopularNews(strapiLocale),
+    getRandomPopularNews(strapiLocale, 4, "newss"),
+    server.get('/social')
+  ]);
+
+  const { menu, allPages, footerMenus, footerGeneral } = headerFooterMenusResponce;
 
   const crumbs = strapiMenu.data.data[0].attributes.items.data;
 
   if (!isPageWithLocaleExists(resolvedUrl, locale, allPages)) {
     res.statusCode = 404;
   }
-
-  let mostPopular = await getRandomPopularNews(strapiLocale);
-
-  if (mostPopular.length === 0) {
-    mostPopular = await getRandomPopularNews("ru");
-  }
-
-  const socialRes = await server.get('/social');
   const socialData = socialRes.data.data.attributes;
 
   if (pageRes.data?.data[0]?.attributes) {
@@ -390,6 +389,7 @@ export async function getServerSideProps({
     return {
       props: {
         mostPopular,
+        mostPopularNews,
         seo_title,
         seo_description,
         page_title,
@@ -415,6 +415,7 @@ export async function getServerSideProps({
 
   return {
     props: {
+      mostPopularNews: [],
       mostPopular,
       seo_title: '',
       seo_description: '',

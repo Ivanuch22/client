@@ -14,8 +14,6 @@ import Cookies from 'js-cookie';
 import getConfig from 'next/config';
 import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
 import getRandomPopularNews from '@/utils/getRandomPopularNews';
-import MostPopularRow from '@/components/organisms/MostPopularRow';
-
 
 
 export default function Home({
@@ -30,29 +28,20 @@ export default function Home({
   footerGeneral,
   mostPopular,
   socialData,
+  mostPopularNews,
 }) {
-  console.log(mostPopular)
   const router = useRouter();
   const asPath = router.asPath;
-
+  const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-
   const [user, setUser] = useState(() => {
     const getUserCookies = Cookies.get('user');
     return getUserCookies ? JSON.parse(getUserCookies) : {};
   });
   const hrefLangTags = useMemo(() => generateHrefLangTags(asPath), [asPath]);
-  const locale = router.locale === 'ua' ? 'uk' : router.locale;
-
-// Lazy load MostPopularRow
-const MostPopularRow = dynamic(() => import('@/components/organisms/MostPopularRow'), {
-  ssr: true,
-  loading: () => <p>Loading...</p>, // Можна додати спінер або індикатор завантаження
-});
   useEffect(() => {
     if (!user.id) return;
-
     const fetchUser = async () => {
       try {
         const { data } = await server.get(`/users/${user.id}?populate=*`);
@@ -62,9 +51,13 @@ const MostPopularRow = dynamic(() => import('@/components/organisms/MostPopularR
         console.error('Failed to fetch user data:', error);
       }
     };
-
     fetchUser();
   }, [user.id]);
+
+  const MostPopularRow = dynamic(() => import('@/components/organisms/MostPopularRow'), {
+    ssr: true,
+    loading: () => <p>Loading...</p>, // Можна додати спінер або індикатор завантаження
+  });
 
   return (
     <>
@@ -92,8 +85,12 @@ const MostPopularRow = dynamic(() => import('@/components/organisms/MostPopularR
           >
             <DefaultLayout>
               <div dangerouslySetInnerHTML={{ __html: html }} />
+
+              {/* Starting news and most populars */}
+              {mostPopularNews.length > 0 && <MostPopularRow title={$t[locale].news.mostpopular} data={mostPopularNews} />}
               <MostPopularRow title={$t[locale].blog.mostpopular} data={mostPopular} />
-              
+
+
               <div dangerouslySetInnerHTML={{ __html: index_bottom }}></div>
             </DefaultLayout>
           </DefaultLayoutContext.Provider>
@@ -106,16 +103,18 @@ export async function getStaticProps({ locale, resolvedUrl }) {
   try {
     const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
-    const [dataResponse, socialResponse, mostPopularResponse] = await Promise.all([
+    const [dataResponse, socialResponse, mostPopularResponse, mostPopularNewsResponse] = await Promise.all([
       server.get(`/code?locale=${$(strapiLocale)}`),
       server.get('/social'),
-      getRandomPopularNews(strapiLocale, 4)
+      getRandomPopularNews(strapiLocale, 4),
+      getRandomPopularNews(strapiLocale, 4, "newss")
     ]);
 
     const { index = '', index_bottom = "", index_seo_description: description, index_title: title, index_keywords: keywords } = dataResponse.data.data.attributes;
     const { menu, allPages, footerMenus, footerGeneral } = await getHeaderFooterMenus(strapiLocale);
-    
-    let mostPopular = mostPopularResponse.length > 0 ? mostPopularResponse : await getRandomPopularNews("ru", 3);
+
+    let mostPopular = mostPopularResponse.length > 0 ? mostPopularResponse : await getRandomPopularNews("ru", 4);
+    let mostPopularNews = mostPopularNewsResponse.length > 0 ? mostPopularNewsResponse : await getRandomPopularNews("ru", 4, "newss");
     const socialData = socialResponse.data.data.attributes ?? {};
 
     return {
@@ -130,7 +129,8 @@ export async function getStaticProps({ locale, resolvedUrl }) {
         footerMenus,
         footerGeneral,
         socialData,
-        mostPopular
+        mostPopular,
+        mostPopularNews
       },
       revalidate: 60,
     };
@@ -140,6 +140,7 @@ export async function getStaticProps({ locale, resolvedUrl }) {
       props: {
         html: null,
         index_bottom: "",
+        mostPopularNews: [],
         mostPopular: [],
         description: '',
         title: '',

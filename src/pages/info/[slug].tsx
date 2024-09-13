@@ -5,6 +5,7 @@ import DefaultLayout from '@/components/layouts/default';
 import Hero from '@/components/organisms/hero';
 import { Crumb } from '@/components/molecules/Breacrumbs';
 import { useRouter } from 'next/router';
+import $t from '@/locale/global';
 
 import genRatingData from '@/utils/generators/genRatingData';
 import genFaqData from '@/utils/generators/genFaqData';
@@ -27,6 +28,8 @@ import getRandomBanner from '@/utils/getRandomBanner';
 import isPageWithLocaleExists from '@/utils/isPageWithLocaleExists';
 import parse from 'html-react-parser';
 import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
+import getRandomPopularNews from '@/utils/getRandomPopularNews';
+import dynamic from 'next/dynamic';
 
 export interface PageAttibutes {
   seo_title: string;
@@ -89,9 +92,7 @@ const Page = ({
   page_title,
   body,
   crumbs,
-  slug,
   keywords,
-  url,
   faq,
   rating,
   code,
@@ -103,8 +104,11 @@ const Page = ({
   footerMenus,
   footerGeneral,
   accordion,
-  socialData
+  socialData,
+  mostPopular,
+  mostPopularNews,
 }: PageAttibutes) => {
+
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const findAncestorsForInfoPage = (obj: any[], url: string) => {
@@ -144,11 +148,11 @@ const Page = ({
     return ancestors;
   };
   const ancestors = findAncestorsForInfoPage(crumbs, `${router.asPath}`);
-  const newArray = ancestors.length>2?[
+  const newArray = ancestors.length > 2 ? [
     ancestors[0],
     ancestors[1],
     ancestors[ancestors.length - 1]
-  ]: [
+  ] : [
     ancestors[0],
     ancestors[1],
   ];
@@ -184,6 +188,13 @@ const Page = ({
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
   const hrefLangTags = generateHrefLangTags(asPath);
+
+  const MostPopular = dynamic(() => import('@/components/organisms/MostPopular'), {
+    ssr: true,
+    loading: () => <p>Loading...</p>, // Можна додати спінер або індикатор завантаження
+  });
+
+
 
   return (
     <>
@@ -297,6 +308,8 @@ const Page = ({
                           ></AccordionMenu>
                         </ul>
                       </div>
+                      <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
+                      <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
                     </Sidebar>
                   </aside>
                 </div>
@@ -311,17 +324,20 @@ const Page = ({
 };
 
 export async function getServerSideProps({ query, locale, res, resolvedUrl }: Query) {
-  const randomBanner = await getRandomBanner(locale);
-
   const slug = `/${query?.slug}` || '';
-
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
+  const [pageRes, strapiMenu, socialRes, mostPopular, mostPopularNews, getHeaderFooterMenusResponce, randomBanner] = await Promise.all([
+    server.get(getAccordion(`/info${slug}`, $(locale))),
+    server.get(getMenu('main')),
+    server.get('/social'),
+    getRandomPopularNews(strapiLocale, 4),
+    getRandomPopularNews(strapiLocale, 4, "newss"),
+    getHeaderFooterMenus(strapiLocale),
+    getRandomBanner(locale)
+  ]);
 
   const { menu, allPages, footerMenus, footerGeneral } =
-    await getHeaderFooterMenus(strapiLocale);
-
-  const pageRes = await server.get(getAccordion(`/info${slug}`, $(locale)));
-  const strapiMenu = await server.get(getMenu('main'));
+    getHeaderFooterMenusResponce;
 
   const crumbs = strapiMenu.data.data[0].attributes.items.data;
 
@@ -329,7 +345,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
     res.statusCode = 404
   }
 
-  const socialRes = await server.get('/social');
+
   const socialData = socialRes.data.data.attributes;
 
   if (pageRes.data?.data[0]?.attributes) {
@@ -412,6 +428,8 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
         footerGeneral,
         accordion,
         socialData: socialData ?? null,
+        mostPopular,
+        mostPopularNews,
       },
     };
   }
@@ -441,6 +459,8 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
       footerGeneral: footerGeneral ?? {},
       accordion: null,
       socialData: socialData ?? null,
+      mostPopular: [],
+      mostPopularNews: [],
     },
   };
 }

@@ -35,15 +35,15 @@ export default function Home({
   footerGeneral,
   mostPopular,
   socialData,
+  mostPopularNews,
 }) {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const { query } = router;
   const { perPage } = query;
   const [paginationPage, setPaginationPage] = useState(pagination.page);
-  
 
-  const activeHeading = useMemo(()=>headings.find((element)=> element?.attributes?.Name === query?.heading && locale == element?.attributes?.locale), [query ]);
+  const activeHeading = useMemo(() => headings.find((element) => element?.attributes?.Name === query?.heading && locale == element?.attributes?.locale), [query]);
 
   function useWindowWidth() {
     const [windowWidth, setWindowWidth] = useState(0);
@@ -90,24 +90,19 @@ export default function Home({
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
   const hrefLangTags = generateHrefLangTags(asPath);
 
-  useEffect(()=>{
-    console.log(headings)
-  // const activeHeading = useMemo(()=>headings.find((element)=> element?.attributes?.Name === query?.heading && locale == element?.attributes?.locale), [query ]);
-     
-  }, [locale])
 
   return (
     <>
       <Head>
-        <title>{activeHeading?.attributes?.blog_title? activeHeading?.attributes?.blog_title:  $t[locale].blog.title}</title>
+        <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : $t[locale].blog.title}</title>
         {hrefLangTags.map((tag) => (
           <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
         ))}
         <meta
           name="description"
-          content={activeHeading?.attributes?.blog_descriptions? activeHeading?.attributes?.blog_descriptions:  $t[locale].blog.description}
+          content={activeHeading?.attributes?.blog_descriptions ? activeHeading?.attributes?.blog_descriptions : $t[locale].blog.description}
         />
-        <meta name="keywords" content={activeHeading?.attributes?.keywords? activeHeading?.attributes?.keywords: $t[locale].blog.keywords} />
+        <meta name="keywords" content={activeHeading?.attributes?.keywords ? activeHeading?.attributes?.keywords : $t[locale].blog.keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
 
@@ -233,7 +228,7 @@ export default function Home({
                                       </span>
                                       <span className="comments part" >
                                         <Link itemProp="discussionUrl" href={`${url}#comment`} className="align-items-center d-flex">
-                                          <div style={{ height: "24px", width: "20px"  }}>
+                                          <div style={{ height: "24px", width: "20px" }}>
 
                                             <picture>
                                               <Image src={"/img/commentSvgIcon.svg"} width="24" height="24" alt="comment icon"></Image>
@@ -285,6 +280,7 @@ export default function Home({
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
+                                        <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
                   </Sidebar>
                 </div>
@@ -317,9 +313,10 @@ export async function getServerSideProps({ query, locale }) {
   const filter = heading ? `&filters[heading][Name]=${heading}` : '';
 
   // Паралельне виконання запитів
-  const [randomBanner, mostPopular, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+  const [randomBanner, mostPopular, mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
     getRandomBanner(locale),
-    getRandomPopularNews(locale),
+    getRandomPopularNews(Locale),
+    getRandomPopularNews(Locale, 4, "newss"),
     server.get('/social'),
     server.get(`/headings?locale=${Locale}`).catch(() => ({ data: { data: [] } })), // Обробка помилок
     server.get(`/blogs?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`),
@@ -335,6 +332,7 @@ export async function getServerSideProps({ query, locale }) {
 
   return {
     props: {
+      mostPopularNews,
       randomBanner,
       pages: removeBodyField(pages),
       headings,
