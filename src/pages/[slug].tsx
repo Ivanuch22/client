@@ -103,7 +103,6 @@ const Page = ({
   listPagesData,
   mostPopularNews,
   mostPopular,
-  articlesdfs
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -172,7 +171,6 @@ const Page = ({
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  console.log(articlesdfs," sdl;afj")
 
   const asPath = router.asPath
   const hrefLangTags = generateHrefLangTags(asPath);
@@ -433,7 +431,6 @@ export async function getServerSideProps({
         listPagesData: listPagesData.length > 0 ? listPagesData : getMenuUrlArray2,
         mostPopular,
         mostPopularNews,
-        articlesdfs
       },
     };
   }
