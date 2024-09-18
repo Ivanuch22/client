@@ -38,8 +38,7 @@ function generateSiteMap(posts, tags, accordions, blogs) {
        <loc>${NEXT_FRONT_URL}/ua/services</loc>
        <priority>1.0</priority>
      </url>
-     
-     
+
      <url>
        <loc>${NEXT_FRONT_URL}/en/contacts</loc>
        <priority>0.8</priority>
@@ -119,12 +118,7 @@ function generateSiteMap(posts, tags, accordions, blogs) {
  `;
 }
 
-function SiteMap() {
-  // getServerSideProps will do the heavy lifting
-}
-
-export async function getStaticProps({ res }) {
-  // fetching all urls to put it into sitemap
+export async function getServerSideProps({ res }) {
   async function fetchUrls(apiRoute: 'pages' | 'page-seos' | 'accordions' | "blogs") {
     let array = [];
     let isFetching: boolean = true;
@@ -164,9 +158,7 @@ export async function getStaticProps({ res }) {
 
   try {
     const posts = await fetchUrls('pages');
-
     const tags = await fetchUrls('page-seos');
-
     const accordions = await fetchUrls('accordions');
     const blogs = await fetchUrls('blogs');
 
@@ -178,15 +170,16 @@ export async function getStaticProps({ res }) {
 
     return {
       props: {},
-      revalidate: 60,
     };
   } catch (error) {
     console.log(error);
     return {
       props: {},
-      revalidate: 60,
     };
   }
 }
 
-export default SiteMap;
+export default function SiteMap() {
+  // Це залишається порожнім, оскільки функція getServerSideProps виконує основну роботу
+  return null;
+}

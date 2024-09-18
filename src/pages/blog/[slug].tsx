@@ -147,8 +147,7 @@ const Page = ({
   socialData,
   articleStrapi,
   mostPopularNews,
-}: PageAttibutes) => {
-
+}: PageAttibutes) => {  
   const [usersComments, setUserComments] = useState([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [errorCode, setErrorCode] = useState<number | null>(null);
