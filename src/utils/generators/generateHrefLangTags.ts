@@ -8,7 +8,7 @@ export const generateHrefLangTags = (asPath: string) => {
 
   const locales = ['ru', 'en', 'uk'];
   const hrefLangTags = locales.map((lang) => {
-    const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : "/" + lang}${asPath}`;
+    const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : lang=="uk" ?"/ua": "/" + lang}${asPath}`;
     return {
       key: lang,
       rel: 'alternate',
