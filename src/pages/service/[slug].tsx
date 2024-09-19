@@ -105,6 +105,7 @@ const Page = ({
   socialData,
   mostPopular,
   mostPopularNews,
+  activePageLocales,
 
 }: PageAttibutes) => {
   const router = useRouter();
@@ -185,7 +186,7 @@ const Page = ({
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const hrefLangTags = generateHrefLangTags(asPath);
+  const hrefLangTags = generateHrefLangTags(asPath, activePageLocales);
   return (
     <>
       {/* 
@@ -352,14 +353,17 @@ export async function getServerSideProps({
   const slug = `/${query?.slug}` || '';
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
-  const [pageRes, strapiMenu, headerFooterMenusResponce, mostPopular, mostPopularNews, socialRes] = await Promise.all([
+  const [pageRes, pagesWithSameUrl, strapiMenu, headerFooterMenusResponce, mostPopular, mostPopularNews, socialRes] = await Promise.all([
     server.get(getPageSeo(slug, $(locale))),
+    server.get(getPageSeo(slug, "all")),
     server.get(getMenu('main')),
     getHeaderFooterMenus(strapiLocale),
     getRandomPopularNews(strapiLocale),
     getRandomPopularNews(strapiLocale, 4, "newss"),
     server.get('/social')
   ]);
+  const activePageLocales = pagesWithSameUrl.data.data.map(element => element.attributes.locale);
+
 
   const { menu, allPages, footerMenus, footerGeneral } = headerFooterMenusResponce;
 
@@ -388,6 +392,7 @@ export async function getServerSideProps({
 
     return {
       props: {
+        activePageLocales,
         mostPopular,
         mostPopularNews,
         seo_title,
@@ -415,6 +420,7 @@ export async function getServerSideProps({
 
   return {
     props: {
+      activePageLocales,
       mostPopularNews: [],
       mostPopular,
       seo_title: '',

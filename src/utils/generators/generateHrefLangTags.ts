@@ -1,10 +1,9 @@
 import getConfig from 'next/config';
 
-export const generateHrefLangTags = (asPath: string) => {
+export const generateHrefLangTags = (asPath: string,locales = ['ru', 'en', 'uk']) => {
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
 
-  const locales = ['ru', 'en', 'uk'];
   const hrefLangTags = locales.map((lang) => {
     const href = `${NEXT_FRONT_URL}${lang === 'ru' ? '' : lang=="uk" ?"/ua": "/" + lang}${asPath}`;
     return {

@@ -107,6 +107,7 @@ const Page = ({
   socialData,
   mostPopular,
   mostPopularNews,
+  activePageLocales,
 }: PageAttibutes) => {
 
   const router = useRouter();
@@ -156,7 +157,7 @@ const Page = ({
     ancestors[0],
     ancestors[1],
   ];
-  console.log(findAncestorsForInfoPage(crumbs, `${router.asPath}`))
+
 
   const chunksHead = code.reduce((acc, item) => {
     if (item.position === 'head') {
@@ -187,7 +188,7 @@ const Page = ({
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const hrefLangTags = generateHrefLangTags(asPath);
+  const hrefLangTags = generateHrefLangTags(asPath,activePageLocales);
 
   const MostPopular = dynamic(() => import('@/components/organisms/MostPopular'), {
     ssr: true,
@@ -326,16 +327,19 @@ const Page = ({
 export async function getServerSideProps({ query, locale, res, resolvedUrl }: Query) {
   const slug = `/${query?.slug}` || '';
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
-  const [pageRes, strapiMenu, socialRes, mostPopular, mostPopularNews, getHeaderFooterMenusResponce, randomBanner] = await Promise.all([
+  const [pageRes, strapiMenu, socialRes, mostPopular, mostPopularNews, getHeaderFooterMenusResponce, pagesWithSameUrl,randomBanner] = await Promise.all([
     server.get(getAccordion(`/info${slug}`, $(locale))),
     server.get(getMenu('main')),
     server.get('/social'),
     getRandomPopularNews(strapiLocale, 4),
     getRandomPopularNews(strapiLocale, 4, "newss"),
     getHeaderFooterMenus(strapiLocale),
-    getRandomBanner(locale)
-  ]);
+    server.get(getAccordion(`/info${slug}`, "all")),
+    getRandomBanner(locale),
 
+  ]);
+  const activePageLocales = pagesWithSameUrl.data.data.map(element=> element.attributes.locale);
+  
   const { menu, allPages, footerMenus, footerGeneral } =
     getHeaderFooterMenusResponce;
 
@@ -408,6 +412,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
 
     return {
       props: {
+        activePageLocales,
         seo_title,
         seo_description,
         page_title,
@@ -435,6 +440,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
   }
   return {
     props: {
+      activePageLocales,
       seo_title: '',
       seo_description: '',
       page_title: '',

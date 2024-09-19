@@ -103,6 +103,7 @@ const Page = ({
   listPagesData,
   mostPopularNews,
   mostPopular,
+  activePageLocales,
 }: PageAttibutes) => {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -173,7 +174,7 @@ const Page = ({
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
 
   const asPath = router.asPath
-  const hrefLangTags = generateHrefLangTags(asPath);
+  const hrefLangTags = generateHrefLangTags(asPath,activePageLocales);
   return (
     <>
       <Head>
@@ -328,6 +329,9 @@ export async function getServerSideProps({
   const slug = `/${query?.slug}` || '';
 
   const pageRes = await server.get(getPage(slug, $(locale)));
+  const pagesWithSameUrl = await server.get(getPage(slug, "all"));
+  
+  const activePageLocales = pagesWithSameUrl.data.data.map(element=> element.attributes.locale);
 
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
@@ -415,6 +419,7 @@ export async function getServerSideProps({
 
     return {
       props: {
+        activePageLocales,
         seo_title,
         seo_description,
         page_title,
@@ -443,6 +448,7 @@ export async function getServerSideProps({
 
   return {
     props: {
+      activePageLocales,
       mostPopularNews,
       mostPopular,
       seo_title: '',

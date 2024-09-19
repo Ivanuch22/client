@@ -146,7 +146,8 @@ const Page = ({
   pageImage,
   socialData,
   articleStrapi,
-  mostPopularNews
+  mostPopularNews,
+  activePageLocales
 }: PageAttibutes) => {
 
   const [usersComments, setUserComments] = useState([]);
@@ -638,7 +639,7 @@ const Page = ({
     setUserComments(comments);
   }
   const asPath = router.asPath
-  const hrefLangTags = generateHrefLangTags(asPath)
+  const hrefLangTags = generateHrefLangTags(asPath,activePageLocales)
 
   return (
     <>
@@ -955,7 +956,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
   const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
   // Паралельне виконання основних запитів
-  const [randomBanner, mostPopular, mostPopularNews, headingsRes, pageRes, strapiMenu, headerFooterData, socialRes] = await Promise.all([
+  const [randomBanner, mostPopular, mostPopularNews, headingsRes, pageRes, strapiMenu, headerFooterData,pagesWithSameUrl, socialRes] = await Promise.all([
     getRandomBanner(Locale),
     getRandomPopularNews(Locale, 4, "blogs"),
     getRandomPopularNews(Locale, 4, "newss"),
@@ -963,8 +964,11 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
     server.get(getNewsPage(slug, Locale)),
     server.get(getMenu('main')),
     getHeaderFooterMenus(Locale),
+    server.get(getNewsPage(slug, "all")),
     server.get('/social')
   ]);
+
+  const activePageLocales = pagesWithSameUrl.data.data.map(element=> element.attributes.locale);
 
   // Обробка результатів
   let headings = headingsRes?.data?.data || [];
@@ -1010,6 +1014,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
 
     return {
       props: {
+        activePageLocales,
         mostPopularNews,
         pageImage, admin_date, seo_title, seo_description, page_title: shortenedTitle, url, pageRes: pageData,
         body, crumbs, notFoundMessage, slug, keywords, comments: commentsWithReaction, heading, code,
@@ -1023,6 +1028,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
 
   return {
     props: {
+      activePageLocales,
       mostPopularNews: [],
       pageImage: null, headings, admin_date: "", seo_title: '', seo_description: '', page_title: '', url: '',
       body: '', comments: [], mostPopular, pageRes: [], crumbs: '', slug: '', keywords: '', rating: null,

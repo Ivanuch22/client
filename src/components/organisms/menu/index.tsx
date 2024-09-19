@@ -60,7 +60,6 @@ function Menu({ data, show, onTog, allPages }) {
     const hasChildren = hasValidChildren(item);
     if (hasChildren && !item.attributes.url.startsWith('/info')) {
       const isOpen = openSubmenu[parentId] === item.id;
-      console.log(item.attributes[`title_${locale}`], "sdkjfds")
       return (
         <div className="nav-item dropdown" key={item.id} style={{ position: 'relative' }}>
           <span
@@ -100,9 +99,6 @@ function Menu({ data, show, onTog, allPages }) {
     <div className={`collapse navbar-collapse navpart ${show ? 'show' : ''}`} id="navbarCollapse">
       {data && (
         <div className="navbar-nav ms-auto py-0" style={{ alignItems: 'center' }}>
-          {/* <Link href="/" className="nav-item nav-link navpart">
-            {$t[locale].menu.main}
-          </Link> */}
 
           {data.map(item => renderMenuItem(item, null))}
 
