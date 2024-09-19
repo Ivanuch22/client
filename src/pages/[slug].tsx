@@ -273,20 +273,26 @@ const Page = ({
                       )}
                       {/* Displaying rich text */}
                       {listPagesData.length > 0 && (
-                        listPagesData.map((page, index) => (
-                          <div style={{ marginLeft: page.childrenStatus ? '30px' : '0' }} key={index}>
-                            <h4 class="mb-1">
-                              <Link href={page.url}>
-                                {locale === 'ru'
-                                  ? page.title
-                                  : page[`title_${locale}`]}
-                              </Link>
-                            </h4>
-                            <Link class="font-13 text-success mb-3" href={page.url}>{`${NEXT_FRONT_URL}${page.url}`}</Link>
-                            <hr class="hr"></hr>
-                          </div>
+                        listPagesData.map((page, index) => {
+                          const title = locale === 'ru' ? page.title : page[`title_${locale}`];
+                          if (title === 'nopage') return null;
+                          { title }
+                          return (
+                            <div style={{ marginLeft: page.childrenStatus ? '30px' : '0' }} key={index}>
+                              <h4 class="mb-1">
+                                <Link href={page.url}>
+                                  {title}
+                                </Link>
+                              </h4>
+                              <Link class="font-13 text-success mb-3" href={page.url}>{`${NEXT_FRONT_URL}${page.url}`}</Link>
+                              <hr class="hr"></hr>
+                            </div>
 
-                        ))
+                          )
+
+                        }
+
+                        )
                       )}
                       {listPagesData.length <= 0 && (
                         <div dangerouslySetInnerHTML={{ __html: body }}></div>

@@ -1,5 +1,3 @@
-// utils/generators/generateHrefLangTags.ts
-
 import getConfig from 'next/config';
 
 export const generateHrefLangTags = (asPath: string) => {

@@ -60,7 +60,7 @@ function Menu({ data, show, onTog, allPages }) {
     const hasChildren = hasValidChildren(item);
     if (hasChildren && !item.attributes.url.startsWith('/info')) {
       const isOpen = openSubmenu[parentId] === item.id;
-
+      console.log(item.attributes[`title_${locale}`], "sdkjfds")
       return (
         <div className="nav-item dropdown" key={item.id} style={{ position: 'relative' }}>
           <span
@@ -90,7 +90,7 @@ function Menu({ data, show, onTog, allPages }) {
 
       return (
         <Link href={item.attributes.url} className="nav-link navpart" key={item.id} onClick={onTog}>
-          {title}
+         {title}
         </Link>
       );
     }
