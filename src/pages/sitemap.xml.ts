@@ -10,7 +10,7 @@ import removeFirstSlash from '@/utils/removeFirstSlash';
 
 import qs from 'qs';
 
-function generateSiteMap(posts, tags, accordions, blogs) {
+function generateSiteMap(posts, tags, accordions, blogs,news) {
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      <url>
@@ -63,7 +63,18 @@ function generateSiteMap(posts, tags, accordions, blogs) {
        <loc>${NEXT_FRONT_URL}/en/blog</loc>
        <priority>0.8</priority>
      </url>
-
+     <url>
+        <loc>${NEXT_FRONT_URL}/ua/news</loc>
+        <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/news</loc>
+       <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/en/news</loc>
+       <priority>0.8</priority>
+     </url>
      ${posts
       .map(page => {
         return `
@@ -114,12 +125,25 @@ function generateSiteMap(posts, tags, accordions, blogs) {
       `;
       })
       .join('')}
+      ${news
+        .map(page => {
+          return `
+          <url>
+              <loc>${NEXT_FRONT_URL}/${getReadableLocale(
+            page.attributes.locale
+          )}${removeFirstSlash(page.attributes.url, page.attributes.locale)}</loc>
+              <priority>0.8</priority>
+          </url>
+        `;
+        })
+        .join('')}
+      
    </urlset>
  `;
 }
 
 export async function getServerSideProps({ res }) {
-  async function fetchUrls(apiRoute: 'pages' | 'page-seos' | 'accordions' | "blogs") {
+  async function fetchUrls(apiRoute: 'pages' | 'page-seos' | 'accordions' | "blogs"|"newss") {
     let array = [];
     let isFetching: boolean = true;
     let currentPage: number = 1;
@@ -161,8 +185,9 @@ export async function getServerSideProps({ res }) {
     const tags = await fetchUrls('page-seos');
     const accordions = await fetchUrls('accordions');
     const blogs = await fetchUrls('blogs');
+    const news = await fetchUrls('newss');
 
-    const sitemap = generateSiteMap(posts, tags, accordions, blogs);
+    const sitemap = generateSiteMap(posts, tags, accordions, blogs,news);
 
     res.setHeader('Content-Type', 'text/xml');
     res.write(sitemap);
