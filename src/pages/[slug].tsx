@@ -105,6 +105,7 @@ const Page = ({
   mostPopular,
   activePageLocales,
 }: PageAttibutes) => {
+  console.log(menu, "menu")
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const findAncestors = (obj: any[], url: string) => {
@@ -276,7 +277,7 @@ const Page = ({
                       {listPagesData.length > 0 && (
                         listPagesData.map((page, index) => {
                           const title = locale === 'ru' ? page.title : page[`title_${locale}`];
-                          if (title === 'nopage') return null;
+                          if (title === 'nopage' || page.target ==="_blank") return null;
                           { title }
                           return (
                             <div style={{ marginLeft: page.childrenStatus ? '30px' : '0' }} key={index}>
@@ -344,8 +345,8 @@ export async function getServerSideProps({
     function traverse(children, bool) {
       if (children && children.data) {
         for (let child of children.data) {
-          const { title, url, title_en, title_uk } = child.attributes;
-          array.push({ title, url, title_en, title_uk, childrenStatus: bool });
+          const { title, url, title_en, title_uk,target, } = child.attributes;
+          array.push({ title, url, title_en, title_uk,target, childrenStatus: bool });
           traverse(child.attributes.children, true);
         }
       }
