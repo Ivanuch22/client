@@ -653,7 +653,7 @@ const Page = ({
     <>
       <Head>
         {hrefLangTags.map((tag) => (
-          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
         ))}
         <title>{seo_title}</title>
         <meta name="description" content={seo_description} />

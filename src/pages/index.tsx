@@ -67,9 +67,13 @@ export default function Home({
         <meta name="keywords" content={keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        {hrefLangTags.map((tag) => (
-          <link key={tag?.key} rel={tag?.rel} hrefLang={tag?.hrefLang} href={tag?.href} />
-        ))}
+        {hrefLangTags.map((tag) => {
+          console.log(tag.href.endsWith('/'))
+          return (
+            <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
+          )
+        })}
+
       </Head>
 
       <div className="container-xxl bg-white p-0">

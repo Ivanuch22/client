@@ -175,7 +175,7 @@ const Page = ({
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
 
   const asPath = router.asPath
-  const hrefLangTags = generateHrefLangTags(asPath,activePageLocales);
+  const hrefLangTags = generateHrefLangTags(asPath, activePageLocales);
   return (
     <>
       <Head>
@@ -183,9 +183,11 @@ const Page = ({
         <meta name="description" content={seo_description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="keyword" content={keywords} />
-        {hrefLangTags.map((tag) => (
-          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
-        ))}
+        {hrefLangTags.map((tag) => {
+          console.log(tag.href.endsWith('/'))
+        return (
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
+        )})}
         {faq && (
           <script
             type="application/ld+json"
@@ -277,7 +279,7 @@ const Page = ({
                       {listPagesData.length > 0 && (
                         listPagesData.map((page, index) => {
                           const title = locale === 'ru' ? page.title : page[`title_${locale}`];
-                          if (title === 'nopage' || page.target ==="_blank") return null;
+                          if (title === 'nopage' || page.target === "_blank") return null;
                           { title }
                           return (
                             <div style={{ marginLeft: page.childrenStatus ? '30px' : '0' }} key={index}>
@@ -331,8 +333,8 @@ export async function getServerSideProps({
 
   const pageRes = await server.get(getPage(slug, $(locale)));
   const pagesWithSameUrl = await server.get(getPage(slug, "all"));
-  
-  const activePageLocales = pagesWithSameUrl.data.data.map(element=> element.attributes.locale);
+
+  const activePageLocales = pagesWithSameUrl.data.data.map(element => element.attributes.locale);
 
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
@@ -345,8 +347,8 @@ export async function getServerSideProps({
     function traverse(children, bool) {
       if (children && children.data) {
         for (let child of children.data) {
-          const { title, url, title_en, title_uk,target, } = child.attributes;
-          array.push({ title, url, title_en, title_uk,target, childrenStatus: bool });
+          const { title, url, title_en, title_uk, target, } = child.attributes;
+          array.push({ title, url, title_en, title_uk, target, childrenStatus: bool });
           traverse(child.attributes.children, true);
         }
       }

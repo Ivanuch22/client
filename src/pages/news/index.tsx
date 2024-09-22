@@ -96,7 +96,7 @@ export default function Home({
       <Head>
         <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : $t[locale].news.title}</title>
         {hrefLangTags.map((tag) => (
-          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href} />
+          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
         ))}
         <meta
           name="description"
