@@ -315,7 +315,7 @@ export async function getServerSideProps({ query, locale }) {
   const [randomBanner, mostPopular, mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
     getRandomBanner(locale),
     getRandomPopularNews(locale, 4, "blogs"),
-    getRandomPopularNews(locale, 4, "newss"),
+    getRandomPopularNews(locale, 4, "newss",false),
     server.get('/social'),
     server.get(`/headings-news?locale=${Locale}`).catch(() => ({ data: { data: [] } })), // Обробка помилок
     server.get(`/newss?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`),

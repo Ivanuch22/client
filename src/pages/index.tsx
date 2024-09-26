@@ -111,14 +111,14 @@ export async function getStaticProps({ locale, resolvedUrl }) {
       server.get(`/code?locale=${$(strapiLocale)}`),
       server.get('/social'),
       getRandomPopularNews(strapiLocale, 4),
-      getRandomPopularNews(strapiLocale, 4, "newss")
+      getRandomPopularNews(strapiLocale, 4, "newss",false)
     ]);
 
     const { index = '', index_bottom = "", index_seo_description: description, index_title: title, index_keywords: keywords } = dataResponse.data.data.attributes;
     const { menu, allPages, footerMenus, footerGeneral } = await getHeaderFooterMenus(strapiLocale);
 
     let mostPopular = mostPopularResponse.length > 0 ? mostPopularResponse : await getRandomPopularNews("ru", 4);
-    let mostPopularNews = mostPopularNewsResponse.length > 0 ? mostPopularNewsResponse : await getRandomPopularNews("ru", 4, "newss");
+    let mostPopularNews = mostPopularNewsResponse.length > 0 ? mostPopularNewsResponse : await getRandomPopularNews("ru", 4, "newss",false);
     const socialData = socialResponse.data.data.attributes ?? {};
 
     return {

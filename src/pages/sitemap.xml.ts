@@ -37,8 +37,6 @@ function generateSiteMap(posts, tags, accordions, blogs,news) {
      `;
       })
       .join('')}
-
-
      <url>
         <loc>${NEXT_FRONT_URL}/en/services</loc>
         <priority>1.0</priority>

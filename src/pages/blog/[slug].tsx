@@ -965,7 +965,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
   const [randomBanner, mostPopularBlog, mostPopularNewsResponse, headingsRes, pageRes, strapiMenu, headerFooterData, socialRes,pagesWithSameUrl] = await Promise.all([
     getRandomBanner(Locale),
     getRandomPopularNews(Locale),
-    getRandomPopularNews(Locale, 4, "newss"),
+    getRandomPopularNews(Locale, 4, "newss", false),
     server.get(`/headings?locale=${Locale}`).catch(() => ({ data: { data: [] } })), // Обробка помилок для headings
     server.get(getBlogPage(slug, Locale)),
     server.get(getMenu('main')),

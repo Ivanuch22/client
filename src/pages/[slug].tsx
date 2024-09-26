@@ -396,7 +396,7 @@ export async function getServerSideProps({
   const socialData = socialRes.data.data.attributes;
 
   let mostPopular = await getRandomPopularNews(strapiLocale);
-  let mostPopularNews = await getRandomPopularNews(strapiLocale, 5, "newss")
+  let mostPopularNews = await getRandomPopularNews(strapiLocale, 5, "newss",false)
 
   if (mostPopular.length === 0) {
     mostPopular = await getRandomPopularNews("ru");

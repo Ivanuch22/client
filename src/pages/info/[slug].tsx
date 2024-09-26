@@ -332,7 +332,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
     server.get(getMenu('main')),
     server.get('/social'),
     getRandomPopularNews(strapiLocale, 4),
-    getRandomPopularNews(strapiLocale, 4, "newss"),
+    getRandomPopularNews(strapiLocale, 4, "newss",false),
     getHeaderFooterMenus(strapiLocale),
     server.get(getAccordion(`/info${slug}`, "all")),
     getRandomBanner(locale),

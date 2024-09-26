@@ -359,7 +359,7 @@ export async function getServerSideProps({
     server.get(getMenu('main')),
     getHeaderFooterMenus(strapiLocale),
     getRandomPopularNews(strapiLocale),
-    getRandomPopularNews(strapiLocale, 4, "newss"),
+    getRandomPopularNews(strapiLocale, 4, "newss",false),
     server.get('/social')
   ]);
   const activePageLocales = pagesWithSameUrl.data.data.map(element => element.attributes.locale);
