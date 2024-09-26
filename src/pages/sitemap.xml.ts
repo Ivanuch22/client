@@ -25,56 +25,6 @@ function generateSiteMap(posts, tags, accordions, blogs,news) {
        <loc>${NEXT_FRONT_URL}/ua</loc>
        <priority>1.0</priority>
      </url>
-
-     <url>
-        <loc>${NEXT_FRONT_URL}/en/services</loc>
-        <priority>1.0</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/services</loc>
-       <priority>1.0</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/ua/services</loc>
-       <priority>1.0</priority>
-     </url>
-
-     <url>
-       <loc>${NEXT_FRONT_URL}/en/contacts</loc>
-       <priority>0.8</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/contacts</loc>
-       <priority>0.8</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/ua/contacts</loc>
-       <priority>0.8</priority>
-     </url>
-     <url>
-        <loc>${NEXT_FRONT_URL}/ua/blog</loc>
-        <priority>0.8</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/blog</loc>
-       <priority>0.8</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/en/blog</loc>
-       <priority>0.8</priority>
-     </url>
-     <url>
-        <loc>${NEXT_FRONT_URL}/ua/news</loc>
-        <priority>0.8</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/news</loc>
-       <priority>0.8</priority>
-     </url>
-     <url>
-       <loc>${NEXT_FRONT_URL}/en/news</loc>
-       <priority>0.8</priority>
-     </url>
      ${posts
       .map(page => {
         return `
@@ -88,7 +38,20 @@ function generateSiteMap(posts, tags, accordions, blogs,news) {
       })
       .join('')}
 
-    ${tags
+
+     <url>
+        <loc>${NEXT_FRONT_URL}/en/services</loc>
+        <priority>1.0</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/services</loc>
+       <priority>1.0</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/ua/services</loc>
+       <priority>1.0</priority>
+     </url>
+     ${tags
       .map(page => {
         return `
       <url>
@@ -99,8 +62,19 @@ function generateSiteMap(posts, tags, accordions, blogs,news) {
     `;
       })
       .join('')}
-
-    ${accordions
+     <url>
+       <loc>${NEXT_FRONT_URL}/en/contacts</loc>
+       <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/contacts</loc>
+       <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/ua/contacts</loc>
+       <priority>0.8</priority>
+     </url>
+     ${accordions
       .map(page => {
         return `
       <url>
@@ -112,8 +86,19 @@ function generateSiteMap(posts, tags, accordions, blogs,news) {
     `;
       })
       .join('')}
-
-      ${blogs
+     <url>
+        <loc>${NEXT_FRONT_URL}/ua/blog</loc>
+        <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/blog</loc>
+       <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/en/blog</loc>
+       <priority>0.8</priority>
+     </url>
+     ${blogs
       .map(page => {
         return `
         <url>
@@ -125,6 +110,18 @@ function generateSiteMap(posts, tags, accordions, blogs,news) {
       `;
       })
       .join('')}
+     <url>
+        <loc>${NEXT_FRONT_URL}/ua/news</loc>
+        <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/news</loc>
+       <priority>0.8</priority>
+     </url>
+     <url>
+       <loc>${NEXT_FRONT_URL}/en/news</loc>
+       <priority>0.8</priority>
+     </url>
       ${news
         .map(page => {
           return `
