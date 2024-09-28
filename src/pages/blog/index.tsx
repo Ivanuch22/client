@@ -36,6 +36,7 @@ export default function Home({
   mostPopular,
   socialData,
   mostPopularNews,
+  seoData,
 }) {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -94,15 +95,15 @@ export default function Home({
   return (
     <>
       <Head>
-        <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : $t[locale].blog.title}</title>
+        <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : seoData?.Title? seoData?.Title: $t[locale].blog.title}</title>
         {hrefLangTags.map((tag) => (
           <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
         ))}
         <meta
           name="description"
-          content={activeHeading?.attributes?.blog_descriptions ? activeHeading?.attributes?.blog_descriptions : $t[locale].blog.description}
+          content={activeHeading?.attributes?.blog_descriptions ? activeHeading?.attributes?.blog_descriptions : seoData?.Description? seoData?.Description: $t[locale].blog.description}
         />
-        <meta name="keywords" content={activeHeading?.attributes?.keywords ? activeHeading?.attributes?.keywords : $t[locale].blog.keywords} />
+        <meta name="keywords" content={activeHeading?.attributes?.keywords ? activeHeading?.attributes?.keywords : seoData?.Keywords? seoData?.Keywords: $t[locale].blog.keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
 
@@ -280,7 +281,7 @@ export default function Home({
                     </main>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
-                                        <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
+                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
                     <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
                   </Sidebar>
                 </div>
@@ -313,7 +314,8 @@ export async function getServerSideProps({ query, locale }) {
   const filter = heading ? `&filters[heading][Name]=${heading}` : '';
 
   // Паралельне виконання запитів
-  const [randomBanner, mostPopular, mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+  const [seoDataResponce, randomBanner, mostPopular, mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+    server.get(`/blog-data?locale=${Locale}`),
     getRandomBanner(locale),
     getRandomPopularNews(Locale),
     getRandomPopularNews(Locale, 4, "newss", false),
@@ -322,6 +324,8 @@ export async function getServerSideProps({ query, locale }) {
     server.get(`/blogs?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`),
     getHeaderFooterMenus(Locale),
   ]);
+
+  const seoData = seoDataResponce?.data?.data?.attributes
 
   const headings = headingsRes?.data?.data || [];
   const pages = getPagesRes?.data?.data || [];
@@ -332,6 +336,7 @@ export async function getServerSideProps({ query, locale }) {
 
   return {
     props: {
+      seoData,
       mostPopularNews,
       randomBanner,
       pages: removeBodyField(pages),

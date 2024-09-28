@@ -47,6 +47,7 @@ export default function Home({
   footerMenus,
   footerGeneral,
   socialData,
+  seoData,
 }) {
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
@@ -58,7 +59,7 @@ export default function Home({
 
   const goToPage = n =>
     router.push(`/services?page=${n}&perPage=${perPage ? perPage : ''}`);
-  
+
   const asPath = router.asPath
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
@@ -67,12 +68,12 @@ export default function Home({
   return (
     <>
       <Head>
-        <title>{$t[locale].services.seo_title}</title>
+        <title>{seoData?.Title ? seoData?.Title : $t[locale].services.seo_title}</title>
         <meta
           name="description"
-          content={$t[locale].services.seo_description}
+          content={seoData?.Description ? seoData?.Description : $t[locale].services.seo_description}
         />
-        <meta name="keywords" content={$t[locale].services.seo_keywords} />
+        <meta name="keywords" content={seoData?.Keywords ? seoData?.Keywords : $t[locale].services.seo_keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         {hrefLangTags.map((tag) => (
@@ -169,53 +170,58 @@ export default function Home({
     </>
   );
 }
+
 export async function getServerSideProps({ query, locale }: Query) {
   const { page = 1, perPage = 100 } = query;
+  const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
   try {
-    const res = await server.get(
-      `/page-seos?locale=${locale === 'ua' ? 'uk' : locale
-      }&pagination[page]=${page}&pagination[pageSize]=${perPage}`
-    );
+    // Triggering multiple requests concurrently for better performance
+    const [seoRes, seoDataRes, socialRes, { menu, allPages, footerMenus, footerGeneral }] = await Promise.all([
+      server.get(`/page-seos?locale=${strapiLocale}&pagination[page]=${page}&pagination[pageSize]=${perPage}`),
+      server.get(`/services-data?locale=${strapiLocale}`),
+      server.get('/social'),
+      getHeaderFooterMenus(strapiLocale),
+    ]);
 
-    const tags = res.data.data;
-    const pagination = res.data.meta.pagination;
-
-    const strapiLocale = locale === 'ua' ? 'uk' : locale;
-
-    const { menu, allPages, footerMenus, footerGeneral } =
-      await getHeaderFooterMenus(strapiLocale);
-
-    const socialRes = await server.get('/social');
-    const socialData = socialRes.data.data.attributes;
+    const tags = seoRes.data.data;
+    const pagination = seoRes.data.meta.pagination;
+    const seoData = seoDataRes?.data?.data?.attributes ?? null;
+    const socialData = socialRes?.data?.data?.attributes ?? null;
 
     if (page > pagination.pageCount) {
-      return {
-        notFound: true,
-      };
+      return { notFound: true };
     }
     return {
       props: {
+        seoData,
         tags,
         pagination,
         menu,
         allPages,
         footerMenus,
         footerGeneral,
-        socialData: socialData ?? null,
+        socialData,
       },
     };
   } catch (error) {
     return {
       notFound: true,
-      allPages: [],
-      footerMenus: {
-        about: { title: '', items: [] },
-        services: { title: '', items: [] },
-        contacts: {},
+      props: {
+        seoData: null,
+        tags: [],
+        pagination: {},
+        menu: {},
+        allPages: [],
+        footerMenus: {
+          about: { title: '', items: [] },
+          services: { title: '', items: [] },
+          contacts: {},
+        },
+        footerGeneral: {},
+        socialData: null,
       },
-      footerGeneral: {},
-      socialData: socialData ?? null,
     };
   }
 }
+

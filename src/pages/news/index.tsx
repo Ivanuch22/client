@@ -25,6 +25,7 @@ const { publicRuntimeConfig } = getConfig();
 const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
 export default function Home({
+  seoData,
   pages,
   headings,
   pagination,
@@ -37,6 +38,7 @@ export default function Home({
   socialData,
   mostPopularNews
 }) {
+  console.log(seoData)
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const { query } = router;
@@ -94,15 +96,15 @@ export default function Home({
   return (
     <>
       <Head>
-        <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : $t[locale].news.title}</title>
+        <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : seoData?.Title?seoData?.Title: $t[locale].news.title }</title>
         {hrefLangTags.map((tag) => (
           <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
         ))}
         <meta
           name="description"
-          content={activeHeading?.attributes?.blog_descriptions ? activeHeading?.attributes?.blog_descriptions : $t[locale].news.description}
+          content={activeHeading?.attributes?.blog_descriptions ? activeHeading?.attributes?.blog_descriptions : seoData?.Description?seoData?.Description: $t[locale].news.description }
         />
-        <meta name="keywords" content={activeHeading?.attributes?.keywords ? activeHeading?.attributes?.keywords : $t[locale].news.keywords} />
+        <meta name="keywords" content={activeHeading?.attributes?.keywords ? activeHeading?.attributes?.keywords : seoData?.Keywords?seoData?.Keywords: $t[locale].news.keywords } />
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -311,8 +313,11 @@ export async function getServerSideProps({ query, locale }) {
   const { page = 1, perPage = 15, heading = '' } = query;
   const Locale = locale === 'ua' ? 'uk' : locale;
   const filter = heading ? `&filters[heading][Name]=${heading}` : '';
+
+
   // Паралельне виконання запитів
-  const [randomBanner, mostPopular, mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+  const [seoDataResponce,randomBanner, mostPopular, mostPopularNews, socialRes, headingsRes, getPagesRes, headerFooterData] = await Promise.all([
+    server.get(`/news-data?locale=${Locale}`),
     getRandomBanner(locale),
     getRandomPopularNews(locale, 4, "blogs"),
     getRandomPopularNews(locale, 4, "newss",false),
@@ -321,17 +326,18 @@ export async function getServerSideProps({ query, locale }) {
     server.get(`/newss?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`),
     getHeaderFooterMenus(Locale),
   ]);
-  console.log(`/newss?locale=${Locale}&pagination[page]=${page}&pagination[pageSize]=${perPage}${filter}&sort[0]=admin_date:desc&populate[article][populate][author]=*&populate[article][populate][images]=*&populate[comments]=user_name,CustomHistory&populate=image&populate[faq]=*&populate[rating]=*&populate[heading]=*&populate[code]=*&populate[howto]=*`, "sdfsdf")
 
   const headings = headingsRes?.data?.data || [];
+  const seoData = seoDataResponce?.data?.data?.attributes
   const pages = getPagesRes?.data?.data || [];
   const pagination = getPagesRes?.data?.meta?.pagination || {};
-
+  
   const { menu, allPages, footerMenus, footerGeneral } = headerFooterData || {};
   const socialData = socialRes?.data?.data?.attributes || null;
 
   return {
     props: {
+      seoData:seoData,
       mostPopularNews,
       randomBanner,
       pages: removeBodyField(pages),

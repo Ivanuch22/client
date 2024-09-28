@@ -120,7 +120,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
     function sanitizeImageUrl(url) {
         return url.replace(/[^a-zA-Z0-9-_.~:/?#[\]@!$&'()*+,;=%]/g, '');
     }
-    const nowDate = new Date().toDateString()
+    // const nowDate = new Date().toDateString()
     return (
         <>
             <section>
@@ -167,7 +167,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                 })}
                 <h3 itemProp="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
                 <link itemProp="url" href={NEXT_FRONT_URL + pageUrl + "#comment"} />
-                <meta itemProp="datePublished" content={admin_date || nowDate} />
+                <meta itemProp="datePublished" content={admin_date} />
                 {articleStrapi && (
                     <>
                         <div
