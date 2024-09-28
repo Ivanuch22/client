@@ -154,15 +154,15 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
             </section >
 
             <section itemScope itemType="https://schema.org/DiscussionForumPosting">
-                {articleStrapi&&(
+                {articleStrapi && (
                     <p className="notShowOnPage" itemProp="text">
-                    {articleStrapi?.commentText}
-                </p>
+                        {articleStrapi?.commentText}
+                    </p>
                 )}
-                
+
                 {articleStrapi?.images.data.map((image) => {
                     return (
-                        <Image loading="lazy"  className="notShowOnPage" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
+                        <Image loading="lazy" className="notShowOnPage" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText || "alt text"} key={image.id} />
                     )
                 })}
                 <h3 itemProp="headline" className="notShowOnPage">{$t[locale].comment.comments}</h3>
@@ -176,7 +176,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             <span itemProp="name">{articleStrapi?.author?.data?.attributes?.real_user_name}</span>
                             {articleStrapi?.images.data.map((image) => {
                                 return (
-                                    <Image loading="lazy"  width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText|| "alt text"} key={image.id} />
+                                    <Image loading="lazy" width={10} height={10} itemProp="image" src={`${sanitizeImageUrl(NEXT_STRAPI_BASED_URL + image?.attributes.url)}`} alt={image?.attributes?.alternativeText || "alt text"} key={image.id} />
                                 )
                             })}
                             <link itemProp="url" href={`${NEXT_FRONT_URL}/user/${articleStrapi?.author?.data?.attributes?.username}`} />
@@ -209,7 +209,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                         const name = comments.find((element) => {
                             return element.attributes.Text === father.data?.attributes.Text;
                         });
-                        return name?.attributes?.user?.data?.attributes?.real_user_name;
+                        return <Link href={`/user/${name?.attributes?.user?.data?.attributes?.username}`}>{name?.attributes?.user?.data?.attributes?.real_user_name}</Link>;
                     };
 
                     const getCommentClass = (fatherData) => {
@@ -243,7 +243,7 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                             <link itemProp="url" href={`#comment-id-${commentId}`} />
                             <div className="post-content">
                                 <div data-action="profile" className="user avatar">
-                                    <Image loading="lazy" 
+                                    <Image loading="lazy"
                                         src={`${NEXT_STRAPI_BASED_URL}${url}`}
                                         alt={`Аватар ${real_user_name}`}
                                         className="image-refresh"
@@ -268,11 +268,11 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                                                             style={{ color: "#494e58", fontSize: 12 }}
                                                             className="parent-link-container"
                                                         >
-                                                            <Image loading="lazy" 
+                                                            <Image loading="lazy"
                                                                 style={{ margin: "0 12px 0 10px" }}
                                                                 width={15}
                                                                 height={15}
-                                                                src="https://cdn-icons-png.flaticon.com/512/591/591866.png"
+                                                                src="/img/rigthCommentArrow.png"
                                                                 alt="User icon"
                                                             />
                                                             {findFatherName()}
@@ -379,9 +379,9 @@ const Comments = ({ blogImage, articleStrapi, seo_title, admin_date, pageUrl, gl
                 {/* </ul> */}
                 <button style={{ borderRadius: "15px " }} className={(commentCoutn - showedComent) <= 0 ? "none" : "show_more_button"} onClick={showMoreComments}>
                     <span className={isButtonLoading ? "loading show_more_button_span " : "show_more_button_span"}>
-                       <picture>
-                        <Image src={"/img/loadMore.svg"} width="28" height="28" alt="load more icon"></Image>
-                       </picture>
+                        <picture>
+                            <Image src={"/img/loadMore.svg"} width="28" height="28" alt="load more icon"></Image>
+                        </picture>
                     </span>
                     {replaceText(`${$t[locale].blog.showMore} ${commentCoutn - showedComent}`)}
                 </button>
