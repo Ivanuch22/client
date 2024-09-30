@@ -1,27 +1,25 @@
 // @ts-nocheck
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import getConfig from 'next/config';
 import { server } from '@/http/index';
-
 import getReadableLocale from '@/utils/getReadableLocale';
 import removeFirstSlash from '@/utils/removeFirstSlash';
+import fetchUrls from '@/utils/fetchUrls';
+import { NextApiRequest, NextApiResponse } from 'next';
+import ExcelJS from 'exceljs';
+import path from 'path';
+import fs from 'fs';
 
 const { publicRuntimeConfig } = getConfig();
 const { NEXT_FRONT_URL } = publicRuntimeConfig;
 
-import fs from 'fs';
-import path from 'path';
-import qs from 'qs';
-
-const spacer = ';';
 const locales = ['en', 'ru', 'uk'];
 
-import type { NextApiRequest, NextApiResponse } from 'next';
-import fetchUrls from '@/utils/fetchUrls';
-
-type Data = {
-  message: string;
-};
+function formatDateDDMMYY(date: string): string {
+  const createdDate = new Date(date);
+  const day = createdDate.getDate().toString().padStart(2, '0');
+  const month = (createdDate.getMonth() + 1).toString().padStart(2, '0');
+  return `${day}.${month}.${createdDate.getFullYear().toString().slice(-2)}`;
+}
 
 function getHeadlines(html) {
   if (html != null) {
@@ -37,72 +35,48 @@ function getHeadlines(html) {
   return null;
 }
 
-function formatDateDDMMYY(date: string): string {
-  const createdDate = new Date(date);
-  const day = createdDate.getDate().toString().padStart(2, '0');
-  const month = (createdDate.getMonth() + 1).toString().padStart(2, '0');
-  return `${day}.${month}.${createdDate.getFullYear().toString().slice(-2)}`;
-}
+async function generateExcelFile(locale, posts, tags, accordions, blogs, news) {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Data');
 
-function generateTxt(locale: 'en' | 'uk' | 'ru', posts, tags, accordions) {
-  return `${posts
-    .map(page => {
-      return page.attributes.locale == locale
-        ? `${formatDateDDMMYY(
-            page.attributes.createdAt
-          )}${spacer}${NEXT_FRONT_URL}/${getReadableLocale(
-            locale
-          )}${removeFirstSlash(
-            page.attributes.url,
-            page.attributes.locale
-          )}${spacer}x${spacer}${getHeadlines(page.attributes.body)}${spacer}${
-            page.attributes.seo_title
-          }${spacer}${page.attributes.keywords}
-`
-        : '';
-    })
-    .join('')}
-\n\n
-${accordions
-  .map(page => {
-    return page.attributes.locale == locale
-      ? `${formatDateDDMMYY(
-          page.attributes.createdAt
-        )}${spacer}${NEXT_FRONT_URL}/${getReadableLocale(
-          locale
-        )}${removeFirstSlash(
-          page.attributes.url,
-          page.attributes.locale
-        )}${spacer}x${spacer}${getHeadlines(page.attributes.body)}${spacer}${
-          page.attributes.seo_title
-        }${spacer}${page.attributes.keywords}
-`
-      : '';
-  })
-  .join('')}
-\n\n
-${tags
-  .map(page => {
-    return page.attributes.locale == locale
-      ? `${formatDateDDMMYY(
-          page.attributes.createdAt
-        )}${spacer}${NEXT_FRONT_URL}/${getReadableLocale(locale)}${
-          page.attributes.locale == 'ru' ? '' : '/'
-        }service${page.attributes.url}${spacer}x${spacer}${getHeadlines(
-          page.attributes.body
-        )}${spacer}${page.attributes.seo_title}${spacer}${
+  // Add headers for sections
+  const sections = [
+    { title: 'Pages', data: posts },
+    { title: 'Page Seo', data: tags },
+    { title: 'Accordions', data: accordions },
+    { title: 'Blogs', data: blogs },
+    { title: 'News', data: news }
+  ];
+
+  sections.forEach(section => {
+    worksheet.addRow([section.title]); // Add section title
+    section.data
+      .filter(page => page.attributes.locale === locale)
+      .forEach(page => {
+        worksheet.addRow([
+          formatDateDDMMYY(page.attributes.createdAt),
+          `${NEXT_FRONT_URL}/${getReadableLocale(locale)}${removeFirstSlash(page.attributes.url, page.attributes.locale)}`,
+          'x',
+          getHeadlines(page.attributes.body),
+          page.attributes.seo_title,
           page.attributes.keywords
-        }
-`
-      : '';
-  })
-  .join('')}`;
+        ]);
+      });
+    worksheet.addRow([]); // Add a blank row between sections
+  });
+
+  const filePath = path.join(
+    process.cwd(),
+    `/allPages/allPages${locale !== 'uk' ? locale.toUpperCase() : 'UA'}.xlsx`
+  );
+
+  // Write Excel to a file
+  await workbook.xlsx.writeFile(filePath);
 }
 
-// fetch all pages and generate allPages csv analytics files
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
   if (req.method !== 'POST') {
     res.status(405).send({ message: 'Only POST requests allowed' });
@@ -117,7 +91,6 @@ export default async function handler(
     'body',
     'createdAt',
   ]);
-
   const tags = await fetchUrls('page-seos', [
     'url',
     'locale',
@@ -126,7 +99,6 @@ export default async function handler(
     'body',
     'createdAt',
   ]);
-
   const accordions = await fetchUrls('accordions', [
     'url',
     'locale',
@@ -135,36 +107,31 @@ export default async function handler(
     'body',
     'createdAt',
   ]);
+  const blogs = await fetchUrls('blogs', [
+    'url',
+    'locale',
+    'seo_title',
+    'keywords',
+    'body',
+    'createdAt',
+  ]);
+  const news = await fetchUrls('newss', [
+    'url',
+    'locale',
+    'seo_title',
+    'keywords',
+    'body',
+    'createdAt',
+  ]);
 
-  const data = {
-    uk: [],
-    ru: [],
-    en: [],
-  };
-
-  for (let i = 0; i < locales.length; i++) {
-    data[locales[i]] = generateTxt(locales[i], posts, tags, accordions);
-
-    const filePath = path.join(
-      process.cwd(),
-      `/allPages/allPages${
-        locales[i] != 'uk' ? locales[i].toUpperCase() : 'UA'
-      }.csv`
-    );
-
+  for (const locale of locales) {
     try {
-      // Write the CSV data to the file
-      fs.writeFileSync(filePath, '\uFEFF' + data[locales[i]], {
-        encoding: 'utf-8',
-      });
-
-      // res.status(200).json({ success: true, message: 'File saved successfully' });
+      await generateExcelFile(locale, posts, tags, accordions, blogs, news);
+      console.log(`File for ${locale} created successfully`);
     } catch (error) {
-      console.error('Error saving file:', error);
-      // res.status(500).json({ success: false, message: 'Error saving file' });
+      console.error(`Error creating file for ${locale}:`, error);
     }
   }
 
-  const auth = req.headers.authorization;
-  res.status(200).json({ message: 'Success! Posts are copied!' });
+  res.status(200).json({ message: 'Success! Files generated!' });
 }

@@ -18,6 +18,7 @@ export default async function fetchUrls(
         {
           locale: 'all',
           fields: fields,
+          sort: ['createdAt:desc'],
           pagination: {
             page: currentPage,
             pageSize: 100,
