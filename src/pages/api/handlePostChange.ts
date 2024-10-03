@@ -39,7 +39,9 @@ async function generateExcelFile(locale, posts, tags, accordions, blogs, news) {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Data');
 
-  // Add headers for sections
+  // Add headers for each section
+  worksheet.addRow(['Date', 'URL', 'Status', 'Headlines', 'SEO Title', 'Keywords']); // Add column headers
+
   const sections = [
     { title: 'Pages', data: posts },
     { title: 'Page Seo', data: tags },
@@ -57,9 +59,9 @@ async function generateExcelFile(locale, posts, tags, accordions, blogs, news) {
           formatDateDDMMYY(page.attributes.createdAt),
           `${NEXT_FRONT_URL}/${getReadableLocale(locale)}${removeFirstSlash(page.attributes.url, page.attributes.locale)}`,
           'x',
-          getHeadlines(page.attributes.body),
-          page.attributes.seo_title,
-          page.attributes.keywords
+          getHeadlines(page.attributes.body)?.join(', ') || '', // Join headlines into a single string
+          page.attributes.seo_title || '', // Ensure no quotes or brackets
+          page.attributes.keywords || ''
         ]);
       });
     worksheet.addRow([]); // Add a blank row between sections
