@@ -30,10 +30,10 @@ export default async function getRandomPopularNews(locale: string, count= 4, col
 
 
   function getRandomSample(arr:any[]) {
-    const shuffled = arr.sort(() => Math.random() - 0.5);
+    const shuffled = isPopular? arr.sort(() => Math.random() - 0.5):arr
     return shuffled.slice(0,count);
   }
   const pages = getPage.data.data;
-  const randomPages = isPopular?getRandomSample(pages):pages
+  const randomPages = getRandomSample(pages)
   return randomPages;
 }
