@@ -95,15 +95,15 @@ export default function Home({
   return (
     <>
       <Head>
-        <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : seoData?.Title? seoData?.Title: $t[locale].blog.title}</title>
+        <title>{activeHeading?.attributes?.blog_title ? activeHeading?.attributes?.blog_title : seoData?.Title ? seoData?.Title : $t[locale].blog.title}</title>
         {hrefLangTags.map((tag) => (
           <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
         ))}
         <meta
           name="description"
-          content={activeHeading?.attributes?.blog_descriptions ? activeHeading?.attributes?.blog_descriptions : seoData?.Description? seoData?.Description: $t[locale].blog.description}
+          content={activeHeading?.attributes?.blog_descriptions ? activeHeading?.attributes?.blog_descriptions : seoData?.Description ? seoData?.Description : $t[locale].blog.description}
         />
-        <meta name="keywords" content={activeHeading?.attributes?.keywords ? activeHeading?.attributes?.keywords : seoData?.Keywords? seoData?.Keywords: $t[locale].blog.keywords} />
+        <meta name="keywords" content={activeHeading?.attributes?.keywords ? activeHeading?.attributes?.keywords : seoData?.Keywords ? seoData?.Keywords : $t[locale].blog.keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
 

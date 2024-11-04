@@ -647,7 +647,7 @@ const Page = ({
     setUserComments(comments);
   }
   const asPath = router.asPath
-  const hrefLangTags = generateHrefLangTags(asPath,activePageLocales)
+  const hrefLangTags = generateHrefLangTags(asPath, activePageLocales)
 
   return (
     <>
@@ -962,7 +962,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
   const { NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
   // Паралельне виконання основних запитів
-  const [randomBanner, mostPopularBlog, mostPopularNewsResponse, headingsRes, pageRes, strapiMenu, headerFooterData, socialRes,pagesWithSameUrl] = await Promise.all([
+  const [randomBanner, mostPopularBlog, mostPopularNewsResponse, headingsRes, pageRes, strapiMenu, headerFooterData, socialRes, pagesWithSameUrl] = await Promise.all([
     getRandomBanner(Locale),
     getRandomPopularNews(Locale),
     getRandomPopularNews(Locale, 4, "newss", false),
@@ -1014,7 +1014,7 @@ export async function getServerSideProps({ query, locale, res, resolvedUrl }: Qu
     await getPagesIdWithSameUrl(url).then(data => pageIds = data);
 
     const shortenedTitle = page_title.length > 65 ? `${page_title.slice(0, 65)}...` : page_title;
-    const activePageLocales = pagesWithSameUrl.data.data.map(element=> element.attributes.locale);
+    const activePageLocales = pagesWithSameUrl.data.data.map(element => element.attributes.locale);
     return {
       props: {
         activePageLocales: activePageLocales, mostPopularNews: mostPopularNewsResponse,
