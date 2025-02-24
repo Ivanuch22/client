@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import $t from '@/locale/global';
 import axios from 'axios';
-import { server,serverForPlugins } from '@/http';
+import { server, serverForPlugins } from '@/http';
 import { $ } from '@/utils/utils';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
 import getHeaderFooterMenus from '@/utils/getHeaderFooterMenus';
@@ -21,9 +21,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWindowSize } from '@uidotdev/usehooks';
 import ModalRegConfirm from '@/components/organisms/ModalRegConfirm';
 import getConfig from 'next/config';
-import getUserFingerPrint from "@/utils/getUserFingerPrint"
+import getUserFingerPrint from '@/utils/getUserFingerPrint';
 import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
-
 
 export default function Home({
   menu,
@@ -37,7 +36,7 @@ export default function Home({
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const size = useWindowSize();
   const { publicRuntimeConfig } = getConfig();
-  const { NEXT_MAILER, NEXT_STRAPI_BASED_URL,NEXT_STRAPI_IMG_DEFAULT } = publicRuntimeConfig;
+  const { NEXT_MAILER, NEXT_STRAPI_BASED_URL } = publicRuntimeConfig;
 
   const [cIndex, setCIndex] = useState(getRandomElementFromArray(captchas));
   const [isError, setIsError] = useState(false);
@@ -46,7 +45,6 @@ export default function Home({
   const [message, setMessage] = useState('');
   const [ip, setIp] = useState<string | null>(null);
   const [modalIsVisible, setModalVisible] = useState(false);
-
 
   useEffect(() => {
     const captchaLabel = document.querySelector('#captchaLabel');
@@ -120,16 +118,15 @@ export default function Home({
     getUserIp();
   }, []);
 
-
   async function getUserIp() {
     try {
       const userIp = await axios.get('/api/userIp');
       setIp(userIp.data.ip as string);
     } catch (error) {
       console.error('Failed to fetch IP:', error);
-      setIp("failed to get");
+      setIp('failed to get');
     }
-  };
+  }
   function handleSuccess() {
     setIsSuccess(true);
     setModalVisible(true);
@@ -144,9 +141,7 @@ export default function Home({
       setIsSuccess(false);
       setModalVisible(false);
       router.push(getPreviousPage);
-
     }, 60000);
-
   }
   function handleError(message: string) {
     setMessage(message);
@@ -171,10 +166,10 @@ export default function Home({
     }
 
     let userData;
-    try{
+    try {
       userData = await getUserFingerPrint();
-    }catch(e){
-      userData ={}
+    } catch (e) {
+      userData = {};
     }
     try {
       const response = await server.post('/auth/local/register', {
@@ -185,26 +180,27 @@ export default function Home({
         UUIDv7: uuid,
         user_ip: ip,
         confirmed: false,
-        user_image: NEXT_STRAPI_IMG_DEFAULT,
-        imgLink: `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`,
-        avatarId: NEXT_STRAPI_IMG_DEFAULT,
-        reg_locale: locale?.toUpperCase()
+        reg_locale: locale?.toUpperCase(),
       });
       if (response.status === 200) {
-
-        const createUserHistory = await serverForPlugins.post("/custom-comment-fields/custom-history/create",{
-          collectionId: response.data.user.id,
-          collection :"User",
-          history: [userData]
-        })
+        const createUserHistory = await serverForPlugins.post(
+          '/custom-comment-fields/custom-history/create',
+          {
+            collectionId: response.data.user.id,
+            collection: 'User',
+            history: [userData],
+          }
+        );
 
         Cookies.set('userToken', response.data.jwt, { expires: 7 });
         Cookies.set('user', JSON.stringify(response.data.user), { expires: 7 });
-        Cookies.set('userName', response.data.user.real_user_name, { expires: 7 });
+        Cookies.set('userName', response.data.user.real_user_name, {
+          expires: 7,
+        });
 
         handleSuccess();
         login();
-        updateUser()
+        updateUser();
       } else {
         return handleError(error?.response?.data?.error?.message);
       }
@@ -212,14 +208,19 @@ export default function Home({
       return handleError(error?.response?.data?.error?.message);
     }
   }
-  const asPath = router.asPath
+  const asPath = router.asPath;
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-const hrefLangTags = generateHrefLangTags(asPath);
+  const hrefLangTags = generateHrefLangTags(asPath);
   return (
     <>
       <Head>
-        {hrefLangTags.map((tag) => (
-          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
+        {hrefLangTags.map(tag => (
+          <link
+            key={tag.key}
+            rel={tag.rel}
+            hrefLang={tag.hrefLang}
+            href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href}
+          />
         ))}
         <title>Register</title>
         <meta name="description" content="register" />
@@ -227,7 +228,6 @@ const hrefLangTags = generateHrefLangTags(asPath);
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
 
       <div className="container-xxl bg-white p-0">
         <div className="container-xxl position-relative p-0">
@@ -349,7 +349,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
                       </div>
                       <ul
                         className="login-more p-t-190"
-                        style={{ paddingTop: 50,listStyle: "none"}}
+                        style={{ paddingTop: 50, listStyle: 'none' }}
                       >
                         <li style={{ marginBottom: 4 }}>
                           <span className="txt1" style={{ marginRight: 5 }}>
@@ -378,12 +378,12 @@ const hrefLangTags = generateHrefLangTags(asPath);
                 message={$t[locale].auth.success.reg_message}
                 dangerMessage={$t[locale].auth.success.reg_messageDanger}
                 isVisible={modalIsVisible}
-                onSubmit={()=>{
-                  router.push("/profile");
+                onSubmit={() => {
+                  router.push('/profile');
                   setModalVisible(false);
                 }}
                 onClose={() => {
-                  router.push("/profile");
+                  router.push('/profile');
 
                   setModalVisible(false);
                 }}

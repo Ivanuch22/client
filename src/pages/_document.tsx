@@ -1,9 +1,7 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
 
-
 export default function Document({ locale }: { locale: string }) {
-
   return (
     <Html>
       <Head>
@@ -12,7 +10,6 @@ export default function Document({ locale }: { locale: string }) {
           rel="stylesheet"
           href="/styles/all.min.css"
           // media="all"
-          
         />
 
         <link
@@ -28,11 +25,11 @@ export default function Document({ locale }: { locale: string }) {
         />
 
         {/* <meta name="google-site-verification" content="9lr6DIPqtr69JsGgRDzM6cqqxqA0oIMSSY41ScS2sAs" /> */}
-        <Script  src="/scripts/jquery.min.js"  />
-        <Script  src="/scripts/wow.min.js" ></Script>
-        <Script  src="/scripts/counterup.min.js" ></Script>
-        <Script  src="/scripts/owl.carousel.min.js" ></Script>
-        <Script  src="/scripts/main.js" ></Script>
+        <Script src="/scripts/jquery.min.js" />
+        <Script src="/scripts/wow.min.js"></Script>
+        <Script src="/scripts/counterup.min.js"></Script>
+        <Script src="/scripts/owl.carousel.min.js"></Script>
+        <Script src="/scripts/main.js"></Script>
       </Head>
       <body>
         <Main />

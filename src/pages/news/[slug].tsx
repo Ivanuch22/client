@@ -783,7 +783,6 @@ const Page = ({
                             <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
                               <Link itemProp="item" className=" text-white" href="/news">
                                 <meta itemProp="position" content="2" />
-
                                 <span itemProp="name">
                                   {$t[locale].news.titleName}
                                 </span>

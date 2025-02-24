@@ -2,16 +2,16 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-module.exports = withBundleAnalyzer({})
+module.exports = withBundleAnalyzer({});
 const nextConfig = {
   publicRuntimeConfig: {
     NEXT_MAILER: process.env.NEXT_MAILER,
+    DEFAULT_AVATAR_NAME: process.env.DEFAULT_AVATAR_NAME,
     NEXT_STRAPI_API_URL: process.env.NEXT_STRAPI_API_URL,
     NEXT_STRAPI_BASED_URL: process.env.NEXT_STRAPI_BASED_URL,
     NEXT_FRONT_URL: process.env.NEXT_FRONT_URL,
-    NEXT_STRAPI_IMG_DEFAULT: process.env.NEXT_STRAPI_IMG_DEFAULT,
     NEXT_USER_DEFAULT_URL: process.env.NEXT_USER_DEFAULT_URL,
-    NEXT_FRONT_HOST: process.env.NEXT_FRONT_HOST
+    NEXT_FRONT_HOST: process.env.NEXT_FRONT_HOST,
   },
   compress: true,
   reactStrictMode: true,
@@ -24,10 +24,10 @@ const nextConfig = {
   optimization: {
     minimize: true,
   },
-  webpack: (config) => {
+  webpack: config => {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ["@svgr/webpack"],
+      use: ['@svgr/webpack'],
     });
     config.optimization.minimize = true;
     return config;

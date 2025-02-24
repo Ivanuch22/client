@@ -1,8 +1,7 @@
 // @ts-nocheck
-
 import '@/styles/animate.min.css';
 
-import "@/styles/auth.css";
+import '@/styles/auth.css';
 import '@/styles/owl.carousel.min.css';
 import '@/styles/dropdown.css';
 import '@/styles/global.css';
@@ -11,13 +10,16 @@ import '@/styles/call.btn.css';
 import '@/styles/itc.css';
 
 import $ from 'jquery';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import type { AppProps } from 'next/app';
 
 import localFont from 'next/font/local';
 import { AuthProvider } from '@/contexts/AuthContext';
 import Head from 'next/head';
-
+import { getCode } from '@/utils/queries';
+import { server } from '@/http';
+import parse from 'html-react-parser';
+import { generateCodeChunks } from '@/utils/generators/generateCodeChunks';
 // Define local fonts with optimization
 const montserrat = localFont({
   src: [
@@ -73,7 +75,7 @@ const opensans = localFont({
   variable: '--font-opensans',
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, code }: AppProps) {
   useEffect(() => {
     Promise.all([import('wowjs')]).then(([WOW]) => {
       window.jQuery = $;
@@ -109,7 +111,10 @@ export default function App({ Component, pageProps }: AppProps) {
           import('@/scripts/owl.carousel.min.js'),
           import('@/scripts/easing.min.js'),
         ]).then(([waypoints, owlCarousel, easing]) => {
-          if (typeof window !== "undefined" && typeof $.fn.owlCarousel === 'function') {
+          if (
+            typeof window !== 'undefined' &&
+            typeof $.fn.owlCarousel === 'function'
+          ) {
             $('.testimonial-carousel').owlCarousel({
               autoplay: true,
               smartSpeed: 1000,
@@ -137,12 +142,36 @@ export default function App({ Component, pageProps }: AppProps) {
       }
     });
   }, []);
+  const { chunksHead, chunksBodyTop, chunksBodyFooter } = useMemo(
+    () => generateCodeChunks(code),
+    [code]
+  );
 
   return (
-    <AuthProvider>
-      <div className={`${montserrat.variable} ${opensans.variable} font-wrapper`}>
-        <Component {...pageProps} />
-      </div>
-    </AuthProvider>
+    <>
+      <Head>
+        <title>{'sldkjf'}</title>
+        <>{parse(chunksHead)}</>
+      </Head>
+      <>{parse(chunksBodyTop)}</>
+
+      <AuthProvider>
+        <div
+          className={`${montserrat.variable} ${opensans.variable} font-wrapper`}
+        >
+          <Component {...pageProps} />
+        </div>
+      </AuthProvider>
+      <>{parse(chunksBodyFooter)}</>
+    </>
   );
 }
+
+App.getInitialProps = async ({ ctx }: { ctx: any }) => {
+  const { locale } = ctx;
+  const strapiLocale = locale === 'ua' ? 'uk' : locale;
+
+  const getCodeRes = await server.get(getCode(strapiLocale));
+  const code = getCodeRes?.data?.data?.attributes?.code || [];
+  return { code };
+};

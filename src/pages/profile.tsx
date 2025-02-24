@@ -1,10 +1,8 @@
-//@ts-nocheck
-
+// @ts-nocheck
 import Head from 'next/head';
 import DefaultLayout from '@/components/layouts/default';
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { server } from '@/http';
-import Script from 'next/script';
 import { useRouter } from 'next/router';
 import $t from '@/locale/global';
 import DefaultLayoutContext from '@/contexts/DefaultLayoutContext';
@@ -14,91 +12,81 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
-import ConfirmModal from '@/components/organisms/ModalConfirm'
+import ConfirmModal from '@/components/organisms/ModalConfirm';
 import MailModal from '@/components/organisms/ModalMail';
 import ImgEditor from '@/components/organisms/ImgEditor';
 import getConfig from 'next/config';
 import NotConfirmedModal from '@/components/organisms/NotConfirmedModal';
 import { generateHrefLangTags } from '@/utils/generators/generateHrefLangTags';
-
+import { Query } from './[slug]';
 export default function Profile({
   menu,
   allPages,
   footerMenus,
   footerGeneral,
   socialData,
-}) {
+}: any) {
   const { publicRuntimeConfig } = getConfig();
-  const { NEXT_STRAPI_BASED_URL, NEXT_STRAPI_IMG_DEFAULT } = publicRuntimeConfig;
-
-  const noImgUrl = `${NEXT_STRAPI_BASED_URL}/uploads/nophoto_c7c9abf542.png`;
-
+  const { NEXT_STRAPI_BASED_URL, DEFAULT_AVATAR_NAME, NEXT_USER_DEFAULT_URL } =
+    publicRuntimeConfig;
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState('');
-  const [login, setLogin] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<any>({});
   const [isDisabled, setIsDisabled] = useState(true);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(noImgUrl);
+  const [avatarUrl, setAvatarUrl] = useState(NEXT_USER_DEFAULT_URL);
   const router = useRouter();
-  const locale = router.locale === 'ua' ? 'uk' : router.locale;
+  const locale =
+    router.locale === 'ua' ? 'uk' : (router.locale as keyof typeof $t);
   const { isLogin, logout, updateUser } = useAuth();
-  const [defaultBirthday, setDefaultBirthday] = useState('2000-01-01')
+  const [defaultBirthday, setDefaultBirthday] = useState('2000-01-01');
   const [modalIsVisible, setModalVisible] = useState(false);
   const [modalActivationIsVisible, setActivationModalVisible] = useState(false);
-  const [avatarModalVisible, setAvatarModalVisible] = useState(false)
-  const [isShowMessageModal, setShowtMessageModal] = useState(false)
-
-  const asPath = router.asPath
-  const { NEXT_FRONT_URL } = publicRuntimeConfig;
-const hrefLangTags = generateHrefLangTags(asPath);
+  const [avatarModalVisible, setAvatarModalVisible] = useState(false);
+  const [isShowMessageModal, setShowtMessageModal] = useState(false);
+  const getPath = useRouter();
+  const asPath = router.asPath;
+  const hrefLangTags = generateHrefLangTags(asPath);
+  const [login, setLogin] = useState(false);
 
   useEffect(() => {
     setLogin(isLogin);
   }, [isLogin]);
+
   useEffect(() => {
     const getUserCookies = Cookies.get('user');
-    if (!getUserCookies) return
-    const userCookies = JSON.parse(getUserCookies)
+    if (!getUserCookies) return;
+    const userCookies = JSON.parse(getUserCookies);
     let userFromBd = userCookies;
     async function getUser() {
-      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`)
+      const strapiRes = await server.get(`/users/${userCookies.id}?populate=*`);
       Cookies.set('user', JSON.stringify(strapiRes.data), { expires: 7 });
-      setUser(strapiRes.data)
+      setUser(strapiRes.data);
     }
-
-    getUser()
-
+    getUser();
     if (userFromBd.birthday) {
-      setDefaultBirthday(userFromBd.birthday)
+      setDefaultBirthday(userFromBd.birthday);
     }
   }, []);
 
   useEffect(() => {
-    setDefaultBirthday(user.birthday)
+    setDefaultBirthday(user.birthday);
     if (user.user_image?.url) {
       setAvatarUrl(NEXT_STRAPI_BASED_URL + user.user_image?.url);
     } else {
-      setAvatarUrl(noImgUrl)
+      setAvatarUrl(NEXT_USER_DEFAULT_URL);
     }
-  }, [user])
+  }, [user]);
 
-
-
-
-  async function updateStrapiData(userObj: object) {
+  async function updateStrapiData(userObj: any) {
     const newObj = {
-      imgLink: userObj.imgLink,
-      avatarId: userObj.avatarId,
       birthday: userObj.birthday,
       email: userObj.email,
       real_user_name: userObj.real_user_name,
       sendMessage: userObj.sendMessage,
-      user_image: userObj.user_image
-
-    }
+      user_image: userObj.user_image,
+    };
 
     const strapiRes = await server.put(`/users/${userObj.id}`, newObj, {
       headers: {
@@ -111,34 +99,37 @@ const hrefLangTags = generateHrefLangTags(asPath);
     });
 
     // Fetch all comments by the current user
-    const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
+    const getBlogComments = await server.get(
+      `/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`
+    );
     const comments = getBlogComments.data.data;
 
     // Update each comment with the new user_img
-    const updateCommentPromises = comments.map(comment => {
-      return server.put(`/comments1/${comment.id}`, {
-        data: {
-          user_name: newObj.real_user_name
+    const updateCommentPromises = comments.map((comment: any) => {
+      return server.put(
+        `/comments1/${comment.id}`,
+        {
+          data: {
+            user_name: newObj.real_user_name,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get('userToken')}`,
+          },
         }
-      }, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get('userToken')}`,
-        }
-      });
+      );
     });
 
     // Wait for all updates to complete
     await Promise.all(updateCommentPromises);
 
-
-
-    return strapiRes
-
+    return strapiRes;
   }
-  async function changeData(e: FormEvent<HTMLFormElement>) {
+  async function changeData(e: FormEvent<HTMLButtonElement>) {
     e.preventDefault();
     if (!user.confirmed) {
-      return setShowtMessageModal(true)
+      return setShowtMessageModal(true);
     }
     try {
       const resData = await updateStrapiData(user);
@@ -150,20 +141,19 @@ const hrefLangTags = generateHrefLangTags(asPath);
         handleError($t[locale].auth.error.invalid);
         console.log(e);
       }
-      setModalVisible(false)
-    } catch (e) {
-
+      setModalVisible(false);
+    } catch (e: any) {
       if (e.response.status === 401) {
         return logout();
       }
-      setModalVisible(false)
+      setModalVisible(false);
       handleError($t[locale].auth.error.empty);
     }
-  };
+  }
   async function changePass(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!user.confirmed) {
-      return setShowtMessageModal(true)
+      return setShowtMessageModal(true);
     }
     const formData = new FormData(event.currentTarget);
     const oldPass = formData.get('oldPass');
@@ -185,14 +175,14 @@ const hrefLangTags = generateHrefLangTags(asPath);
       );
       handleSuccess();
       event.target.reset();
-    } catch (e) {
+    } catch (e: any) {
       if (e.response.status === 401) {
         return logout();
       }
       handleError(e.message);
     }
   }
-  async function handleUpload(file) {
+  async function handleUpload(file: any) {
     try {
       setIsLoading(true);
       const response = await server.post(`/upload`, file, {
@@ -204,23 +194,22 @@ const hrefLangTags = generateHrefLangTags(asPath);
 
       const uploadedFile = response.data[0];
 
-
       // Update user with the new image
       await updateStrapiData({
         ...user,
-        imgLink: `${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`,
-        avatarId: uploadedFile.id,
         user_image: uploadedFile.id,
       });
       // Delete the old avatar if exists
-      if (user.avatarId) {
-        await deleteOldAvatar(user.avatarId);
+      if (
+        user.user_image.name !== DEFAULT_AVATAR_NAME &&
+        user.user_image.id !== uploadedFile.id
+      ) {
+        await deleteOldAvatar(user.user_image.id);
+      } else {
       }
 
       setUser({
         ...user,
-        imgLink: `${NEXT_STRAPI_BASED_URL}${uploadedFile.url}`,
-        avatarId: uploadedFile.id,
         user_image: { ...uploadedFile },
       });
 
@@ -228,28 +217,31 @@ const hrefLangTags = generateHrefLangTags(asPath);
       setAvatarModalVisible(false);
 
       // Fetch all comments by the current user
-      const getBlogComments = await server.get(`/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`);
+      const getBlogComments = await server.get(
+        `/comments1?filters[user][id][$eq]=${user.id}&populate=*&sort[0]=admin_date`
+      );
       const comments = getBlogComments.data.data;
 
       // Update each comment with the new user_img
-      const updateCommentPromises = comments.map(comment => {
-        return server.put(`/comments1/${comment.id}`, {
-          data: {
-            user_img: uploadedFile.id,
+      const updateCommentPromises = comments.map((comment: any) => {
+        return server.put(
+          `/comments1/${comment.id}`,
+          {
+            data: {
+              user_img: uploadedFile.id,
+            },
           },
-        }, {
-          headers: {
-            Authorization: `Bearer ${Cookies.get('userToken')}`,
-          },
-        });
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get('userToken')}`,
+            },
+          }
+        );
       });
 
       // Wait for all updates to complete
       await Promise.all(updateCommentPromises);
-
-
-
-    } catch (error) {
+    } catch (error: any) {
       if (error.response?.status === 401) {
         return logout();
       }
@@ -261,24 +253,21 @@ const hrefLangTags = generateHrefLangTags(asPath);
     }
   }
 
-  async function deleteOldAvatar(avatarId) {
+  async function deleteOldAvatar(avatarId: string) {
     try {
-      if (NEXT_STRAPI_IMG_DEFAULT !== avatarId) {
-        await server.delete(`/upload/files/${avatarId}`, {
-          headers: {
-            Authorization: `Bearer ${Cookies.get('userToken')}`,
-          },
-        });
-      }
-
+      await server.delete(`/upload/files/${avatarId}`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get('userToken')}`,
+        },
+      });
     } catch (error) {
       console.error('Error deleting old avatar: ', error);
     }
   }
   async function sendActivationMessage() {
-    const sendMessage = server.post("/auth/send-email-confirmation", {
-      email: user.email
-    })
+    const sendMessage = server.post('/auth/send-email-confirmation', {
+      email: user.email,
+    });
     setActivationModalVisible(true);
     setTimeout(() => {
       setActivationModalVisible(false);
@@ -291,7 +280,9 @@ const hrefLangTags = generateHrefLangTags(asPath);
     }, 3000);
   }
   function handleError(message?: string) {
-    message ? setMessage(message) : setMessage($t[locale].auth.error.invalid_pass);
+    message
+      ? setMessage(message)
+      : setMessage($t[locale].auth.error.invalid_pass);
 
     setIsError(true);
     setTimeout(() => {
@@ -300,16 +291,12 @@ const hrefLangTags = generateHrefLangTags(asPath);
   }
   function onChange(obj: object) {
     if (!user.confirmed) {
-      return setShowtMessageModal(true)
+      return setShowtMessageModal(true);
     }
     setUser(obj);
-    Cookies.set("user", JSON.stringify(obj))
+    Cookies.set('user', JSON.stringify(obj));
     setIsDisabled(false);
   }
-
-  const getPath = useRouter()
-
-
 
   return (
     <>
@@ -319,11 +306,15 @@ const hrefLangTags = generateHrefLangTags(asPath);
         <meta name="keywords" content="Profile" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        {hrefLangTags.map((tag) => (
-          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
+        {hrefLangTags.map(tag => (
+          <link
+            key={tag.key}
+            rel={tag.rel}
+            hrefLang={tag.hrefLang}
+            href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href}
+          />
         ))}
       </Head>
-
       <div className="container-xxl bg-white p-0">
         <main className="container-xxl position-relative p-0">
           <DefaultLayoutContext.Provider
@@ -338,7 +329,10 @@ const hrefLangTags = generateHrefLangTags(asPath);
             <DefaultLayout>
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
+                  <div
+                    className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5"
+                    style={{ marginLeft: 0 }}
+                  >
                     <div className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -348,22 +342,49 @@ const hrefLangTags = generateHrefLangTags(asPath);
                           {$t[locale].auth.profile.profile}
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
-                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href="/">
-                                <span style={{ color: "white" }} itemProp="name">
+                          <ol
+                            itemScope
+                            itemType="http://schema.org/BreadcrumbList"
+                            className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"
+                          >
+                            <li
+                              itemProp="itemListElement"
+                              itemScope
+                              itemType="http://schema.org/ListItem"
+                              className="breadcrumb-item"
+                            >
+                              <Link
+                                itemProp="item"
+                                className="text-white"
+                                href="/"
+                              >
+                                <span
+                                  style={{ color: 'white' }}
+                                  itemProp="name"
+                                >
                                   {$t[locale].menu.main}
                                 </span>
                                 <meta itemProp="position" content="1" />
                               </Link>
                             </li>
-                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href={getPath.asPath}>
-                                <span style={{ color: "white" }} itemProp="name">
+                            <li
+                              itemProp="itemListElement"
+                              itemScope
+                              itemType="http://schema.org/ListItem"
+                              className="breadcrumb-item"
+                            >
+                              <Link
+                                itemProp="item"
+                                className="text-white"
+                                href={getPath.asPath}
+                              >
+                                <span
+                                  style={{ color: 'white' }}
+                                  itemProp="name"
+                                >
                                   {$t[locale].auth.profile.profile}
                                 </span>
                                 <meta itemProp="position" content="2" />
-
                               </Link>
                             </li>
                           </ol>
@@ -409,7 +430,8 @@ const hrefLangTags = generateHrefLangTags(asPath);
                   <TabList className="nav nav-tabs mb-5">
                     <Tab key="1" className="nav-link ">
                       <span className="d-none d-md-block">
-                        <i className="bi-person me-2"></i>{$t[locale].auth.profile.profile}
+                        <i className="bi-person me-2"></i>
+                        {$t[locale].auth.profile.profile}
                       </span>
                       <span className="d-block d-md-none">
                         <i className="bi-person"></i>
@@ -417,7 +439,8 @@ const hrefLangTags = generateHrefLangTags(asPath);
                     </Tab>
                     <Tab key="3" className="nav-link ">
                       <span className="d-none d-md-block">
-                        <i className="bi-mailbox me-2"></i>{$t[locale].auth.profile.change_profile}
+                        <i className="bi-mailbox me-2"></i>
+                        {$t[locale].auth.profile.change_profile}
                       </span>
                       <span className="d-block d-md-none">
                         <i className="bi-mailbox"></i>
@@ -425,15 +448,14 @@ const hrefLangTags = generateHrefLangTags(asPath);
                     </Tab>
                     <Tab key="2" className="nav-link ">
                       <span className="d-none d-md-block">
-                        <i className="bi-lock me-2"></i>{$t[locale].auth.profile.change_pass}
+                        <i className="bi-lock me-2"></i>
+                        {$t[locale].auth.profile.change_pass}
                       </span>
                       <span className="d-block d-md-none">
                         <i className="bi-lock"></i>
                       </span>
                     </Tab>
-
                   </TabList>
-
                   <TabPanel>
                     <div className="card mb-4">
                       <div
@@ -445,9 +467,9 @@ const hrefLangTags = generateHrefLangTags(asPath);
                             type="button"
                             onClick={() => {
                               if (!user.confirmed) {
-                                return setShowtMessageModal(true)
+                                return setShowtMessageModal(true);
                               }
-                              setAvatarModalVisible(true)
+                              setAvatarModalVisible(true);
                             }}
                             title="Додати фото"
                             className="btn btn-success btn-sm px-1 py-0"
@@ -474,14 +496,20 @@ const hrefLangTags = generateHrefLangTags(asPath);
                             <h5>{user.real_user_name}</h5>
                             <p className="mb-0">{user.email}</p>
                           </div>
-
                         </div>
-                        {!user.confirmed &&
-                          <div className='d-flex flex-column  justify-content-center gap-0'>
-                            <span className='text reply-button d-flex justify-content-center'>{$t[locale].auth.profile.notConfirmed}</span>
-                            <button onClick={() => setShowtMessageModal(true)} className='btn btn-primary m-2 d-inline-block'>{$t[locale].auth.activationBtnText}</button>
+                        {!user.confirmed && (
+                          <div className="d-flex flex-column  justify-content-center gap-0">
+                            <span className="text reply-button d-flex justify-content-center">
+                              {$t[locale].auth.profile.notConfirmed}
+                            </span>
+                            <button
+                              onClick={() => setShowtMessageModal(true)}
+                              className="btn btn-primary m-2 d-inline-block"
+                            >
+                              {$t[locale].auth.activationBtnText}
+                            </button>
                           </div>
-                        }
+                        )}
 
                         <button
                           className="btn-danger btn ml-4"
@@ -494,21 +522,22 @@ const hrefLangTags = generateHrefLangTags(asPath);
                   </TabPanel>
                   <TabPanel>
                     <form
-                      onSubmit={(e) => {
+                      onSubmit={e => {
                         e.preventDefault();
-                        setModalVisible(true)
+                        setModalVisible(true);
                       }}
                       className="col-12 col-md-8 col-lg-5"
                     >
                       <div className="card mb-4">
                         <div className="card-body position-relative">
                           <div className="position-absolute p-2 top-0 start-0">
-                            <label onClick={() => {
-                              if (!user.confirmed) {
-                                return setShowtMessageModal(true)
-                              }
-                              setAvatarModalVisible(true)
-                            }}
+                            <label
+                              onClick={() => {
+                                if (!user.confirmed) {
+                                  return setShowtMessageModal(true);
+                                }
+                                setAvatarModalVisible(true);
+                              }}
                               type="button"
                               title="Додати фото"
                               className="btn btn-success btn-sm px-1 py-0"
@@ -596,9 +625,8 @@ const hrefLangTags = generateHrefLangTags(asPath);
                               name="birthday"
                               id="birthday"
                               onChange={e => {
-                                onChange({ ...user, birthday: e.target.value })
-                              }
-                              }
+                                onChange({ ...user, birthday: e.target.value });
+                              }}
                               value={defaultBirthday}
                               className="form-control"
                             />
@@ -636,7 +664,7 @@ const hrefLangTags = generateHrefLangTags(asPath);
                           {$t[locale].auth.saveChanges}
                         </button>
                         <button
-                          type='button'
+                          type="button"
                           className="btn-danger btn ml-4"
                           onClick={logout}
                         >
@@ -662,14 +690,12 @@ const hrefLangTags = generateHrefLangTags(asPath);
                               name="oldPass"
                               className="form-control"
                               required
-                              onChange={
-                                (e) => {
-                                  if (!user.confirmed) {
-                                    e.target.value = "";
-                                    return setShowtMessageModal(true)
-                                  }
+                              onChange={e => {
+                                if (!user.confirmed) {
+                                  e.target.value = '';
+                                  return setShowtMessageModal(true);
                                 }
-                              }
+                              }}
                             />
                           </div>
                         </div>
@@ -686,14 +712,12 @@ const hrefLangTags = generateHrefLangTags(asPath);
                               name="newPass"
                               className="form-control"
                               required
-                              onChange={
-                                (e) => {
-                                  if (!user.confirmed) {
-                                    e.target.value = "";
-                                    return setShowtMessageModal(true)
-                                  }
+                              onChange={e => {
+                                if (!user.confirmed) {
+                                  e.target.value = '';
+                                  return setShowtMessageModal(true);
                                 }
-                              }
+                              }}
                             />
                           </div>
                         </div>
@@ -705,10 +729,8 @@ const hrefLangTags = generateHrefLangTags(asPath);
                       </div>
                     </form>
                   </TabPanel>
-
                 </Tabs>
               </div>
-
               <div
                 className="container"
                 style={login ? { display: 'none' } : { display: 'block' }}
@@ -717,27 +739,33 @@ const hrefLangTags = generateHrefLangTags(asPath);
                   {$t[locale].auth.header_button_name}
                 </Link>
               </div>
-              <ImgEditor onClose={() => { setAvatarModalVisible(false) }} isShow={avatarModalVisible} handleUpload={handleUpload} />
+              <ImgEditor
+                onClose={() => {
+                  setAvatarModalVisible(false);
+                }}
+                isShow={avatarModalVisible}
+                handleUpload={handleUpload}
+              />
               <NotConfirmedModal
                 message={$t[locale].auth.notConfirmedMessage}
                 isVisible={isShowMessageModal}
                 sendMessage={sendActivationMessage}
                 onClose={() => {
-                  setShowtMessageModal(false)
+                  setShowtMessageModal(false);
                 }}
               />
               <MailModal
                 message={$t[locale].auth.successConfirmationMessage}
                 isVisible={modalActivationIsVisible}
                 onClose={() => {
-                  setActivationModalVisible(false)
+                  setActivationModalVisible(false);
                 }}
               />
               <ConfirmModal
                 message={$t[locale].auth.confirm_text}
                 isVisible={modalIsVisible}
                 onClose={() => {
-                  setModalVisible(false)
+                  setModalVisible(false);
                 }}
                 onSubmit={changeData}
               />
@@ -750,27 +778,24 @@ const hrefLangTags = generateHrefLangTags(asPath);
 }
 export async function getServerSideProps({ query, locale }: Query) {
   const { q } = query;
+  const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
   try {
-    const serverPages = await server.get(
-      `/pages?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][body][$containsi]=${q}&locale=${locale === 'ua' ? 'uk' : locale
-      }`
-    );
-    const serverSeoPages = await server.get(
-      `/page-seos?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][seo_description][$containsi]=${q}&locale=${locale === 'ua' ? 'uk' : locale
-      }`
-    );
+    const [serverPages, serverSeoPages, socialRes, menus] = await Promise.all([
+      server.get(
+        `/pages?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][body][$containsi]=${q}&locale=${strapiLocale}`
+      ),
+      server.get(
+        `/page-seos?filters[$or][0][seo_title][$containsi]=${q}&filters[$or][1][seo_description][$containsi]=${q}&filters[$or][2][seo_description][$containsi]=${q}&locale=${strapiLocale}`
+      ),
+      server.get('/social'),
+      getHeaderFooterMenus(strapiLocale),
+    ]);
+    const { menu, allPages, footerMenus, footerGeneral } = menus;
+
     const pages = serverPages.data.data;
     const seoPages = serverSeoPages.data.data;
-
-    const strapiLocale = locale === 'ua' ? 'uk' : locale;
-
-    const { menu, allPages, footerMenus, footerGeneral } =
-      await getHeaderFooterMenus(strapiLocale);
-
-    const socialRes = await server.get('/social');
     const socialData = socialRes.data.data.attributes;
-
     return {
       props: {
         pages: [...pages, ...seoPages],

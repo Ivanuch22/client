@@ -30,17 +30,15 @@ export default function User({
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
 
-  const asPath = router.asPath
+  const asPath = router.asPath;
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
-  const hrefLangTags = generateHrefLangTags(asPath)
-
+  const hrefLangTags = generateHrefLangTags(asPath);
 
   useEffect(() => {
     if (dataUser[0].user_image?.url) {
       setAvatarUrl(NEXT_STRAPI_BASED_URL + dataUser[0].user_image?.url);
     }
-  }, [])
-
+  }, []);
 
   return (
     <>
@@ -50,8 +48,13 @@ export default function User({
         <meta name="keywords" content="Profile" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        {hrefLangTags.map((tag) => (
-          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
+        {hrefLangTags.map(tag => (
+          <link
+            key={tag.key}
+            rel={tag.rel}
+            hrefLang={tag.hrefLang}
+            href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href}
+          />
         ))}
       </Head>
 
@@ -69,7 +72,10 @@ export default function User({
             <DefaultLayout>
               <div className="container-xxl position-relative p-0">
                 <div className="container-xxl py-5 bg-primary hero-header mb-5">
-                  <div className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5" style={{marginLeft:0}}>
+                  <div
+                    className="container mb-5 mt-5 py-2 px-lg-5 mt-md-1 mt-sm-1 mt-xs-0 mt-lg-5"
+                    style={{ marginLeft: 0 }}
+                  >
                     <div className="row g-5 pt-1">
                       <div
                         className="col-12 text-center text-md-start"
@@ -79,18 +85,46 @@ export default function User({
                           {dataUser[0]?.real_user_name}
                         </h1>
                         <nav aria-label="breadcrumb">
-                          <ol itemScope itemType="http://schema.org/BreadcrumbList" className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft">
-                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href="/">
-                                <span style={{ color: "white" }} itemProp="name">
+                          <ol
+                            itemScope
+                            itemType="http://schema.org/BreadcrumbList"
+                            className="breadcrumb justify-content-center justify-content-md-start animated slideInLeft"
+                          >
+                            <li
+                              itemProp="itemListElement"
+                              itemScope
+                              itemType="http://schema.org/ListItem"
+                              className="breadcrumb-item"
+                            >
+                              <Link
+                                itemProp="item"
+                                className="text-white"
+                                href="/"
+                              >
+                                <span
+                                  style={{ color: 'white' }}
+                                  itemProp="name"
+                                >
                                   {$t[locale].menu.main}
                                 </span>
                                 <meta itemProp="position" content="1" />
                               </Link>
                             </li>
-                            <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="breadcrumb-item">
-                              <Link itemProp="item" className="text-white" href={asPath}>
-                                <span style={{ color: "white" }} itemProp="name">
+                            <li
+                              itemProp="itemListElement"
+                              itemScope
+                              itemType="http://schema.org/ListItem"
+                              className="breadcrumb-item"
+                            >
+                              <Link
+                                itemProp="item"
+                                className="text-white"
+                                href={asPath}
+                              >
+                                <span
+                                  style={{ color: 'white' }}
+                                  itemProp="name"
+                                >
                                   {dataUser[0]?.real_user_name}
                                 </span>
                                 <meta itemProp="position" content="2" />
@@ -104,10 +138,7 @@ export default function User({
                 </div>
               </div>
 
-              <div
-                className="container"
-                style={{ display: 'block' }}
-              >
+              <div className="container" style={{ display: 'block' }}>
                 <Tabs>
                   <TabPanel>
                     <div className="card mb-4">
@@ -141,9 +172,10 @@ export default function User({
   );
 }
 export async function getServerSideProps({ query, locale }: Query) {
-
   try {
-    const userData = await server.get(`/users`, { params: { filters: { username: { $eq: query.slug } }, populate: '*' } })
+    const userData = await server.get(`/users`, {
+      params: { filters: { username: { $eq: query.slug } }, populate: '*' },
+    });
 
     const dataUser = userData.data;
 

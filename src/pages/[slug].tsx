@@ -77,7 +77,9 @@ export interface MenuItem {
 export interface Query {
   query: {
     slug: string | null;
+    q: string | null;
   };
+  locale: string;
 }
 
 const Page = ({
@@ -105,7 +107,6 @@ const Page = ({
   mostPopular,
   activePageLocales,
 }: PageAttibutes) => {
-  console.log(menu, "menu")
   const router = useRouter();
   const locale = router.locale === 'ua' ? 'uk' : router.locale;
   const findAncestors = (obj: any[], url: string) => {
@@ -174,7 +175,7 @@ const Page = ({
   const { publicRuntimeConfig } = getConfig();
   const { NEXT_FRONT_URL } = publicRuntimeConfig;
 
-  const asPath = router.asPath
+  const asPath = router.asPath;
   const hrefLangTags = generateHrefLangTags(asPath, activePageLocales);
   return (
     <>
@@ -183,11 +184,17 @@ const Page = ({
         <meta name="description" content={seo_description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="keyword" content={keywords} />
-        {hrefLangTags.map((tag) => {
-          console.log(tag.href.endsWith('/'))
-        return (
-          <link key={tag.key} rel={tag.rel} hrefLang={tag.hrefLang} href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href} />
-        )})}
+        {hrefLangTags.map(tag => {
+          console.log(tag.href.endsWith('/'));
+          return (
+            <link
+              key={tag.key}
+              rel={tag.rel}
+              hrefLang={tag.hrefLang}
+              href={tag.href.endsWith('/') ? tag.href.slice(0, -1) : tag.href}
+            />
+          );
+        })}
         {faq && (
           <script
             type="application/ld+json"
@@ -214,7 +221,6 @@ const Page = ({
         )}
 
         <>{parse(chunksHead)}</>
-
       </Head>
       <>{parse(chunksBodyTop)}</>
 
@@ -240,14 +246,14 @@ const Page = ({
                   seo_title
                     ? findAncestors(crumbs, `${slug}`)
                     : [
-                      {
-                        title: '404',
-                        title_uk: '404',
-                        title_en: '404',
-                        url: '',
-                        id: 404,
-                      },
-                    ]
+                        {
+                          title: '404',
+                          title_uk: '404',
+                          title_en: '404',
+                          url: '',
+                          id: 404,
+                        },
+                      ]
                 }
               />
               <div className="container-xxl">
@@ -262,12 +268,13 @@ const Page = ({
                         <div className="error-message">
                           <h3>
                             {errorCode != null
-                              ? `${errorText[
-                              Object.keys(message404).find(
-                                key => message404[key] === errorMessage
-                              )
-                              ]
-                              } ${errorCode}`
+                              ? `${
+                                  errorText[
+                                    Object.keys(message404).find(
+                                      key => message404[key] === errorMessage
+                                    )
+                                  ]
+                                } ${errorCode}`
                               : errorMessage}
                           </h3>
                           {errorCode != null && (
@@ -276,37 +283,49 @@ const Page = ({
                         </div>
                       )}
                       {/* Displaying rich text */}
-                      {listPagesData.length > 0 && (
+                      {listPagesData.length > 0 &&
                         listPagesData.map((page, index) => {
-                          const title = locale === 'ru' ? page.title : page[`title_${locale}`];
-                          if (title === 'nopage' || page.target === "_blank") return null;
-                          { title }
+                          const title =
+                            locale === 'ru'
+                              ? page.title
+                              : page[`title_${locale}`];
+                          if (title === 'nopage' || page.target === '_blank')
+                            return null;
+                          {
+                            title;
+                          }
                           return (
-                            <div style={{ marginLeft: page.childrenStatus ? '30px' : '0' }} key={index}>
+                            <div
+                              style={{
+                                marginLeft: page.childrenStatus ? '30px' : '0',
+                              }}
+                              key={index}
+                            >
                               <h4 class="mb-1">
-                                <Link href={page.url}>
-                                  {title}
-                                </Link>
+                                <Link href={page.url}>{title}</Link>
                               </h4>
-                              <Link class="font-13 text-success mb-3" href={page.url}>{`${NEXT_FRONT_URL}${page.url}`}</Link>
+                              <Link
+                                class="font-13 text-success mb-3"
+                                href={page.url}
+                              >{`${NEXT_FRONT_URL}${page.url}`}</Link>
                               <hr class="hr"></hr>
                             </div>
-
-                          )
-
-                        }
-
-                        )
-                      )}
+                          );
+                        })}
                       {listPagesData.length <= 0 && (
                         <div dangerouslySetInnerHTML={{ __html: body }}></div>
                       )}
                     </div>
                   </div>
                   <Sidebar randomBanner={randomBanner}>
-                    <MostPopular title={$t[locale].news.mostpopular} data={mostPopularNews} />
-                    <MostPopular title={$t[locale].blog.mostpopular} data={mostPopular} />
-
+                    <MostPopular
+                      title={$t[locale].news.mostpopular}
+                      data={mostPopularNews}
+                    />
+                    <MostPopular
+                      title={$t[locale].blog.mostpopular}
+                      data={mostPopular}
+                    />
                   </Sidebar>
                 </div>
               </div>
@@ -325,30 +344,36 @@ export async function getServerSideProps({
   res,
   resolvedUrl,
 }: Query) {
-
   const randomBanner = await getRandomBanner(locale);
-
 
   const slug = `/${query?.slug}` || '';
 
   const pageRes = await server.get(getPage(slug, $(locale)));
-  const pagesWithSameUrl = await server.get(getPage(slug, "all"));
+  const pagesWithSameUrl = await server.get(getPage(slug, 'all'));
 
-  const activePageLocales = pagesWithSameUrl.data.data.map(element => element.attributes.locale);
+  const activePageLocales = pagesWithSameUrl.data.data.map(
+    element => element.attributes.locale
+  );
 
   const strapiLocale = locale === 'ua' ? 'uk' : locale;
 
   const { menu, allPages, footerMenus, footerGeneral } =
     await getHeaderFooterMenus(strapiLocale);
 
-
   function collectChildren(data, array) {
     let results = [];
     function traverse(children, bool) {
       if (children && children.data) {
         for (let child of children.data) {
-          const { title, url, title_en, title_uk, target, } = child.attributes;
-          array.push({ title, url, title_en, title_uk, target, childrenStatus: bool });
+          const { title, url, title_en, title_uk, target } = child.attributes;
+          array.push({
+            title,
+            url,
+            title_en,
+            title_uk,
+            target,
+            childrenStatus: bool,
+          });
           traverse(child.attributes.children, true);
         }
       }
@@ -363,7 +388,7 @@ export async function getServerSideProps({
       if (typeof item === 'object' && item !== null) {
         for (let key in item) {
           if (item[key] === targetUrl && item.children) {
-            item.children.data.map(el => result.push(el.attributes))
+            item.children.data.map(el => result.push(el.attributes));
             return;
           }
           if (typeof item[key] === 'object') {
@@ -377,12 +402,16 @@ export async function getServerSideProps({
     return result;
   }
 
-  const getMenuUrlArray = menu.map((element) => element.attributes.url)
-  const getMenuUrlArray2 = findChildrenByUrl(menu, resolvedUrl)
-  const getPageListUrl = getMenuUrlArray.filter((url) => url === resolvedUrl)[0]
-  const listPagesData = []
+  const getMenuUrlArray = menu.map(element => element.attributes.url);
+  const getMenuUrlArray2 = findChildrenByUrl(menu, resolvedUrl);
+  const getPageListUrl = getMenuUrlArray.filter(url => url === resolvedUrl)[0];
+  const listPagesData = [];
 
-  if (getPageListUrl) collectChildren(menu.filter(element => element.attributes.url === getPageListUrl)[0], listPagesData)
+  if (getPageListUrl)
+    collectChildren(
+      menu.filter(element => element.attributes.url === getPageListUrl)[0],
+      listPagesData
+    );
 
   const strapiMenu = await server.get(getMenu('main'));
 
@@ -396,13 +425,16 @@ export async function getServerSideProps({
   const socialData = socialRes.data.data.attributes;
 
   let mostPopular = await getRandomPopularNews(strapiLocale);
-  let mostPopularNews = await getRandomPopularNews(strapiLocale, 5, "newss",false)
+  let mostPopularNews = await getRandomPopularNews(
+    strapiLocale,
+    5,
+    'newss',
+    false
+  );
 
   if (mostPopular.length === 0) {
-    mostPopular = await getRandomPopularNews("ru");
+    mostPopular = await getRandomPopularNews('ru');
   }
-
-
 
   if (pageRes.data?.data[0]?.attributes) {
     const {
@@ -442,7 +474,8 @@ export async function getServerSideProps({
         footerMenus,
         footerGeneral,
         socialData: socialData ?? null,
-        listPagesData: listPagesData.length > 0 ? listPagesData : getMenuUrlArray2,
+        listPagesData:
+          listPagesData.length > 0 ? listPagesData : getMenuUrlArray2,
         mostPopular,
         mostPopularNews,
       },
@@ -477,7 +510,7 @@ export async function getServerSideProps({
       },
       footerGeneral: footerGeneral ?? {},
       socialData: socialData ?? {},
-      listPagesData
+      listPagesData,
     },
   };
 }
